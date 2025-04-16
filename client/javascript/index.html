@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configurable AI Voice Agent</title>
+</head>
+
+<body>
+  <div class="container">
+    <div class="status-bar">
+      <div class="status">
+        Status: <span id="connection-status">Disconnected</span>
+      </div>
+      <div class="controls">
+        <button id="connect-btn">Connect</button>
+        <button id="disconnect-btn" disabled>Disconnect</button>
+      </div>
+    </div>
+
+    <div class="config-panel">
+      <h3>Service Configuration</h3>
+      
+      <div class="config-row">
+        <label for="stt-select">Speech-to-Text:</label>
+        <select id="stt-select">
+          <option value="deepgram">Deepgram</option>
+          <option value="groq">Groq (Whisper)</option>
+        </select>
+      </div>
+      
+      <div class="config-row">
+        <label for="stt-model-select">STT Model:</label>
+        <select id="stt-model-select">
+          <!-- Models will be populated dynamically -->
+        </select>
+      </div>
+      
+      <div class="config-row">
+        <label for="llm-select">Language Model:</label>
+        <select id="llm-select">
+          <option value="gemini">Google Gemini</option>
+          <option value="groq">Groq</option>
+        </select>
+      </div>
+      
+      <div class="config-row">
+        <label for="llm-model-select">LLM Model:</label>
+        <select id="llm-model-select">
+          <!-- Models will be populated dynamically -->
+        </select>
+      </div>
+      
+      <div class="config-row">
+        <label for="tts-select">Text-to-Speech:</label>
+        <select id="tts-select">
+          <option value="cartesia">Cartesia</option>
+          <option value="elevenlabs">ElevenLabs</option>
+        </select>
+      </div>
+      
+      <div class="config-row">
+        <label for="tts-model-select">TTS Voice:</label>
+        <select id="tts-model-select">
+          <!-- Models will be populated dynamically -->
+        </select>
+      </div>
+      
+      <div class="config-row" id="search-option">
+        <label for="enable-search">
+          <input type="checkbox" id="enable-search">
+          Enable Search (Gemini only)
+        </label>
+      </div>
+      
+      <div class="config-row">
+        <label for="optimize-latency">
+          <input type="checkbox" id="optimize-latency">
+          Optimize for Low Latency
+        </label>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="bot-container">
+        <div id="search-result-container">
+          <!-- Search results will appear here if enabled -->
+        </div>
+        <audio id="bot-audio" autoplay></audio>
+      </div>
+    </div>
+
+    <div class="debug-panel">
+      <h3>Debug Info</h3>
+      <div id="debug-log"></div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/app.js"></script>
+  <link rel="stylesheet" href="/src/style.css">
+</body>
+
+</html>
