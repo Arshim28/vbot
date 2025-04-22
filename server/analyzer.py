@@ -12,11 +12,9 @@ from google.genai import types
 
 load_dotenv(dotenv_path='.env')
 
-# Configure logger
 logger.remove(0)
 logger.add(sys.stderr, level="INFO")
 
-# File paths
 INSTRUCTION_FILE = Path(__file__).parent.parent / "prompts" / "analyst_system_prompt.txt"
 with open(INSTRUCTION_FILE, "r") as f:
     INSTRUCTION = f.read()
@@ -24,7 +22,6 @@ with open(INSTRUCTION_FILE, "r") as f:
 TRANSCRIPT_LOGFILE = Path(__file__).parent.parent / "logs" / "transcript_log.txt"
 EXPERT_SUGGESTION_FILE = Path(__file__).parent.parent / "prompts" / "expert_suggestion.txt"
 
-# Initialize Google API client properly
 client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
 
 async def read_transcript() -> str:
@@ -72,7 +69,6 @@ TRANSCRIPT:
 {transcript}
 """
 
-    # Create proper configuration
     config = types.GenerateContentConfig(
         temperature=0.2,
         top_p=0.95,
@@ -81,7 +77,6 @@ TRANSCRIPT:
     )
     
     try:
-        # Use async client properly in async function
         response = await client.aio.models.generate_content(
             model="gemini-2.5-pro-exp-03-25",
             contents=prompt,
@@ -105,14 +100,9 @@ async def write_analysis(analysis: str) -> None:
 
 async def main() -> None:
     logger.info("Starting conversation analysis")
-    
-    # Read the transcript
-    transcript = await read_transcript()
-    
-    # Generate analysis
-    analysis = await analyze_conversation(transcript)
-    
-    # Write analysis to file
+
+    transcript = await read_transcript()    
+    analysis = await analyze_conversation(transcript)    
     await write_analysis(analysis)
     
     logger.info("Conversation analysis completed")

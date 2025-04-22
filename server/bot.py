@@ -34,27 +34,21 @@ from pipecat.services.google.rtvi import GoogleRTVIObserver
 # TTS
 from pipecat.services.deepgram.tts import DeepgramTTSService
 
-# Import runner
 sys.path.append(str(Path(__file__).parent.parent))
 from runner import configure
 
-# Setup logging
 load_dotenv(dotenv_path='.env')
 logger.remove(0)
 logger.add(sys.stderr, level="INFO")
 
-# Load system prompt
 SYSTEM_INSTRUCTION_FILE = Path(__file__).parent.parent / "prompts" / "bot_system_prompt.txt"
 with open(SYSTEM_INSTRUCTION_FILE, "r") as f:
     SYSTEM_INSTRUCTION = f.read()
 
-# Expert suggestion file path
 EXPERT_SUGGESTION_FILE = Path(__file__).parent.parent / "prompts" / "expert_suggestion.txt"
 
-# Transcript log file
 TRANSCRIPT_LOGFILE = Path(__file__).parent.parent / "logs" / "transcript_log.txt"
 
-# Check if expert suggestions exist and load them
 def load_expert_suggestions():
     if EXPERT_SUGGESTION_FILE.exists():
         try:
@@ -101,7 +95,6 @@ class TranscriptHandler:
             await self.save_message(msg)
 
 async def main():
-    # Get enhanced system prompt with expert suggestions if available
     system_prompt = load_expert_suggestions()
     
     async with aiohttp.ClientSession() as session:
@@ -145,14 +138,11 @@ async def main():
 
         context_aggregator = llm.create_context_aggregator(context)
 
-        # Setup RTVI processor for client interaction
         rtvi = RTVIProcessor(config=RTVIConfig(config=[]))
 
-        # Setup transcript processor and handler
         transcript = TranscriptProcessor()
         transcript_handler = TranscriptHandler(output_file=TRANSCRIPT_LOGFILE)
 
-        # Create the pipeline
         pipeline = Pipeline(
             [
                 transport.input(),
@@ -174,32 +164,26 @@ async def main():
             observers=[GoogleRTVIObserver(rtvi)]
         )
 
-        # Handle client ready event
         @rtvi.event_handler("on_client_ready")
         async def on_client_ready(rtvi):
             await rtvi.set_bot_ready()
-            # Start conversation with initial greeting
             await task.queue_frames([context_aggregator.user().get_context_frame()])
 
-        # Handle first participant joined event
         @transport.event_handler("on_first_participant_joined")
         async def on_first_participant_joined(transport, participant):
             logger.info(f"First participant joined: {participant['id']}")
             await transport.capture_participant_transcription(participant["id"])
 
-        # Handle transcript updates
         @transcript.event_handler("on_transcript_update")
         async def on_transcript_update(processor, frame):
             await transcript_handler.on_transcript_update(processor, frame)
 
 
-        # Handle participant leaving
         @transport.event_handler("on_participant_left")
         async def on_participant_left(transport, participant, reason):
             logger.info(f"Participant left: {participant}")
             await task.cancel()
 
-        # Run the pipeline
         runner = PipelineRunner()
         await runner.run(task)
 
