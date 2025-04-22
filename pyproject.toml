@@ -5,11 +5,13 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "aiohttp>=3.11.16",
+    "aiofiles>=24.1.0",
+    "aiohttp>=3.11.18",
+    "asyncio>=3.4.3",
     "fastapi>=0.115.12",
+    "google-genai>=1.7.0",
     "loguru>=0.7.3",
-    "pipecat-ai[cartesia,daily,deepgram,google,groq,openai,silero]>=0.0.63",
-    "pydantic>=2.10.6",
+    "pipecat-ai[anthropic,cartesia,daily,deepgram,elevenlabs,google,groq,openai,silero,ultravox]>=0.0.63",
     "python-dotenv>=1.1.0",
-    "uvicorn>=0.34.1",
+    "uvicorn>=0.34.2",
 ]

@@ -10,3 +10,7 @@ wheels/
 .venv
 .env
 *.env.env
+*.python-version
+
+# Node modules
+node_modules/
