@@ -33,11 +33,15 @@ from pipecat.services.google.rtvi import GoogleRTVIObserver
 
 # TTS
 from pipecat.services.deepgram.tts import DeepgramTTSService
+from pipecat.services.cartesia.tts import CartesiaTTSService
 
 sys.path.append(str(Path(__file__).parent.parent))
+
 from runner import configure
+from interruption_observer import BotInterruptionObserver
 
 load_dotenv(dotenv_path='.env')
+
 logger.remove(0)
 logger.add(sys.stderr, level="INFO")
 
@@ -68,6 +72,7 @@ class TranscriptHandler:
     def __init__(self, output_file: Optional[str]=None):
         self.messages: List[TranscriptionMessage] = []
         self.output_file: Optional[str] = output_file
+        self.current_partial: Dict[str, str] = {}
         logger.debug(
             f"TranscriptHandler initialized {'with output file=' + str(output_file) if output_file else 'with log output only'}"
         )
@@ -93,6 +98,26 @@ class TranscriptHandler:
         for msg in frame.messages:
             self.messages.append(msg)
             await self.save_message(msg)
+
+    async def on_bot_interrupted(self, partial_text: str):
+        if not partial_text:
+            return
+
+        import datetime
+        timestamp = datetime.datetime.now().isoformat()
+
+        interrupted_msg = TranscriptionMessage(
+            role='assistant',
+            content=f"{partial_text} [interrupted]",
+            timestamp=timestamp,
+            final=True
+        )
+
+        self.messages.append(interrupted_msg)
+        await self.save_message(interrupted_msg)
+
+        logger.info(f"Bot interrupted with partial text: {partial_text}")
+        self.current_partial.pop('assistant', None)
 
 async def main():
     system_prompt = load_expert_suggestions()
@@ -124,6 +149,7 @@ async def main():
             api_key=os.getenv("GOOGLE_API_KEY"),
             model="gemini-1.5-flash",
             system_instruction=system_prompt,
+            streaming=True,
             tools=[],
         )
 
@@ -142,6 +168,7 @@ async def main():
 
         transcript = TranscriptProcessor()
         transcript_handler = TranscriptHandler(output_file=TRANSCRIPT_LOGFILE)
+        interrupt_observer = BotInterruptionObserver(transcript_handler)
 
         pipeline = Pipeline(
             [
@@ -161,7 +188,7 @@ async def main():
         task = PipelineTask(
             pipeline, 
             params=PipelineParams(allow_interruptions=True), 
-            observers=[GoogleRTVIObserver(rtvi)]
+            observers=[GoogleRTVIObserver(rtvi), interrupt_observer]
         )
 
         @rtvi.event_handler("on_client_ready")
