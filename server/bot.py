@@ -147,7 +147,7 @@ async def main():
 
         llm = GoogleLLMService(
             api_key=os.getenv("GOOGLE_API_KEY"),
-            model="gemini-1.5-flash",
+            model="gemini-2.0-flash",
             system_instruction=system_prompt,
             streaming=True,
             tools=[],
