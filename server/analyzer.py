@@ -31,10 +31,10 @@ async def read_transcript() -> str:
             return ""
         
         with open(TRANSCRIPT_LOGFILE, "r") as f:
-            transcript = f.read()
+            TRANSCRIPT = f.read()
         
         logger.info(f"Read transcript with {len(transcript.splitlines())} lines")
-        return transcript
+        return TRANSCRIPT
     except Exception as e:
         logger.error(f"Error reading transcript: {e}")
         return ""
@@ -47,26 +47,7 @@ async def analyze_conversation(transcript: str) -> str:
     
     prompt = f"""
 {INSTRUCTION}
-
-Based on the following conversation transcript between our sales agent and a potential client, 
-please analyze the client's profile and provide recommendations for future interactions.
-
-Please analyze for the following parameters:
-1. Is the client a distributor or investor?
-2. Does the client understand credit fund investing?
-3. Does the client have 1 crore to invest?
-4. Does the client know Maneesh Dangi?
-5. Is the client a sophisticated or novice investor?
-6. Is the client optimistic or skeptical about our offering?
-7. Does the client want to have a Zoom call?
-8. Should we call this client again?
-9. Is the client interested in talking to our sales executive?
-10. Is the client proficient in English or comfortable in another language?
-
-Format your response as specific, concise points that can be used to tailor our approach in future conversations.
-
-TRANSCRIPT:
-{transcript}
+{TRANSCRIPT}
 """
 
     config = types.GenerateContentConfig(
