@@ -33,28 +33,26 @@ from pipecat.services.google.rtvi import GoogleRTVIObserver
 
 # TTS
 from pipecat.services.deepgram.tts import DeepgramTTSService
+from pipecat.services.cartesia.tts import CartesiaTTSService
 
-# Import runner
 sys.path.append(str(Path(__file__).parent.parent))
-from runner import configure
 
-# Setup logging
+from runner import configure
+from interruption_observer import BotInterruptionObserver
+
 load_dotenv(dotenv_path='.env')
+
 logger.remove(0)
 logger.add(sys.stderr, level="INFO")
 
-# Load system prompt
 SYSTEM_INSTRUCTION_FILE = Path(__file__).parent.parent / "prompts" / "bot_system_prompt.txt"
 with open(SYSTEM_INSTRUCTION_FILE, "r") as f:
     SYSTEM_INSTRUCTION = f.read()
 
-# Expert suggestion file path
 EXPERT_SUGGESTION_FILE = Path(__file__).parent.parent / "prompts" / "expert_suggestion.txt"
 
-# Transcript log file
 TRANSCRIPT_LOGFILE = Path(__file__).parent.parent / "logs" / "transcript_log.txt"
 
-# Check if expert suggestions exist and load them
 def load_expert_suggestions():
     if EXPERT_SUGGESTION_FILE.exists():
         try:
@@ -74,6 +72,7 @@ class TranscriptHandler:
     def __init__(self, output_file: Optional[str]=None):
         self.messages: List[TranscriptionMessage] = []
         self.output_file: Optional[str] = output_file
+        self.current_partial: Dict[str, str] = {}
         logger.debug(
             f"TranscriptHandler initialized {'with output file=' + str(output_file) if output_file else 'with log output only'}"
         )
@@ -100,8 +99,27 @@ class TranscriptHandler:
             self.messages.append(msg)
             await self.save_message(msg)
 
+    async def on_bot_interrupted(self, partial_text: str):
+        if not partial_text:
+            return
+
+        import datetime
+        timestamp = datetime.datetime.now().isoformat()
+
+        interrupted_msg = TranscriptionMessage(
+            role='assistant',
+            content=f"{partial_text} [interrupted]",
+            timestamp=timestamp,
+            final=True
+        )
+
+        self.messages.append(interrupted_msg)
+        await self.save_message(interrupted_msg)
+
+        logger.info(f"Bot interrupted with partial text: {partial_text}")
+        self.current_partial.pop('assistant', None)
+
 async def main():
-    # Get enhanced system prompt with expert suggestions if available
     system_prompt = load_expert_suggestions()
     
     async with aiohttp.ClientSession() as session:
@@ -129,8 +147,9 @@ async def main():
 
         llm = GoogleLLMService(
             api_key=os.getenv("GOOGLE_API_KEY"),
-            model="gemini-1.5-flash",
+            model="gemini-2.0-flash",
             system_instruction=system_prompt,
+            streaming=True,
             tools=[],
         )
 
@@ -145,14 +164,12 @@ async def main():
 
         context_aggregator = llm.create_context_aggregator(context)
 
-        # Setup RTVI processor for client interaction
         rtvi = RTVIProcessor(config=RTVIConfig(config=[]))
 
-        # Setup transcript processor and handler
         transcript = TranscriptProcessor()
         transcript_handler = TranscriptHandler(output_file=TRANSCRIPT_LOGFILE)
+        interrupt_observer = BotInterruptionObserver(transcript_handler)
 
-        # Create the pipeline
         pipeline = Pipeline(
             [
                 transport.input(),
@@ -171,35 +188,29 @@ async def main():
         task = PipelineTask(
             pipeline, 
             params=PipelineParams(allow_interruptions=True), 
-            observers=[GoogleRTVIObserver(rtvi)]
+            observers=[GoogleRTVIObserver(rtvi), interrupt_observer]
         )
 
-        # Handle client ready event
         @rtvi.event_handler("on_client_ready")
         async def on_client_ready(rtvi):
             await rtvi.set_bot_ready()
-            # Start conversation with initial greeting
             await task.queue_frames([context_aggregator.user().get_context_frame()])
 
-        # Handle first participant joined event
         @transport.event_handler("on_first_participant_joined")
         async def on_first_participant_joined(transport, participant):
             logger.info(f"First participant joined: {participant['id']}")
             await transport.capture_participant_transcription(participant["id"])
 
-        # Handle transcript updates
         @transcript.event_handler("on_transcript_update")
         async def on_transcript_update(processor, frame):
             await transcript_handler.on_transcript_update(processor, frame)
 
 
-        # Handle participant leaving
         @transport.event_handler("on_participant_left")
         async def on_participant_left(transport, participant, reason):
             logger.info(f"Participant left: {participant}")
             await task.cancel()
 
-        # Run the pipeline
         runner = PipelineRunner()
         await runner.run(task)
 

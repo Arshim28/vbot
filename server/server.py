@@ -15,12 +15,10 @@ from pipecat.transports.services.helpers.daily_rest import DailyRESTHelper, Dail
 
 load_dotenv(dotenv_path='.env')
 
-# Dictionary to track bot processes: {pid: (process, room_url)}
 bot_procs = {}
 daily_helpers = {}
 
 def cleanup():
-    """Cleanup function to terminate all bot processes."""
     for entry in bot_procs.values():
         proc = entry[0]
         proc.terminate()
@@ -28,7 +26,6 @@ def cleanup():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """FastAPI lifespan manager that handles startup and shutdown tasks."""
     aiohttp_session = aiohttp.ClientSession()
     daily_helpers["rest"] = DailyRESTHelper(
         daily_api_key=os.getenv("DAILY_API_KEY", ""),
@@ -39,10 +36,8 @@ async def lifespan(app: FastAPI):
     await aiohttp_session.close()
     cleanup()
 
-# Initialize FastAPI app with lifespan manager
 app = FastAPI(lifespan=lifespan)
 
-# Configure CORS to allow requests from any origin
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -52,7 +47,6 @@ app.add_middleware(
 )
 
 async def create_room_and_token() -> Tuple[str, str]:
-    """Helper function to create a Daily room and generate an access token."""
     room = await daily_helpers["rest"].create_room(DailyRoomParams())
     if not room.url:
         raise HTTPException(status_code=500, detail="Failed to create room")
@@ -65,12 +59,10 @@ async def create_room_and_token() -> Tuple[str, str]:
 
 @app.post("/connect")
 async def bot_connect(request: Request) -> Dict[Any, Any]:
-    """Connect endpoint that creates a room and returns connection credentials."""
     print("Creating room for RTVI connection")
     room_url, token = await create_room_and_token()
     print(f"Room URL: {room_url}")
 
-    # Start the bot process
     try:
         bot_file = "bot"
         proc = subprocess.Popen(
@@ -83,12 +75,10 @@ async def bot_connect(request: Request) -> Dict[Any, Any]:
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to start subprocess: {e}")
 
-    # Return the authentication bundle in format expected by DailyTransport
     return {"room_url": room_url, "token": token}
 
 @app.post("/analyze")
 async def analyze_transcript() -> Dict[str, str]:
-    """Endpoint to trigger transcript analysis."""
     try:
         analyzer_file = "analyzer"
         subprocess.run(
@@ -106,7 +96,6 @@ async def analyze_transcript() -> Dict[str, str]:
 if __name__ == "__main__":
     import uvicorn
 
-    # Parse command line arguments for server configuration
     default_host = os.getenv("HOST", "0.0.0.0")
     default_port = int(os.getenv("FAST_API_PORT", "7860"))
 
@@ -117,7 +106,6 @@ if __name__ == "__main__":
 
     config = parser.parse_args()
 
-    # Start the FastAPI server
     uvicorn.run(
         "server:app",
         host=config.host,
