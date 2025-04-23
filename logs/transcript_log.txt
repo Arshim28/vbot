@@ -1,12 +1,13 @@
-[2025-04-22T02:59:35.976+00:00] assistant: Hi, this is Ashok from Mosaic Asset Management… Are you looking for investment options…?
-[2025-04-22T02:59:40.181+00:00] user: Hi, Ashok. Am I loud and clear to you?
-[2025-04-22T02:59:44.737+00:00] assistant: Yes, perfectly clear.  How can I help you today…?
-[2025-04-22T02:59:53.481+00:00] user: Just tell me what exactly
-[2025-04-22T02:59:53.594+00:00] user: you're gonna talk to me about.
-[2025-04-22T03:00:21.417+00:00] assistant: Okay, great… I'm calling to discuss Mosaic Asset Management's Mutual Fund offerings…  Specifically, our Multi-Yield Series 1 fund, which offers a compelling opportunity for stable returns with a focus on performing credit…  It's a closed-ended fund designed for investors seeking a fixed-income alternative with potentially higher returns than traditional options…  Would you be interested in learning more…?
-[2025-04-22T03:00:24.885+00:00] user: Yes, Ashok. Sure.
-[2025-04-22T03:00:43.378+00:00] user: Well, Ashok, who is managing this one?
-[2025-04-22T03:01:09.081+00:00] user: Okay, Ashok. Yeah. We are
-[2025-04-22T03:01:09.937+00:00] user: are too long. I will I don't have this one.
-[2025-04-22T03:01:11.708+00:00] user: Time, man. And you're just low in
-[2025-04-22T03:01:15.616+00:00] user: getting to the exact point. So I guess we'll we'll talk later.
+[2025-04-23T13:37:43.252+00:00] user: Hello.
+[2025-04-23T13:38:08.716+00:00] user: Okay. What's stupid?
+[2025-04-23T13:38:14.771+00:00] assistant: Hello, this is Ashok from Mosaic Asset Management. We offer alternative investment solutions. Is now a brief moment to see if our approach might align with your interests?
+[2025-04-23T13:38:24.423+00:00] user: Okay. What is your approach?
+[2025-04-23T13:38:41.848+00:00] assistant: We focus on performing credit through our Multi-Yield Series 1, a Category-2 AIF. We aim for diversified investments in secured loans to sound companies, targeting an expected net yield to investors of approximately 10%, pre-tax. What are you generally looking for in investments right now?
+[2025-04-23T13:38:47.723+00:00] user: I'm looking for something which is, like,
+[2025-04-23T13:38:48.408+00:00] user: percent returns.
+[2025-04-23T13:38:52.088+00:00] assistant: Understood.
+[2025-04-23T13:39:00.349+00:00] assistant: For our Multi-Yield Series 1 fund, the expected net yield to investors is approximately 10%, before taxes. The gross yield for the portfolio is projected at 13-14%, before expenses and taxes.
+[2025-04-23T13:39:11.806+00:00] user: What is one three one four one thousand three hundred and fourteen?
+[2025-04-23T13:39:19.788+00:00] assistant: I don't have that specific detail right now, but I can note it down and have our team follow up. Could you clarify what you're hoping to achieve with your investments?
+[2025-04-23T13:39:27.991+00:00] user: I told you I want 15% return, dude.
+[2025-04-23T13:39:32.677+00:00] assistant: I understand your target.

@@ -1,6 +1,8 @@
 import os
 import sys
+import uuid
 import asyncio
+import argparse
 from pathlib import Path
 from typing import List, Optional
 
@@ -37,7 +39,7 @@ from pipecat.services.cartesia.tts import CartesiaTTSService
 
 sys.path.append(str(Path(__file__).parent.parent))
 
-from runner import configure
+from runner import configure_with_args
 from interruption_observer import BotInterruptionObserver
 
 load_dotenv(dotenv_path='.env')
@@ -49,32 +51,20 @@ SYSTEM_INSTRUCTION_FILE = Path(__file__).parent.parent / "prompts" / "bot_system
 with open(SYSTEM_INSTRUCTION_FILE, "r") as f:
     SYSTEM_INSTRUCTION = f.read()
 
-EXPERT_SUGGESTION_FILE = Path(__file__).parent.parent / "prompts" / "expert_suggestion.txt"
-
-TRANSCRIPT_LOGFILE = Path(__file__).parent.parent / "logs" / "transcript_log.txt"
-
-def load_expert_suggestions():
-    if EXPERT_SUGGESTION_FILE.exists():
-        try:
-            with open(EXPERT_SUGGESTION_FILE, "r") as f:
-                expert_suggestions = f.read().strip()
-            if expert_suggestions:
-                logger.info("Loaded expert suggestions")
-                return f"{SYSTEM_INSTRUCTION}\n\nADDITIONAL CONTEXT ABOUT THIS CLIENT:\n{expert_suggestions}"
-        except Exception as e:
-            logger.error(f"Error loading expert suggestions: {e}")
-    
-    logger.info("No expert suggestions found, using default system prompt")
-    return SYSTEM_INSTRUCTION
-
-
 class TranscriptHandler:
-    def __init__(self, output_file: Optional[str]=None):
+    def __init__(self, call_id: Optional[str]=None, client_id: Optional[str]=None, output_dir: Optional[str]=None):
         self.messages: List[TranscriptionMessage] = []
-        self.output_file: Optional[str] = output_file
-        self.current_partial: Dict[str, str] = {}
+        self.call_id = call_id or str(uuid.uuid4())  # Generate a UUID if call_id not provided
+        self.client_id = client_id
+        self.output_dir = output_dir or Path(__file__).parent.parent / "logs"
+        os.makedirs(self.output_dir, exist_ok=True)
+        
+        # Always use the call_id_transcript_log.txt format
+        self.output_file = self.output_dir / f"{self.call_id}_transcript_log.txt"
+            
+        self.current_partial: dict = {}
         logger.debug(
-            f"TranscriptHandler initialized {'with output file=' + str(output_file) if output_file else 'with log output only'}"
+            f"TranscriptHandler initialized with call_id={self.call_id}, client_id={client_id}, output_file={self.output_file}"
         )
 
     async def save_message(self, message: TranscriptionMessage):
@@ -83,12 +73,11 @@ class TranscriptHandler:
 
         logger.info(f"Transcript: {line}")
 
-        if self.output_file:
-            try:
-                with open(self.output_file, "a", encoding="utf-8") as f:
-                    f.write(line + '\n')
-            except Exception as e:
-                logger.error(f"Error saving transcript message to file: {e}")
+        try:
+            with open(self.output_file, "a", encoding="utf-8") as f:
+                f.write(line + '\n')
+        except Exception as e:
+            logger.error(f"Error saving transcript message to file: {e}")
 
     async def on_transcript_update(
         self, processor: TranscriptProcessor, frame: TranscriptionUpdateFrame
@@ -119,14 +108,56 @@ class TranscriptHandler:
         logger.info(f"Bot interrupted with partial text: {partial_text}")
         self.current_partial.pop('assistant', None)
 
+def load_expert_suggestions(client_id: Optional[str]=None):
+    """Load expert suggestions for the client if available"""
+    if client_id:
+        expert_opinion_dir = Path(__file__).parent.parent / "expert_opinion"
+        expert_suggestion_file = expert_opinion_dir / f"{client_id}_exp_opinion.txt"
+        
+        if expert_suggestion_file.exists():
+            try:
+                with open(expert_suggestion_file, "r") as f:
+                    expert_suggestions = f.read().strip()
+                if expert_suggestions:
+                    logger.info(f"Loaded expert suggestions for client {client_id} from {expert_suggestion_file}")
+                    return f"{SYSTEM_INSTRUCTION}\n\nADDITIONAL CONTEXT ABOUT THIS CLIENT:\n{expert_suggestions}"
+            except Exception as e:
+                logger.error(f"Error loading expert suggestions: {e}")
+    
+    logger.info("Using default system prompt")
+    return SYSTEM_INSTRUCTION
+
 async def main():
-    system_prompt = load_expert_suggestions()
+    # Set up parser for args
+    parser = argparse.ArgumentParser(description="BFSI Sales Agent Bot")
+    parser.add_argument("-u", "--url", type=str, required=True, help="URL of the Daily room to join")
+    parser.add_argument("-t", "--token", type=str, required=True, help="Token for the Daily room")
+    parser.add_argument("--call_id", type=str, help="Call ID")
+    parser.add_argument("--client_id", type=str, help="Client ID")
+    
+    args, unknown = parser.parse_known_args()
+    
+    url = args.url
+    token = args.token
+    call_id = args.call_id
+    client_id = args.client_id
+    
+    # If call_id is not provided, generate one
+    if not call_id:
+        call_id = str(uuid.uuid4())
+    
+    logger.info(f"Starting bot with room URL: {url}, call_id: {call_id}, client_id: {client_id}")
+    
+    # Create expert_opinion directory if it doesn't exist
+    expert_opinion_dir = Path(__file__).parent.parent / "expert_opinion"
+    os.makedirs(expert_opinion_dir, exist_ok=True)
+    
+    # Load expert suggestions for this client (if available)
+    system_prompt = load_expert_suggestions(client_id)
     
     async with aiohttp.ClientSession() as session:
-        (room_url, token) = await configure(session)
-
         transport = DailyTransport(
-            room_url,
+            url,
             token,
             "BFSI Sales Agent",
             DailyParams(
@@ -167,7 +198,7 @@ async def main():
         rtvi = RTVIProcessor(config=RTVIConfig(config=[]))
 
         transcript = TranscriptProcessor()
-        transcript_handler = TranscriptHandler(output_file=TRANSCRIPT_LOGFILE)
+        transcript_handler = TranscriptHandler(call_id=call_id, client_id=client_id)
         interrupt_observer = BotInterruptionObserver(transcript_handler)
 
         pipeline = Pipeline(
@@ -204,7 +235,6 @@ async def main():
         @transcript.event_handler("on_transcript_update")
         async def on_transcript_update(processor, frame):
             await transcript_handler.on_transcript_update(processor, frame)
-
 
         @transport.event_handler("on_participant_left")
         async def on_participant_left(transport, participant, reason):

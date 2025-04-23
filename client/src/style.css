@@ -89,6 +89,98 @@ button:disabled {
   align-items: center;
 }
 
+/* Login Panel */
+.login-panel {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin: 0 auto 20px auto;
+}
+
+.login-panel h2 {
+  color: #1a4d80;
+  margin-top: 0;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #1a4d80;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.login-btn:hover {
+  background-color: #156bb1;
+}
+
+.login-btn:disabled {
+  background-color: #9b9b9b;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: #d32f2f;
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* User info display */
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-left: 15px;
+}
+
+#user-greeting {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+#logout-btn {
+  background-color: #f44336;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.3s;
+}
+
+#logout-btn:hover {
+  background-color: #d32f2f;
+}
+
 /* Avatar styling */
 .avatar {
   width: 120px;
@@ -241,5 +333,17 @@ button:disabled {
   
   .transcript-item {
     max-width: 90%;
+  }
+  
+  .login-panel {
+    max-width: 100%;
+    padding: 15px;
+  }
+  
+  .user-info {
+    margin-left: 0;
+    margin-top: 10px;
+    width: 100%;
+    justify-content: space-between;
   }
 }

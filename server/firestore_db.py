@@ -68,6 +68,22 @@ class VoiceAgentDB:
         
         return True
     
+    def update_customer_room(self, customer_id, room_id, room_url):
+        """Update a customer's room information"""
+        if not customer_id or not room_id or not room_url:
+            return False
+        
+        update_data = {
+            'RoomId': room_id,
+            'RoomURL': room_url,
+            'lastUpdated': firestore.SERVER_TIMESTAMP
+        }
+        
+        doc_ref = self.db.collection('customers').document(customer_id)
+        doc_ref.update(update_data)
+        
+        return True
+    
     def create_call(self, customer_id, agent_id=None, call_type="outbound", call_id=None):
         if not call_id:
             call_id = str(uuid.uuid4())

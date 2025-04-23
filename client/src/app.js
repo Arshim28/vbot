@@ -45,8 +45,22 @@ class SalesAgentClient {
     // Initialize client state
     this.rtviClient = null;
     this.isSpeaking = false;
+    this.clientId = null;
+    this.callId = null;
+    this.isLoggedIn = false;
+    
     this.setupDOMElements();
     this.setupEventListeners();
+    
+    // Check if there's a stored client ID in local storage
+    const storedClientId = localStorage.getItem('clientId');
+    if (storedClientId) {
+      this.clientId = storedClientId;
+      this.isLoggedIn = true;
+      this.updateUIForLoggedInState();
+    } else {
+      this.showLoginPanel();
+    }
   }
 
   /**
@@ -61,6 +75,49 @@ class SalesAgentClient {
     this.toggleDebugBtn = document.getElementById('toggle-debug');
     this.transcriptContainer = document.getElementById('transcript-container');
     this.avatarImg = document.getElementById('avatar-img');
+    
+    // Login elements
+    this.loginPanel = document.createElement('div');
+    this.loginPanel.className = 'login-panel';
+    this.loginPanel.innerHTML = `
+      <h2>Login or Signup</h2>
+      <div class="form-group">
+        <label for="phone-number">Phone Number</label>
+        <input type="tel" id="phone-number" placeholder="Enter your phone number" required>
+      </div>
+      <div class="form-group">
+        <label for="first-name">First Name</label>
+        <input type="text" id="first-name" placeholder="First Name (required for new users)">
+      </div>
+      <div class="form-group">
+        <label for="last-name">Last Name</label>
+        <input type="text" id="last-name" placeholder="Last Name (optional)">
+      </div>
+      <button id="login-btn" class="login-btn">Continue</button>
+      <div id="login-error" class="error-message"></div>
+    `;
+    
+    document.querySelector('.main-content').prepend(this.loginPanel);
+    this.loginBtn = document.getElementById('login-btn');
+    this.phoneInput = document.getElementById('phone-number');
+    this.firstNameInput = document.getElementById('first-name');
+    this.lastNameInput = document.getElementById('last-name');
+    this.loginError = document.getElementById('login-error');
+    
+    // User info display
+    this.userInfoDisplay = document.createElement('div');
+    this.userInfoDisplay.className = 'user-info';
+    this.userInfoDisplay.innerHTML = `
+      <span id="user-greeting"></span>
+      <button id="logout-btn">Logout</button>
+    `;
+    document.querySelector('.status-bar').appendChild(this.userInfoDisplay);
+    this.userGreeting = document.getElementById('user-greeting');
+    this.logoutBtn = document.getElementById('logout-btn');
+    
+    // Hide login panel by default
+    this.loginPanel.style.display = 'none';
+    this.userInfoDisplay.style.display = 'none';
 
     // Audio element for bot's voice
     this.botAudio = document.getElementById('bot-audio');
@@ -99,6 +156,138 @@ class SalesAgentClient {
       this.isSpeaking = false;
       this.animateAvatar(false);
     });
+    
+    // Login button event
+    this.loginBtn.addEventListener('click', () => this.handleLogin());
+    
+    // Logout button event
+    this.logoutBtn.addEventListener('click', () => this.handleLogout());
+  }
+  
+  /**
+   * Show login panel and hide main content
+   */
+  showLoginPanel() {
+    this.loginPanel.style.display = 'block';
+    this.transcriptContainer.style.display = 'none';
+    this.connectBtn.disabled = true;
+    this.userInfoDisplay.style.display = 'none';
+  }
+  
+  /**
+   * Update UI for logged in state
+   */
+  updateUIForLoggedInState() {
+    this.loginPanel.style.display = 'none';
+    this.transcriptContainer.style.display = 'block';
+    this.connectBtn.disabled = false;
+    this.userInfoDisplay.style.display = 'flex';
+    
+    // Fetch user info if needed
+    this.fetchUserInfo();
+  }
+  
+  /**
+   * Fetch user info from server
+   */
+  async fetchUserInfo() {
+    try {
+      const phoneNumber = localStorage.getItem('phoneNumber');
+      if (!phoneNumber) return;
+      
+      const response = await fetch(`http://localhost:7860/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          phone_number: phoneNumber
+        })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.client_data) {
+          const firstName = data.client_data.firstName || 'User';
+          this.userGreeting.textContent = `Welcome, ${firstName}`;
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching user info:', error);
+    }
+  }
+  
+  /**
+   * Handle login button click
+   */
+  async handleLogin() {
+    const phoneNumber = this.phoneInput.value.trim();
+    const firstName = this.firstNameInput.value.trim();
+    const lastName = this.lastNameInput.value.trim();
+    
+    if (!phoneNumber) {
+      this.loginError.textContent = 'Phone number is required';
+      return;
+    }
+    
+    try {
+      this.loginBtn.disabled = true;
+      this.loginBtn.textContent = 'Please wait...';
+      
+      const response = await fetch('http://localhost:7860/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          phone_number: phoneNumber,
+          first_name: firstName,
+          last_name: lastName
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok && data.client_id) {
+        // Store client ID and phone number in local storage
+        localStorage.setItem('clientId', data.client_id);
+        localStorage.setItem('phoneNumber', phoneNumber);
+        
+        this.clientId = data.client_id;
+        this.isLoggedIn = true;
+        
+        if (data.client_data && data.client_data.firstName) {
+          this.userGreeting.textContent = `Welcome, ${data.client_data.firstName}`;
+        } else if (firstName) {
+          this.userGreeting.textContent = `Welcome, ${firstName}`;
+        } else {
+          this.userGreeting.textContent = 'Welcome!';
+        }
+        
+        this.updateUIForLoggedInState();
+        this.log('Logged in successfully');
+      } else {
+        this.loginError.textContent = data.message || 'Login failed. Please try again.';
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      this.loginError.textContent = 'An error occurred. Please try again.';
+    } finally {
+      this.loginBtn.disabled = false;
+      this.loginBtn.textContent = 'Continue';
+    }
+  }
+  
+  /**
+   * Handle logout
+   */
+  handleLogout() {
+    localStorage.removeItem('clientId');
+    localStorage.removeItem('phoneNumber');
+    this.clientId = null;
+    this.isLoggedIn = false;
+    this.showLoginPanel();
+    this.log('Logged out');
   }
 
   /**
@@ -234,7 +423,38 @@ class SalesAgentClient {
    * Initialize and connect to the bot
    */
   async connect() {
+    if (!this.isLoggedIn) {
+      this.showLoginPanel();
+      return;
+    }
+    
     try {
+      this.updateStatus('Connecting...');
+      
+      // First, initiate a connection with the server
+      const connectResponse = await fetch('http://localhost:7860/connect', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          client_id: this.clientId
+        })
+      });
+      
+      if (!connectResponse.ok) {
+        const errorText = await connectResponse.text();
+        throw new Error(`Server returned ${connectResponse.status}: ${errorText}`);
+      }
+      
+      const connectData = await connectResponse.json();
+      const roomUrl = connectData.room_url;
+      const token = connectData.token;
+      this.callId = connectData.call_id;
+      
+      this.log(`Got room URL: ${roomUrl}`);
+      this.log(`Got call ID: ${this.callId}`);
+
       // Initialize the RTVI client with a Daily WebRTC transport
       this.rtviClient = new RTVIClient({
         transport: new DailyTransport(),
@@ -256,7 +476,7 @@ class SalesAgentClient {
           },
           onDisconnected: () => {
             this.updateStatus('Disconnected');
-            this.connectBtn.disabled = false;
+            this.connectBtn.disabled = !this.isLoggedIn;
             this.disconnectBtn.disabled = true;
             this.log('Client disconnected');
           },
@@ -318,9 +538,12 @@ class SalesAgentClient {
       this.log('Initializing devices...');
       await this.rtviClient.initDevices();
 
-      // Connect to the bot
+      // Connect to the bot with the room URL and token we got from the server
       this.log('Connecting to bot...');
-      await this.rtviClient.connect();
+      await this.rtviClient.connect({
+        room_url: roomUrl,
+        token: token
+      });
 
       this.log('Connection complete');
     } catch (error) {
@@ -369,14 +592,29 @@ class SalesAgentClient {
    */
   async triggerAnalysis() {
     try {
+      // We need to send the room_url
+      const roomUrl = this.rtviClient?.params?.room_url;
+      if (!roomUrl) {
+        this.log('No room URL available for analysis');
+        return;
+      }
+      
       const response = await fetch('http://localhost:7860/analyze', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          room_url: roomUrl,
+          call_id: this.callId
+        })
       });
       
       if (response.ok) {
-        this.log('Transcript analysis completed');
+        this.log('Transcript analysis initiated');
       } else {
-        this.log(`Error triggering analysis: ${response.statusText}`);
+        const errorText = await response.text();
+        this.log(`Error triggering analysis: ${errorText}`);
       }
     } catch (error) {
       this.log(`Error triggering analysis: ${error.message}`);
