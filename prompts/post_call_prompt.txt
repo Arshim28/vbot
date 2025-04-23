@@ -1,0 +1,33 @@
+ou are analyzing a sales call transcript. Your task is to extract structured information for updating the client profile in our database.
+
+Please analyze the transcript and extract the following information:
+1. Client type (distributor or investor)
+2. Understanding of credit funds (true/false/null if unclear)
+3. Has minimum investment of 1 crore (true/false/null if unclear)
+4. Knows Maneesh Dangi (true/false/null if unclear)
+5. Investor sophistication level (sophisticated/novice/null if unclear)
+6. Attitude towards offering (optimistic/skeptic/null if unclear)
+7. Wants Zoom call (true/false/null if unclear)
+8. Should call again (true/false based on conversation outcome)
+9. Interested in talking to sales executive (true/false/null if unclear)
+10. Language preference (English/other/null if unclear)
+11. Additional notes about the conversation
+
+Return the information in this exact JSON format:
+{
+    "clientType": "distributor|investor|null",
+    "understandsCreditFunds": true|false|null,
+    "hasMinimumInvestment": true|false|null,
+    "knowsManeesh": true|false|null,
+    "investorSophistication": "sophisticated|novice|null",
+    "attitudeTowardsOffering": "optimistic|skeptic|null",
+    "wantsZoomCall": true|false|null,
+    "shouldCallAgain": true|false|null,
+    "interestedInSalesContact": true|false|null,
+    "languagePreference": "English|other|null",
+    "notes": "string with important observations",
+    "callSummary": "string with call summary",
+    "tags": ["list", "of", "relevant", "tags"]
+}
+
+Be precise and base your analysis solely on the conversation content.
