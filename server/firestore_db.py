@@ -56,6 +56,7 @@ class VoiceAgentDB:
         
         return None
     
+    #update data should be a dict with valid keys 
     def update_customer(self, customer_id, update_data):
         if not update_data:
             return False
@@ -92,6 +93,7 @@ class VoiceAgentDB:
         
         return call_id
     
+    # add transcript to db in realtime
     def add_message_to_call(self, call_id, message, speaker, timestamp=None):
         if not timestamp:
             timestamp = datetime.datetime.now()
@@ -113,7 +115,8 @@ class VoiceAgentDB:
             print(f"Error adding message: {e}")
             return False
     
-    def end_call(self, call_id, summary=None, tags=None, call_metrics=None):
+    #to be called in post proccesor 
+    def end_call(self, call_id, summary=None, tags=None):
         call_ref = self.db.collection('calls').document(call_id)
         call_doc = call_ref.get()
         
@@ -148,32 +151,25 @@ class VoiceAgentDB:
         if tags and isinstance(tags, list):
             update_data['tags'] = tags
             
-        if call_metrics and isinstance(call_metrics, dict):
-            update_data['metrics'] = call_metrics
             
         call_ref.update(update_data)
         
         return True
     
+    # call in post processor
     def add_call_transcript(self, call_id, full_transcript):
         call_ref = self.db.collection('calls').document(call_id)
         call = call_ref.get()
         if not call.exists:
             return False
-
-        if isinstance(full_transcript, str):
-            full_transcript = [{
-                'speaker': 'system',
-                'timestamp': datetime.datetime.now(),
-                'content': full_transcript
-            }]
-            
+        
         call_ref.update({
             'transcript': full_transcript
         })
         
         return True
     
+    # call in post processor
     def update_client_profile(self, customer_id, profile_data):
         if not profile_data:
             return False
@@ -201,6 +197,7 @@ class VoiceAgentDB:
         profile_ref.update(updates)
         return True
     
+    #to be called in analyzer
     def get_call_history(self, customer_id, limit=10):
         query = (self.db.collection('calls')
                 .where(filter=firestore.FieldFilter("customerId", "==", customer_id))
@@ -221,6 +218,7 @@ class VoiceAgentDB:
             print("If this is an index error, please create the required index using the link in the error message.")
             return []
     
+    # to be called in analyzer after getting call history
     def get_call_transcript(self, call_id):
         call_ref = self.db.collection('calls').document(call_id)
         call = call_ref.get()
@@ -231,6 +229,7 @@ class VoiceAgentDB:
         call_data = call.to_dict()
         return call_data.get('transcript', [])
     
+    # pre call initialisation, to be added to the prompt
     def get_customer_profile(self, customer_id):
         profile_ref = self.db.collection('clientProfiles').document(customer_id)
         profile = profile_ref.get()
@@ -285,6 +284,7 @@ class VoiceAgentDB:
             print(f"Error adding tags: {e}")
             return False
     
+    #should be done when the customer is created
     def _initialize_customer_profile(self, customer_id):
         default_profile = {
             'customerId': customer_id,

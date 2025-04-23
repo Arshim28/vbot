@@ -1,128 +1,109 @@
-import os
-import sys
-import json
 import asyncio
-from typing import Dict, Any, Optional
-from pathlib import Path
+import os
+import json
+import re
+import pytz
+import datetime
+import google.generativeai as genai
+from google.generativeai.types import GenerationConfig
+from typing import Optional, Dict, Any
 
-from dotenv import load_dotenv
-from loguru import logger
+from firestore_db import VoiceAgentDB
 
-from google import genai
-from google.genai import types
-
-from firestore_db import VoiceAgentDB 
-load_dotenv(dotenv_path='.env')
+API_KEY = os.getenv("GOOGLE_API_KEY")
+DEFAULT_MODEL_NAME = "gemini-2.0-flash"
 
 class PostCallProcessor:
-    def __init__(self, db_path: Optional[str] = 'serviceAccountKey.json'):
-        self.db = VoiceAgentDB(service_account_path=db_path)
-        self.client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
-        
-    async def process_call(self, customer_id: str, transcript_path: str, call_id: Optional[str] = None) -> Dict[str, Any]:
+    def __init__(self, api_key: Optional[str] = API_KEY, model_name: str = DEFAULT_MODEL_NAME):
+        if not api_key:
+            raise ValueError("API key not found. Set GOOGLE_API_KEY environment variable.")
+        self.api_key = api_key
+        self.model_name = model_name
+        self._configure_genai()
+        self.db_conn = VoiceAgentDB()
+
+    def _configure_genai(self):
+        genai.configure(api_key=self.api_key)
+
+    async def format_transcript(self, transcript_path):
+        formatted_transcript = []
+
         try:
-            transcript = await self._read_transcript(transcript_path)
-            analysis = await self._analyze_transcript(transcript)
-            await self._update_database(customer_id, analysis, call_id)
+            with open(transcript_path, 'r') as file:
+                transcript_text = file.read()
             
-        except Exception as e:
-            logger.error(f"Error processing call: {e}")
-            raise
+            pattern = r'\[([^\]]+)\]\s+(user|assistant):\s+(.*?)(?=\n\[|$)'
+            matches = re.findall(pattern, transcript_text, re.DOTALL)
 
-    async def _read_transcript(self, transcript_path: str) -> str:
-        try:
-            with open(transcript_path, 'r', encoding='utf-8') as f:
-                return f.read()
-        except Exception as e:
-            logger.error(f"Error reading transcript file: {e}")
-            raise
+            for match in matches:
+                timestamp_str, speaker, content = match
+                timestamp = datetime.datetime.fromisoformat(timestamp_str.replace('T', ' ').replace('Z', '+00:00'))
+                india_tz = pytz.timezone('Asia/Kolkata')
+                timestamp_ist = timestamp.astimezone(india_tz)
+                formatted_timestamp = timestamp_ist.strftime("%B %d, %Y at %I:%M:%S %p UTC+5:30")
+                content = content.strip()
+                entry = {
+                    "content": content,
+                    "speaker": speaker,
+                    "timestamp": formatted_timestamp
+                }
+                formatted_transcript.append(entry)
 
-    async def _analyze_transcript(self, transcript: str) -> Dict[str, Any]:
+            return formatted_transcript
+
+        except Exception as e:
+            print(f"Error formatting transcript: {e}")
+            return []
+
+    async def process(self, transcript_path, call_id, customer_id):
+        transcript = await self.format_transcript(transcript_path)
+        self.db_conn.add_call_transcript(call_id, transcript)
+        profile_data = await self.generate_structured_json_async(transcript)
+        self.db_conn.end_call(call_id, profile_data.get("callSummary", ""), profile_data.get("tags", []))
+        self.db_conn.update_client_profile(customer_id, profile_data)
         
-        config = types.GenerateContentConfig(
-            temperature=0.1,
-            top_p=0.95,
-            top_k=40,
-            max_output_tokens=2048,
+        
+    async def generate_structured_json_async(self, transcript) -> Optional[Dict[str, Any]]:
+        generation_config = GenerationConfig(
             response_mime_type="application/json",
         )
-        
-        try:
-            with open("prompts/post_call_prompt.txt", "r") as f:
-                system_prompt = f.read()
 
-            response = await self.client.aio.models.generate_content(
-                model="gemini-2.0-flash",
-                contents=[
-                    {
-                        "role": "user",
-                        "parts": [
-                            f"{system_prompt}\n\nTRANSCRIPT:\n{transcript}"
-                        ]
-                    }
-                ],
-                config=config,
-            )
-            
-            json_str = response.text
-            return json.loads(json_str)
-            
-        except Exception as e:
-            logger.error(f"Error analyzing transcript with LLM: {e}")
-            raise
+        with open("prompts/post_call_prompt.txt", "r") as f:
+            system_message = f.read()
 
-    async def _update_database(self, customer_id: str, analysis: Dict[str, Any], call_id: Optional[str] = None):
-        try:
-            profile_data = {
-                'clientType': analysis.get('clientType'),
-                'understandsCreditFunds': analysis.get('understandsCreditFunds'),
-                'hasMinimumInvestment': analysis.get('hasMinimumInvestment'),
-                'knowsManeesh': analysis.get('knowsManeesh'),
-                'investorSophistication': analysis.get('investorSophistication'),
-                'attitudeTowardsOffering': analysis.get('attitudeTowardsOffering'),
-                'wantsZoomCall': analysis.get('wantsZoomCall'),
-                'shouldCallAgain': analysis.get('shouldCallAgain'),
-                'interestedInSalesContact': analysis.get('interestedInSalesContact'),
-                'languagePreference': analysis.get('languagePreference', 'English'),
-                'notes': analysis.get('notes', '')
-            }
-            
-            self.db.update_client_profile(customer_id, profile_data)
-            
-            if call_id:
-                self.db.end_call(
-                    call_id,
-                    summary=analysis.get('callSummary'),
-                    tags=analysis.get('tags', [])
-                )
-        
-                self.db.add_call_note(
-                    call_id,
-                    f"Automated analysis: {analysis.get('notes', '')}"
-                )
-            
-            logger.info(f"Successfully updated database for customer {customer_id}")
-            
+        model = genai.GenerativeModel(
+            model_name=self.model_name,
+            system_instruction=system_message,
+            generation_config=generation_config,
+        )
+
+        try:        
+            user_prompt = f"""
+                TRANSCRIPT: 
+                {transcript}
+            """
+
+            response = await model.generate_content_async(user_prompt)
+
+            if response.parts:
+                json_string = response.text
+                try:
+                    parsed_json = json.loads(json_string)
+                    return parsed_json
+                except json.JSONDecodeError as e:
+                    print(f"Error decoding JSON: {e}\nReceived: {json_string}")
+                    return None
+            else:
+                print(f"Warning: Empty or blocked response. Feedback: {response.prompt_feedback}")
+                return None
+
         except Exception as e:
-            logger.error(f"Error updating database: {e}")
-            raise
+            print(f"An unexpected error occurred: {e}")
+            return None
 
 async def main():
-    import argparse
+    obj = PostCallProcessor()
+    await obj.process("/Users/sparsh/Desktop/vbot/logs/transcript_log.txt", "67a69b3d-94ab-49a0-994f-23931deec804", "waYg1V1EmGlsbPbskk38")
     
-    parser = argparse.ArgumentParser(description="Process call transcript and update database")
-    parser.add_argument("--customer_id", type=str, required=True, help="Customer ID")
-    parser.add_argument("--transcript", type=str, required=True, help="Path to transcript file")
-    parser.add_argument("--call_id", type=str, help="Call ID (optional)")
-    parser.add_argument("--db_path", type=str, default="serviceAccountKey.json", help="Path to Firebase service account key")
-    
-    args = parser.parse_args()
-    
-    processor = PostCallProcessor(db_path=args.db_path)
-    result = await processor.process_call(args.customer_id, args.transcript, args.call_id)
-    
-    print(f"Analysis completed:")
-    print(json.dumps(result, indent=2))
-
 if __name__ == "__main__":
     asyncio.run(main())

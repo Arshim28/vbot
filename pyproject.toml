@@ -13,5 +13,6 @@ dependencies = [
     "loguru>=0.7.3",
     "pipecat-ai[anthropic,cartesia,daily,deepgram,elevenlabs,google,groq,openai,silero,ultravox]>=0.0.63",
     "python-dotenv>=1.1.0",
+    "pytz>=2025.2",
     "uvicorn>=0.34.2",
 ]

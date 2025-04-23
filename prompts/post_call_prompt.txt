@@ -1,4 +1,4 @@
-ou are analyzing a sales call transcript. Your task is to extract structured information for updating the client profile in our database.
+You are analyzing a sales call transcript. Your task is to extract structured information for updating the client profile in our database.
 
 Please analyze the transcript and extract the following information:
 1. Client type (distributor or investor)
