@@ -1,0 +1,19 @@
+[2025-04-23T14:07:19.358+00:00] assistant: Hello, this is Ashok from Mosaic Asset Management. We offer alternative investment solutions. Is now a brief moment to see if our approach might align with your interests?
+[2025-04-23T14:07:29.250+00:00] user: Alright. What is your approach?
+[2025-04-23T14:07:36.328+00:00] assistant: We focus on performing credit through our Multi-Yield Series 1 fund. It's a Category-2 AIF targeting 10% net yield to investors, investing in secured loans to sound companies. What are you generally looking for in investments right now?
+[2025-04-23T14:07:48.980+00:00] user: I'm looking for a 15% return.
+[2025-04-23T14:07:52.038+00:00] assistant: I understand.
+[2025-04-23T14:08:00.918+00:00] assistant: While we aim for attractive returns, our Multi-Yield Series 1 Fund projects a net yield to investors of approximately 10%.
+[2025-04-23T14:08:05.274+00:00] user: You told me that, but I I want a better yield. Sorry. You have something.
+[2025-04-23T14:08:11.438+00:00] assistant: I understand that the yield is lower than you were hoping for. Currently, the Multi-Yield Series 1 fund is our primary offering. To ensure the fund is completely not aligned with your goals, what are your main financial goals?
+[2025-04-23T14:08:25.736+00:00] user: I mean, I just told you on a 15% return, dude.
+[2025-04-23T14:08:28.878+00:00] assistant: I understand.
+[2025-04-23T14:08:32.217+00:00] assistant: You are targeting a 15% return.
+[2025-04-23T14:08:36.439+00:00] assistant: Our fund aims for approximately 10% net yield to investors.
+[2025-04-23T14:08:41.091+00:00] user: No. I'm not interested.
+[2025-04-23T14:08:44.378+00:00] assistant: Understood.
+[2025-04-23T14:08:46.458+00:00] assistant: Thanks for your time.
+[2025-04-23T14:08:49.217+00:00] assistant: May I send a brief email summary?
+[2025-04-23T14:08:50.438+00:00] user: No.
+[2025-04-23T14:08:53.988+00:00] assistant: Alright, thank you.
+[2025-04-23T14:08:55.329+00:00] assistant: Have a good day.

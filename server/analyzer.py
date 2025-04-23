@@ -151,7 +151,7 @@ async def write_analysis(analysis: str, client_id: str) -> None:
         logger.error(f"Error writing analysis: {e}")
 
 async def main() -> None:
-    # Parse arguments
+    print("#"*30, "ANALYZER CALLED", "#"*30)
     parser = argparse.ArgumentParser(description="Analyze conversation transcript")
     parser.add_argument("--call_id", type=str, required=True, help="Call ID")
     parser.add_argument("--client_id", type=str, required=True, help="Client ID")

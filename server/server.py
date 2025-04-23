@@ -101,6 +101,17 @@ async def bot_connect(request: Request, connect_request: ConnectRequest = None) 
     client_id = None
     if connect_request and connect_request.client_id:
         client_id = connect_request.client_id
+        print(f"Received connect request with client_id: {client_id}")
+    else:
+        print("#"*30, "NO CLIENT ID", "#"*30)
+        # Try to extract client_id from request body directly
+        try:
+            body = await request.json()
+            if 'client_id' in body:
+                client_id = body['client_id']
+                print(f"Extracted client_id from request body: {client_id}")
+        except Exception as e:
+            print(f"Error parsing request body: {e}")
     
     room_url = None
     token = None
@@ -108,13 +119,12 @@ async def bot_connect(request: Request, connect_request: ConnectRequest = None) 
     call_id = None
     
     # If client_id is provided, get customer data and maybe reuse room
+    db = VoiceAgentDB()
     if client_id:
-        db = VoiceAgentDB()
-        
         # Get customer data
         client_data = db.get_customer(client_id)
         if not client_data:
-            raise HTTPException(status_code=404, detail="Client not found")
+            raise HTTPException(status_code=404, detail=f"Client not found with ID: {client_id}")
         
         # Check if client already has a room
         room_url = client_data.get('RoomURL')
@@ -124,16 +134,19 @@ async def bot_connect(request: Request, connect_request: ConnectRequest = None) 
         if not room_url or not room_id:
             room_url, token, room_id = await create_room_and_token()
             
-            # Update client with new room details
+            # IMPORTANT: Update client with new room details using the specific method
             db.update_customer_room(client_id, room_id, room_url)
+            print(f"Created and saved new room for client {client_id}: {room_id}, {room_url}")
         else:
             # Use existing room
             token = await daily_helpers["rest"].get_token(room_url)
             if not token:
                 raise HTTPException(status_code=500, detail=f"Failed to get token for room: {room_url}")
+            print(f"Reusing existing room for client {client_id}: {room_id}, {room_url}")
         
         # Create a call in the database
         call_id = db.create_call(client_id)
+        print(f"Created call {call_id} for client {client_id}")
         
         # Store the mapping of room_url to call_id and client_id for later use
         active_calls[room_url] = {"call_id": call_id, "client_id": client_id}
@@ -150,6 +163,9 @@ async def bot_connect(request: Request, connect_request: ConnectRequest = None) 
     # Add call_id and client_id if available
     if call_id and client_id:
         bot_args += f" --call_id {call_id} --client_id {client_id}"
+        print(f"Running bot with command: {bot_args}")
+    else:
+        print(f"WARNING: Missing call_id or client_id. Using simple command: {bot_args}")
     
     try:
         # Start the bot process
@@ -167,24 +183,44 @@ async def bot_connect(request: Request, connect_request: ConnectRequest = None) 
     response = {"room_url": room_url, "token": token}
     if call_id:
         response["call_id"] = call_id
+    if client_id:
+        response["client_id"] = client_id
     
     return response
 
 @app.post("/analyze")
 async def analyze_transcript(request: Request) -> Dict[str, str]:
+    print("#"*30, "ANALYZE ENDPOINT CALLED", "#"*30)
     try:
         # Try to parse request body
         try:
             body = await request.json()
             room_url = body.get("room_url", None)
-        except Exception:
+            client_id_from_body = body.get("client_id", None)
+            call_id_from_body = body.get("call_id", None)
+            print(f"Analyze request body: room_url={room_url}, client_id={client_id_from_body}, call_id={call_id_from_body}")
+        except Exception as e:
+            print(f"Error parsing analyze request body: {e}")
             room_url = None
+            client_id_from_body = None
+            call_id_from_body = None
         
         # If room_url is provided and exists in active_calls, use it
         if room_url and room_url in active_calls:
             call_data = active_calls[room_url]
             call_id = call_data["call_id"]
             client_id = call_data["client_id"]
+            
+            print(f"Found active call data for room {room_url}: call_id={call_id}, client_id={client_id}")
+            
+            # Double check with the values from the request body if available
+            if client_id_from_body and client_id_from_body != client_id:
+                print(f"WARNING: client_id mismatch: {client_id} (stored) vs {client_id_from_body} (request)")
+                # Use the stored one as it's more reliable
+            
+            if call_id_from_body and call_id_from_body != call_id:
+                print(f"WARNING: call_id mismatch: {call_id} (stored) vs {call_id_from_body} (request)")
+                # Use the stored one as it's more reliable
             
             # Run post-call processor
             subprocess.Popen(
@@ -202,13 +238,36 @@ async def analyze_transcript(request: Request) -> Dict[str, str]:
             
             return {"status": "success", "message": f"Transcript analysis initiated for call {call_id}"}
         else:
-            # Legacy mode - just run analyzer without client/call specific data
-            subprocess.Popen(
-                [f"uv run -m analyzer"],
-                shell=True,
-                cwd=os.path.dirname(os.path.abspath(__file__)),
-            )
-            return {"status": "success", "message": "Legacy transcript analysis initiated"}
+            print(f"WARNING: Room URL not found in active_calls: {room_url}")
+            print(f"Active calls: {active_calls}")
+            
+            # If we have both call_id and client_id from the request body, use them
+            if call_id_from_body and client_id_from_body:
+                print(f"Using call_id and client_id from request body: {call_id_from_body}, {client_id_from_body}")
+                
+                # Run post-call processor
+                subprocess.Popen(
+                    [f"uv run -m post_call_processor --call_id {call_id_from_body} --client_id {client_id_from_body}"],
+                    shell=True,
+                    cwd=os.path.dirname(os.path.abspath(__file__)),
+                )
+                
+                # Run analyzer
+                subprocess.Popen(
+                    [f"uv run -m analyzer --call_id {call_id_from_body} --client_id {client_id_from_body}"],
+                    shell=True,
+                    cwd=os.path.dirname(os.path.abspath(__file__)),
+                )
+                
+                return {"status": "success", "message": f"Transcript analysis initiated using request data for call {call_id_from_body}"}
+            else:
+                # Legacy mode - just run analyzer without client/call specific data
+                subprocess.Popen(
+                    [f"uv run -m analyzer"],
+                    shell=True,
+                    cwd=os.path.dirname(os.path.abspath(__file__)),
+                )
+                return {"status": "success", "message": "Legacy transcript analysis initiated"}
             
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to run analysis: {str(e)}")
@@ -225,6 +284,14 @@ if __name__ == "__main__":
     parser.add_argument("--reload", action="store_true", help="Reload code on change")
 
     config = parser.parse_args()
+
+    # Create the expert_opinion directory if it doesn't exist
+    expert_opinion_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "expert_opinion")
+    os.makedirs(expert_opinion_dir, exist_ok=True)
+    
+    # Create the logs directory if it doesn't exist
+    logs_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "logs")
+    os.makedirs(logs_dir, exist_ok=True)
 
     uvicorn.run(
         "server:app",

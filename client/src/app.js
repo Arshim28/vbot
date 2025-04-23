@@ -57,8 +57,10 @@ class SalesAgentClient {
     if (storedClientId) {
       this.clientId = storedClientId;
       this.isLoggedIn = true;
+      this.log(`Logged in with client ID: ${this.clientId}`);
       this.updateUIForLoggedInState();
     } else {
+      this.log('No stored client ID found, showing login panel');
       this.showLoginPanel();
     }
   }
@@ -183,6 +185,16 @@ class SalesAgentClient {
     this.connectBtn.disabled = false;
     this.userInfoDisplay.style.display = 'flex';
     
+    // Make sure we have the clientId at this point
+    if (!this.clientId) {
+      this.log('ERROR: Missing client ID even though user should be logged in');
+      localStorage.removeItem('clientId');
+      localStorage.removeItem('phoneNumber');
+      this.isLoggedIn = false;
+      this.showLoginPanel();
+      return;
+    }
+    
     // Fetch user info if needed
     this.fetchUserInfo();
   }
@@ -255,6 +267,8 @@ class SalesAgentClient {
         
         this.clientId = data.client_id;
         this.isLoggedIn = true;
+        
+        this.log(`Successfully logged in with client ID: ${this.clientId}`);
         
         if (data.client_data && data.client_data.firstName) {
           this.userGreeting.textContent = `Welcome, ${data.client_data.firstName}`;
@@ -431,6 +445,15 @@ class SalesAgentClient {
     try {
       this.updateStatus('Connecting...');
       
+      // Check if we have the client ID from login
+      if (!this.clientId) {
+        this.log('Error: Not logged in or missing client ID');
+        this.updateStatus('Error: Not logged in');
+        return;
+      }
+      
+      this.log(`Connecting with client ID: ${this.clientId}`);
+      
       // First, initiate a connection with the server
       const connectResponse = await fetch('http://localhost:7860/connect', {
         method: 'POST',
@@ -571,6 +594,9 @@ class SalesAgentClient {
       try {
         // Disconnect the RTVI client
         await this.rtviClient.disconnect();
+        
+        // Store room URL before nullifying the client
+        const roomUrl = this.rtviClient?.params?.room_url;
         this.rtviClient = null;
 
         // Clean up audio
@@ -579,8 +605,16 @@ class SalesAgentClient {
           this.botAudio.srcObject = null;
         }
 
-        // Trigger analysis after disconnect
-        await this.triggerAnalysis();
+        // Trigger analysis after disconnect - make sure we have the necessary data
+        if (roomUrl && this.callId && this.clientId) {
+          this.log(`Triggering analysis for call ${this.callId}, client ${this.clientId}`);
+          await this.triggerAnalysis(roomUrl);
+        } else {
+          this.log('WARNING: Missing data for analysis:');
+          this.log(`Room URL: ${roomUrl || 'missing'}`);
+          this.log(`Call ID: ${this.callId || 'missing'}`);
+          this.log(`Client ID: ${this.clientId || 'missing'}`);
+        }
       } catch (error) {
         this.log(`Error disconnecting: ${error.message}`);
       }
@@ -590,14 +624,15 @@ class SalesAgentClient {
   /**
    * Trigger transcript analysis after call ends
    */
-  async triggerAnalysis() {
+  async triggerAnalysis(roomUrl) {
     try {
-      // We need to send the room_url
-      const roomUrl = this.rtviClient?.params?.room_url;
+      // We need to send the room_url, call_id and ensure client_id is properly passed in active_calls
       if (!roomUrl) {
         this.log('No room URL available for analysis');
         return;
       }
+      
+      this.log(`Sending analysis request for room ${roomUrl}`);
       
       const response = await fetch('http://localhost:7860/analyze', {
         method: 'POST',
@@ -606,12 +641,14 @@ class SalesAgentClient {
         },
         body: JSON.stringify({
           room_url: roomUrl,
-          call_id: this.callId
+          call_id: this.callId,
+          client_id: this.clientId // Add client_id here for redundancy
         })
       });
       
       if (response.ok) {
-        this.log('Transcript analysis initiated');
+        const data = await response.json();
+        this.log(`Analysis response: ${data.message}`);
       } else {
         const errorText = await response.text();
         this.log(`Error triggering analysis: ${errorText}`);

@@ -167,7 +167,7 @@ class PostCallProcessor:
             return None
 
 async def main():
-    # Parse arguments
+    print("#"*30, "POST PROCESSOR CALLED", "#"*30)
     parser = argparse.ArgumentParser(description="Post-call processing")
     parser.add_argument("--call_id", type=str, required=True, help="Call ID")
     parser.add_argument("--client_id", type=str, required=True, help="Client ID")
