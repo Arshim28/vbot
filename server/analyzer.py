@@ -33,7 +33,7 @@ async def read_transcript() -> str:
         with open(TRANSCRIPT_LOGFILE, "r") as f:
             TRANSCRIPT = f.read()
         
-        logger.info(f"Read transcript with {len(transcript.splitlines())} lines")
+        logger.info(f"Read transcript with {len(TRANSCRIPT.splitlines())} lines")
         return TRANSCRIPT
     except Exception as e:
         logger.error(f"Error reading transcript: {e}")
@@ -46,9 +46,9 @@ async def analyze_conversation(transcript: str) -> str:
     logger.info("Analyzing conversation transcript")
     
     prompt = f"""
-{INSTRUCTION}
-{TRANSCRIPT}
-"""
+        {INSTRUCTION}
+        {transcript}
+    """
 
     config = types.GenerateContentConfig(
         temperature=0.2,
