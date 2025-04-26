@@ -45,14 +45,36 @@ class SalesAgentClient {
     // Initialize client state
     this.rtviClient = null;
     this.isSpeaking = false;
+    this.clientId = null;
+    this.callId = null;
     this.setupDOMElements();
     this.setupEventListeners();
+    
+    // Always show login screen on page load/refresh
+    this.showLoginScreen();
   }
 
   /**
    * Set up references to DOM elements
    */
   setupDOMElements() {
+    // Auth elements
+    this.authPanel = document.getElementById('auth-panel');
+    this.mainApp = document.getElementById('main-app');
+    this.loginFields = document.getElementById('login-fields');
+    this.registerFields = document.getElementById('register-fields');
+    this.showRegisterLink = document.getElementById('show-register');
+    this.showLoginLink = document.getElementById('show-login');
+    this.loginBtn = document.getElementById('login-btn');
+    this.registerBtn = document.getElementById('register-btn');
+    this.phoneInput = document.getElementById('phone');
+    this.firstnameInput = document.getElementById('firstname');
+    this.lastnameInput = document.getElementById('lastname');
+    this.emailInput = document.getElementById('email');
+    this.cityInput = document.getElementById('city');
+    this.jobInput = document.getElementById('job');
+    this.authMessage = document.getElementById('auth-message');
+
     // UI control elements
     this.connectBtn = document.getElementById('connect-btn');
     this.disconnectBtn = document.getElementById('disconnect-btn');
@@ -76,6 +98,23 @@ class SalesAgentClient {
    * Set up event listeners for UI controls
    */
   setupEventListeners() {
+    // Auth event listeners
+    this.showRegisterLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.loginFields.classList.add('hidden');
+      this.registerFields.classList.remove('hidden');
+    });
+
+    this.showLoginLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.registerFields.classList.add('hidden');
+      this.loginFields.classList.remove('hidden');
+    });
+
+    this.loginBtn.addEventListener('click', () => this.login());
+    this.registerBtn.addEventListener('click', () => this.register());
+
+    // Call control event listeners
     this.connectBtn.addEventListener('click', () => this.connect());
     this.disconnectBtn.addEventListener('click', () => this.disconnect());
     
@@ -99,6 +138,143 @@ class SalesAgentClient {
       this.isSpeaking = false;
       this.animateAvatar(false);
     });
+
+    // Add window beforeunload event to clean up any active calls
+    window.addEventListener('beforeunload', () => {
+      if (this.callId) {
+        // Make a synchronous request to end the call
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'http://localhost:7860/analyze', false);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify({
+          callId: this.callId,
+          clientId: this.clientId
+        }));
+      }
+    });
+  }
+
+  /**
+   * Show login screen (called on page load/refresh)
+   */
+  showLoginScreen() {
+    this.authPanel.classList.remove('hidden');
+    this.mainApp.classList.add('hidden');
+    this.clientId = null;
+    this.callId = null;
+  }
+
+  /**
+   * Handle user login
+   */
+  async login() {
+    this.hideAuthMessage();
+    const phone = this.phoneInput.value.trim();
+    
+    if (!phone) {
+      this.showAuthMessage('Please enter your mobile number', 'error');
+      return;
+    }
+    
+    try {
+      const response = await fetch('http://localhost:7860/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phoneNumber: phone
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        this.clientId = data.clientId;
+        this.showMainApp();
+      } else {
+        this.showAuthMessage(data.message || 'Login failed. User not found.', 'error');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      this.showAuthMessage('Error connecting to server. Please try again.', 'error');
+    }
+  }
+  
+  /**
+   * Handle user registration
+   */
+  async register() {
+    this.hideAuthMessage();
+    const phone = this.phoneInput.value.trim();
+    const firstName = this.firstnameInput.value.trim();
+    const lastName = this.lastnameInput.value.trim();
+    const email = this.emailInput.value.trim();
+    const city = this.cityInput.value.trim();
+    const job = this.jobInput.value.trim();
+    
+    if (!phone || !firstName || !lastName) {
+      this.showAuthMessage('Please fill all required fields', 'error');
+      return;
+    }
+    
+    try {
+      const response = await fetch('http://localhost:7860/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phoneNumber: phone,
+          firstName: firstName,
+          lastName: lastName,
+          email: email || null,
+          city: city || null,
+          jobBusiness: job || null
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        this.clientId = data.clientId;
+        this.showMainApp();
+      } else {
+        this.showAuthMessage(data.message || 'Registration failed', 'error');
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      this.showAuthMessage('Error connecting to server. Please try again.', 'error');
+    }
+  }
+  
+  /**
+   * Show auth message
+   */
+  showAuthMessage(message, type) {
+    this.authMessage.textContent = message;
+    this.authMessage.className = `message ${type}`;
+    this.authMessage.classList.remove('hidden');
+  }
+  
+  /**
+   * Hide auth message
+   */
+  hideAuthMessage() {
+    this.authMessage.classList.add('hidden');
+  }
+  
+  /**
+   * Show main app after successful authentication
+   */
+  showMainApp() {
+    this.authPanel.classList.add('hidden');
+    this.mainApp.classList.remove('hidden');
+    
+    // Clear transcript container when showing main app
+    this.transcriptContainer.innerHTML = '';
+    this.latestTranscriptItem = null;
+    this.debugLog.innerHTML = '';
   }
 
   /**
@@ -235,14 +411,42 @@ class SalesAgentClient {
    */
   async connect() {
     try {
+      if (!this.clientId) {
+        this.log('Error: Not authenticated');
+        return;
+      }
+      
+      // Connect to the server
+      const connectResponse = await fetch('http://localhost:7860/connect', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          clientId: this.clientId
+        }),
+      });
+      
+      if (!connectResponse.ok) {
+        const error = await connectResponse.json();
+        this.log(`Error connecting: ${error.detail || 'Unknown error'}`);
+        return;
+      }
+      
+      const connectionData = await connectResponse.json();
+      this.callId = connectionData.callId;
+      const roomUrl = connectionData.room_url;
+      const token = connectionData.token;
+      
       // Initialize the RTVI client with a Daily WebRTC transport
       this.rtviClient = new RTVIClient({
         transport: new DailyTransport(),
         params: {
-          baseUrl: 'http://localhost:7860',
-          endpoints: {
-            connect: '/connect',
-          },
+          // No baseUrl or endpoints needed - we'll use direct room URL and token
+          room: roomUrl,
+          token: token,
+          callId: this.callId,
+          clientId: this.clientId
         },
         enableMic: true,
         enableCam: false,
@@ -356,8 +560,10 @@ class SalesAgentClient {
           this.botAudio.srcObject = null;
         }
 
-        // Trigger analysis after disconnect
-        await this.triggerAnalysis();
+        // Analyze call data directly
+        if (this.callId) {
+          await this.analyzeCall();
+        }
       } catch (error) {
         this.log(`Error disconnecting: ${error.message}`);
       }
@@ -365,21 +571,29 @@ class SalesAgentClient {
   }
   
   /**
-   * Trigger transcript analysis after call ends
+   * Analyze call data
    */
-  async triggerAnalysis() {
+  async analyzeCall() {
     try {
       const response = await fetch('http://localhost:7860/analyze', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          callId: this.callId,
+          clientId: this.clientId
+        }),
       });
       
       if (response.ok) {
-        this.log('Transcript analysis completed');
+        this.log('Call analysis completed');
+        this.callId = null;
       } else {
-        this.log(`Error triggering analysis: ${response.statusText}`);
+        this.log(`Error analyzing call: ${response.statusText}`);
       }
     } catch (error) {
-      this.log(`Error triggering analysis: ${error.message}`);
+      this.log(`Error analyzing call: ${error.message}`);
     }
   }
 }

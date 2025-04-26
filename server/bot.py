@@ -49,22 +49,41 @@ SYSTEM_INSTRUCTION_FILE = Path(__file__).parent.parent / "prompts" / "bot_system
 with open(SYSTEM_INSTRUCTION_FILE, "r") as f:
     SYSTEM_INSTRUCTION = f.read()
 
-EXPERT_SUGGESTION_FILE = Path(__file__).parent.parent / "prompts" / "expert_suggestion.txt"
+# Get call_id and client_id from environment variables
+CALL_ID = os.getenv("CALL_ID")
+CLIENT_ID = os.getenv("CLIENT_ID")
 
-TRANSCRIPT_LOGFILE = Path(__file__).parent.parent / "logs" / "transcript_log.txt"
+# Ensure we have a valid call_id
+if not CALL_ID:
+    logger.warning("No CALL_ID environment variable found")
+    CALL_ID = "default"
+
+# Set transcript log file path with call_id
+TRANSCRIPT_LOGFILE = Path(__file__).parent.parent / "logs" / f"{CALL_ID}_transcript.txt"
 
 def load_expert_suggestions():
-    if EXPERT_SUGGESTION_FILE.exists():
+    """Load expert suggestions directly from the client-specific file"""
+    if not CLIENT_ID:
+        logger.warning("No CLIENT_ID environment variable found, cannot load expert suggestions")
+        return SYSTEM_INSTRUCTION
+        
+    # Define the path to the client-specific expert opinion file
+    expert_suggestion_file = Path(__file__).parent.parent / "expert_opinion" / f"{CLIENT_ID}_exp_opinion.txt"
+    
+    if expert_suggestion_file.exists():
         try:
-            with open(EXPERT_SUGGESTION_FILE, "r") as f:
+            with open(expert_suggestion_file, "r") as f:
                 expert_suggestions = f.read().strip()
-            if expert_suggestions:
-                logger.info("Loaded expert suggestions")
+                
+            if expert_suggestions and expert_suggestions != "No transcript data available for analysis.":
+                logger.info(f"Loaded expert suggestions from {expert_suggestion_file}")
                 return f"{SYSTEM_INSTRUCTION}\n\nADDITIONAL CONTEXT ABOUT THIS CLIENT:\n{expert_suggestions}"
         except Exception as e:
             logger.error(f"Error loading expert suggestions: {e}")
+    else:
+        logger.info(f"No expert suggestions file found at {expert_suggestion_file}")
     
-    logger.info("No expert suggestions found, using default system prompt")
+    logger.info("Using default system prompt without expert suggestions")
     return SYSTEM_INSTRUCTION
 
 
@@ -72,7 +91,7 @@ class TranscriptHandler:
     def __init__(self, output_file: Optional[str]=None):
         self.messages: List[TranscriptionMessage] = []
         self.output_file: Optional[str] = output_file
-        self.current_partial: Dict[str, str] = {}
+        self.current_partial = {}
         logger.debug(
             f"TranscriptHandler initialized {'with output file=' + str(output_file) if output_file else 'with log output only'}"
         )
@@ -193,6 +212,7 @@ async def main():
 
         @rtvi.event_handler("on_client_ready")
         async def on_client_ready(rtvi):
+            logger.info("Client ready, setting bot ready")
             await rtvi.set_bot_ready()
             await task.queue_frames([context_aggregator.user().get_context_frame()])
 
@@ -205,12 +225,14 @@ async def main():
         async def on_transcript_update(processor, frame):
             await transcript_handler.on_transcript_update(processor, frame)
 
-
         @transport.event_handler("on_participant_left")
         async def on_participant_left(transport, participant, reason):
             logger.info(f"Participant left: {participant}")
             await task.cancel()
 
+        # Log setup completion
+        logger.info("Pipeline and task setup complete - starting runner")
+        
         runner = PipelineRunner()
         await runner.run(task)
 

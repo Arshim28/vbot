@@ -14,32 +14,73 @@
       <p>Speak with our virtual sales representative</p>
     </header>
 
-    <div class="status-bar">
-      <div class="status">
-        Status: <span id="connection-status">Disconnected</span>
-      </div>
-      <div class="controls">
-        <button id="connect-btn">Start Call</button>
-        <button id="disconnect-btn" disabled>End Call</button>
-      </div>
-    </div>
-
-    <div class="main-content">
-      <div class="bot-container">
-        <div class="avatar">
-          <img src="/src/assets/avatar.png" alt="Sales Agent" id="avatar-img">
+    <div id="auth-panel" class="auth-panel">
+      <div class="auth-form">
+        <h2>Login or Register</h2>
+        <div class="form-group">
+          <label for="phone">Mobile Number</label>
+          <input type="tel" id="phone" placeholder="Enter your mobile number" required>
         </div>
-        <div id="transcript-container"></div>
-        <audio id="bot-audio" autoplay></audio>
+        <div id="login-fields">
+          <button id="login-btn" class="primary-btn">Login</button>
+          <p>New user? <a href="#" id="show-register">Register here</a></p>
+        </div>
+        <div id="register-fields" class="hidden">
+          <div class="form-group">
+            <label for="firstname">First Name</label>
+            <input type="text" id="firstname" placeholder="Enter your first name">
+          </div>
+          <div class="form-group">
+            <label for="lastname">Last Name</label>
+            <input type="text" id="lastname" placeholder="Enter your last name">
+          </div>
+          <div class="form-group">
+            <label for="email">Email (Optional)</label>
+            <input type="email" id="email" placeholder="Enter your email">
+          </div>
+          <div class="form-group">
+            <label for="city">City (Optional)</label>
+            <input type="text" id="city" placeholder="Enter your city">
+          </div>
+          <div class="form-group">
+            <label for="job">Job/Business (Optional)</label>
+            <input type="text" id="job" placeholder="Enter your job or business">
+          </div>
+          <button id="register-btn" class="primary-btn">Register</button>
+          <p>Already registered? <a href="#" id="show-login">Login here</a></p>
+        </div>
+        <div id="auth-message" class="message hidden"></div>
       </div>
     </div>
 
-    <div class="debug-panel">
-      <div class="debug-header">
-        <h3>Call Transcript</h3>
-        <button id="toggle-debug">Show/Hide</button>
+    <div id="main-app" class="hidden">
+      <div class="status-bar">
+        <div class="status">
+          Status: <span id="connection-status">Disconnected</span>
+        </div>
+        <div class="controls">
+          <button id="connect-btn">Start Call</button>
+          <button id="disconnect-btn" disabled>End Call</button>
+        </div>
       </div>
-      <div id="debug-log"></div>
+
+      <div class="main-content">
+        <div class="bot-container">
+          <div class="avatar">
+            <img src="/src/assets/avatar.png" alt="Sales Agent" id="avatar-img">
+          </div>
+          <div id="transcript-container"></div>
+          <audio id="bot-audio" autoplay></audio>
+        </div>
+      </div>
+
+      <div class="debug-panel">
+        <div class="debug-header">
+          <h3>Call Transcript</h3>
+          <button id="toggle-debug">Show/Hide</button>
+        </div>
+        <div id="debug-log"></div>
+      </div>
     </div>
   </div>
 

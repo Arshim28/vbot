@@ -40,7 +40,7 @@ class PostCallProcessor:
 
     async def format_transcript(self, call_id: str):
         formatted_transcript = []
-        transcript_path = Path(__file__).parent.parent / "logs" / f"{call_id}_transcript_log.txt"
+        transcript_path = Path(__file__).parent.parent / "logs" / f"{call_id}_transcript.txt"
 
         try:
             if not transcript_path.exists():

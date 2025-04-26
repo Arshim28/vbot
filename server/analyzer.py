@@ -27,7 +27,7 @@ db = VoiceAgentDB()
 
 async def read_transcript(call_id: str) -> str:
     try:
-        transcript_file = Path(__file__).parent.parent / "logs" / f"{call_id}_transcript_log.txt"
+        transcript_file = Path(__file__).parent.parent / "logs" / f"{call_id}_transcript.txt"
         if not transcript_file.exists():
             logger.warning(f"Transcript file not found: {transcript_file}")
             return ""
@@ -82,8 +82,7 @@ async def get_previous_calls_data(client_id: str, max_calls: int = 3) -> str:
 async def read_previous_expert_suggestion(client_id: str) -> str:
     """Read previous expert suggestion for this client if it exists"""
     try:
-        expert_opinion_dir = Path(__file__).parent.parent / "expert_opinion"
-        expert_suggestion_file = expert_opinion_dir / f"{client_id}_exp_opinion.txt"
+        expert_suggestion_file = Path(__file__).parent.parent / "expert_opinion" / f"{client_id}_exp_opinion.txt"
         
         if not expert_suggestion_file.exists():
             logger.info(f"No previous expert suggestion found for client {client_id}")
@@ -92,7 +91,7 @@ async def read_previous_expert_suggestion(client_id: str) -> str:
         with open(expert_suggestion_file, "r") as f:
             suggestion = f.read()
             
-        if suggestion:
+        if suggestion and suggestion != "No transcript data available for analysis.":
             logger.info(f"Found previous expert suggestion for client {client_id}")
             return f"\n\n=== PREVIOUS EXPERT SUGGESTION ===\n\n{suggestion}"
         return ""
@@ -140,9 +139,11 @@ async def analyze_conversation(transcript: str, client_id: str, previous_data: s
 
 async def write_analysis(analysis: str, client_id: str) -> None:
     try:
+        # Ensure expert_opinion directory exists
         expert_opinion_dir = Path(__file__).parent.parent / "expert_opinion"
         os.makedirs(expert_opinion_dir, exist_ok=True)
         
+        # Write directly to the client-specific expert opinion file
         expert_suggestion_file = expert_opinion_dir / f"{client_id}_exp_opinion.txt"
         with open(expert_suggestion_file, "w") as f:
             f.write(analysis)
