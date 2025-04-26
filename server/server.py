@@ -15,6 +15,7 @@ from pipecat.transports.services.helpers.daily_rest import DailyRESTHelper, Dail
 
 load_dotenv(dotenv_path='.env')
 
+print(f"################ API KEY: {os.getenv("DAILY_API_KEY")}")
 bot_procs = {}
 daily_helpers = {}
 

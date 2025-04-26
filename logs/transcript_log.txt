@@ -10,3 +10,11 @@
 [2025-04-22T03:01:09.937+00:00] user: are too long. I will I don't have this one.
 [2025-04-22T03:01:11.708+00:00] user: Time, man. And you're just low in
 [2025-04-22T03:01:15.616+00:00] user: getting to the exact point. So I guess we'll we'll talk later.
+[2025-04-26T09:48:37.343+00:00] assistant: Hello, this is Ashok from Mosaic Asset Management. We offer alternative investment solutions.
+[2025-04-26T09:48:44.541+00:00] user: Hello.
+[2025-04-26T09:48:47.816+00:00] assistant: Great!
+[2025-04-26T09:48:48.407+00:00] user: Great.
+[2025-04-26T09:48:51.061+00:00] user: Hello?
+[2025-04-26T09:48:53.976+00:00] assistant: Hello!
+[2025-04-26T09:48:59.356+00:00] assistant: Is now a brief moment to see if our approach might align with your interests?
+[2025-04-26T09:49:01.492+00:00] user: Okay.

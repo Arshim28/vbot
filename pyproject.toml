@@ -9,9 +9,11 @@ dependencies = [
     "aiohttp>=3.11.18",
     "asyncio>=3.4.3",
     "fastapi>=0.115.12",
+    "firebase-admin>=6.8.0",
     "google-genai>=1.7.0",
     "loguru>=0.7.3",
     "pipecat-ai[anthropic,cartesia,daily,deepgram,elevenlabs,google,groq,openai,silero,ultravox]>=0.0.63",
     "python-dotenv>=1.1.0",
+    "pytz>=2025.2",
     "uvicorn>=0.34.2",
 ]
