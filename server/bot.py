@@ -2,7 +2,9 @@ import os
 import sys
 import asyncio
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Dict
+
+import argparse
 
 import aiohttp
 from dotenv import load_dotenv
@@ -49,49 +51,30 @@ SYSTEM_INSTRUCTION_FILE = Path(__file__).parent.parent / "prompts" / "bot_system
 with open(SYSTEM_INSTRUCTION_FILE, "r") as f:
     SYSTEM_INSTRUCTION = f.read()
 
-# Get call_id and client_id from environment variables
-CALL_ID = os.getenv("CALL_ID")
-CLIENT_ID = os.getenv("CLIENT_ID")
+EXPERT_SUGGESTION_DIR = Path(__file__).parent.parent / "expert_opinion"
+TRANSCRIPT_LOGDIR = Path(__file__).parent.parent / "logs"
 
-# Ensure we have a valid call_id
-if not CALL_ID:
-    logger.warning("No CALL_ID environment variable found")
-    CALL_ID = "default"
-
-# Set transcript log file path with call_id
-TRANSCRIPT_LOGFILE = Path(__file__).parent.parent / "logs" / f"{CALL_ID}_transcript.txt"
-
-def load_expert_suggestions():
-    """Load expert suggestions directly from the client-specific file"""
-    if not CLIENT_ID:
-        logger.warning("No CLIENT_ID environment variable found, cannot load expert suggestions")
-        return SYSTEM_INSTRUCTION
-        
-    # Define the path to the client-specific expert opinion file
-    expert_suggestion_file = Path(__file__).parent.parent / "expert_opinion" / f"{CLIENT_ID}_exp_opinion.txt"
-    
+def load_expert_suggestions(client_id):
+    if EXPERT_SUGGESTION_DIR.exists():
+        expert_suggestion_file = os.path.join(EXPERT_SUGGESTION_DIR, f"{client_id}_expert_suggestion.txt")
     if expert_suggestion_file.exists():
         try:
             with open(expert_suggestion_file, "r") as f:
                 expert_suggestions = f.read().strip()
-                
-            if expert_suggestions and expert_suggestions != "No transcript data available for analysis.":
-                logger.info(f"Loaded expert suggestions from {expert_suggestion_file}")
-                return f"{SYSTEM_INSTRUCTION}\n\nADDITIONAL CONTEXT ABOUT THIS CLIENT:\n{expert_suggestions}"
+                if expert_suggestions:
+                    logger.info("Loaded expert suggestions")
+                    return f"{SYSTEM_INSTRUCTION}\n\nADDITIONAL CONTEXT ABOUT THIS CLIENT:\n{expert_suggestions}" 
         except Exception as e:
             logger.error(f"Error loading expert suggestions: {e}")
-    else:
-        logger.info(f"No expert suggestions file found at {expert_suggestion_file}")
-    
-    logger.info("Using default system prompt without expert suggestions")
-    return SYSTEM_INSTRUCTION
 
+        logger.info("No expert suggestions found, using default system prompt")
+        return SYSTEM_INSTRUCTION
 
 class TranscriptHandler:
     def __init__(self, output_file: Optional[str]=None):
         self.messages: List[TranscriptionMessage] = []
         self.output_file: Optional[str] = output_file
-        self.current_partial = {}
+        self.current_partial: Dict[str, str] = {}
         logger.debug(
             f"TranscriptHandler initialized {'with output file=' + str(output_file) if output_file else 'with log output only'}"
         )
@@ -138,103 +121,128 @@ class TranscriptHandler:
         logger.info(f"Bot interrupted with partial text: {partial_text}")
         self.current_partial.pop('assistant', None)
 
-async def main():
-    system_prompt = load_expert_suggestions()
+async def main(call_id, client_id):
+    system_prompt = load_expert_suggestions(client_id)
     
+    transcript_logfile = os.path.join(TRANSCRIPT_LOGDIR, f"{call_id}.txt")
+    # Get room URL and token from command line - keep this simple
     async with aiohttp.ClientSession() as session:
-        (room_url, token) = await configure(session)
+        room_url, token = await configure(session)
+    
+    logger.info(f"Room URL from configure: {room_url}")
+    logger.info(f"Token obtained: {bool(token)}")
+    
+    # Clear previous transcript
+    try:
+        if os.path.exists(transcript_logfile):
+            with open(transcript_logfile, "w") as f:
+                f.write("")
+            logger.info(f"Cleared previous transcript file: {transcript_logfile}")
+    except Exception as e:
+        logger.error(f"Failed to clear transcript file: {e}")
 
-        transport = DailyTransport(
-            room_url,
-            token,
-            "BFSI Sales Agent",
-            DailyParams(
-                audio_out_enabled=True,
-                vad_enabled=True,
-                vad_analyzer=SileroVADAnalyzer(),
-                vad_audio_passthrough=True,
-            ),
-        )
+    # Set up the transport with minimal VAD configuration
+    transport = DailyTransport(
+        room_url,
+        token,
+        "BFSI Sales Agent",
+        DailyParams(
+            audio_out_enabled=True,
+            vad_enabled=False,  
+            vad_analyzer=SileroVADAnalyzer(),
+            vad_audio_passthrough=True,
+        ),
+    )
+    
+    # Set up pipeline components
+    stt = DeepgramSTTService(api_key=os.getenv("DEEPGRAM_API_KEY"))
 
-        stt = DeepgramSTTService(api_key=os.getenv("DEEPGRAM_API_KEY"))
+    tts = DeepgramTTSService(
+        api_key=os.getenv("DEEPGRAM_API_KEY"),
+        voice="aura-helios-en",
+        sample_rate=24000,
+    )
 
-        tts = DeepgramTTSService(
-            api_key=os.getenv("DEEPGRAM_API_KEY"),
-            voice="aura-helios-en",
-            sample_rate=24000,
-        )
+    llm = GoogleLLMService(
+        api_key=os.getenv("GOOGLE_API_KEY"),
+        model="gemini-2.0-flash",
+        system_instruction=system_prompt,
+        streaming=True,
+        tools=[],
+    )
 
-        llm = GoogleLLMService(
-            api_key=os.getenv("GOOGLE_API_KEY"),
-            model="gemini-2.0-flash",
-            system_instruction=system_prompt,
-            streaming=True,
-            tools=[],
-        )
+    # Set up initial context and processors
+    context = OpenAILLMContext(
+        [
+            {
+                "role": "user",
+                "content": "Begin by greeting the user. Proceed with your instructions.",
+            }
+        ]
+    )
 
-        context = OpenAILLMContext(
-            [
-                {
-                    "role": "user",
-                    "content": "Begin by greeting the user. Proceed with your instructions.",
-                }
-            ]
-        )
+    context_aggregator = llm.create_context_aggregator(context)
+    rtvi = RTVIProcessor(config=RTVIConfig(config=[]))
+    transcript = TranscriptProcessor()
+    transcript_handler = TranscriptHandler(output_file=transcript_logfile)
+    interrupt_observer = BotInterruptionObserver(transcript_handler)
 
-        context_aggregator = llm.create_context_aggregator(context)
+    # Set up the pipeline
+    pipeline = Pipeline(
+        [
+            transport.input(),
+            stt,
+            rtvi,
+            transcript.user(),
+            context_aggregator.user(),
+            llm,
+            tts,
+            transport.output(),
+            transcript.assistant(),
+            context_aggregator.assistant(),
+        ]
+    )
 
-        rtvi = RTVIProcessor(config=RTVIConfig(config=[]))
+    # Create the pipeline task with basic parameters
+    task = PipelineTask(
+        pipeline, 
+        params=PipelineParams(
+            allow_interruptions=True
+        ), 
+        observers=[GoogleRTVIObserver(rtvi), interrupt_observer]
+    )
 
-        transcript = TranscriptProcessor()
-        transcript_handler = TranscriptHandler(output_file=TRANSCRIPT_LOGFILE)
-        interrupt_observer = BotInterruptionObserver(transcript_handler)
+    # Configure event handlers
+    @rtvi.event_handler("on_client_ready")
+    async def on_client_ready(rtvi):
+        logger.info("RTVI client ready, setting bot ready")
+        await rtvi.set_bot_ready()
+        await task.queue_frames([context_aggregator.user().get_context_frame()])
 
-        pipeline = Pipeline(
-            [
-                transport.input(),
-                stt,
-                rtvi,
-                transcript.user(),
-                context_aggregator.user(),
-                llm,
-                tts,
-                transport.output(),
-                transcript.assistant(),
-                context_aggregator.assistant(),
-            ]
-        )
+    @transport.event_handler("on_first_participant_joined")
+    async def on_first_participant_joined(transport, participant):
+        logger.info(f"First participant joined: {participant['id']}")
+        await transport.capture_participant_transcription(participant["id"])
+        logger.info("Starting transcription capture")
 
-        task = PipelineTask(
-            pipeline, 
-            params=PipelineParams(allow_interruptions=True), 
-            observers=[GoogleRTVIObserver(rtvi), interrupt_observer]
-        )
+    @transcript.event_handler("on_transcript_update")
+    async def on_transcript_update(processor, frame):
+        await transcript_handler.on_transcript_update(processor, frame)
 
-        @rtvi.event_handler("on_client_ready")
-        async def on_client_ready(rtvi):
-            logger.info("Client ready, setting bot ready")
-            await rtvi.set_bot_ready()
-            await task.queue_frames([context_aggregator.user().get_context_frame()])
-
-        @transport.event_handler("on_first_participant_joined")
-        async def on_first_participant_joined(transport, participant):
-            logger.info(f"First participant joined: {participant['id']}")
-            await transport.capture_participant_transcription(participant["id"])
-
-        @transcript.event_handler("on_transcript_update")
-        async def on_transcript_update(processor, frame):
-            await transcript_handler.on_transcript_update(processor, frame)
-
-        @transport.event_handler("on_participant_left")
-        async def on_participant_left(transport, participant, reason):
-            logger.info(f"Participant left: {participant}")
-            await task.cancel()
-
-        # Log setup completion
-        logger.info("Pipeline and task setup complete - starting runner")
-        
-        runner = PipelineRunner()
-        await runner.run(task)
+    @transport.event_handler("on_participant_left")
+    async def on_participant_left(transport, participant, reason):
+        logger.info(f"Participant left: {participant} with reason: {reason}")
+        await task.cancel()
+    
+    
+    # Run the pipeline with proper error handling
+    runner = PipelineRunner()
+    await runner.run(task)
+    
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    parser = argparse.ArgumentParser(description="Your script description")
+    parser.add_argument("call_id", help="The ID of the call")
+    parser.add_argument("client_id", help="The ID of the client")
+    args = parser.parse_args()
+    asyncio.run(main(args.call_id, args.client_id))
