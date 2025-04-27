@@ -1,0 +1,45 @@
+[2025-04-27T09:53:07.250+00:00] assistant: Hello, this is Ashok from Mosaic Asset Management. We offer alternative investment solutions. Is now a brief moment to see if our approach might align with your interests?
+[2025-04-27T09:53:16.104+00:00] user: Okay. What is it, approach?
+[2025-04-27T09:53:26.989+00:00] assistant: We focus on performing credit through our Category-2 AIF, Multi-Yield Series 1. What are you generally looking for in investments right now?
+[2025-04-27T09:53:31.658+00:00] user: I'm looking for a good fund to invest in with
+[2025-04-27T09:53:32.789+00:00] user: I have
+[2025-04-27T09:53:34.452+00:00] user: 2 crores of capital
+[2025-04-27T09:53:36.743+00:00] user: And, yeah, I'm looking for
+[2025-04-27T09:53:39.277+00:00] user: 12, 13% returns.
+[2025-04-27T09:53:45.299+00:00] assistant: Multi-Yield Series 1 aims for that return range.  The expected gross yield for the portfolio is projected at 13-14% before expenses and taxes, with an expected net yield to investors of approximately 10%.To ensure this aligns with your needs, could I ask what your investment timeline looks like?
+[2025-04-27T09:54:05.475+00:00] user: I mean, I'm looking for a long term investment. So
+[2025-04-27T09:54:08.012+00:00] user: I don't really have a timeline in mind.
+[2025-04-27T09:54:09.235+00:00] user: But
+[2025-04-27T09:54:12.996+00:00] user: maybe, like, three, four years, five years,
+[2025-04-27T09:54:20.950+00:00] assistant: Our fund has a maturity of 4 years 11 months, aligning with your timeframe. Have you considered alternative investments like AIFs before?
+[2025-04-27T09:54:27.692+00:00] user: Yeah. Not really.
+[2025-04-27T09:54:39.520+00:00] assistant: An AIF, or Alternate Investment Fund, pools money like a mutual fund but often invests in less common areas, like private company loans here. They usually require longer commitments. Is this pace okay?
+[2025-04-27T09:54:45.553+00:00] user: Oh,
+[2025-04-27T09:54:47.028+00:00] user: So
+[2025-04-27T09:54:48.974+00:00] user: you guys
+[2025-04-27T09:54:51.375+00:00] user: are the areas you guys invest in?
+[2025-04-27T09:55:01.000+00:00] assistant: We exclusively invest in performing credit, meaning loans to financially sound, operating companies. Diversification is key. Would you prefer a summary or more detail?
+[2025-04-27T09:55:09.550+00:00] user: Mean, why would a financially sound company take a loan at
+[2025-04-27T09:55:11.382+00:00] user: 10, 12%? Like,
+[2025-04-27T09:55:14.805+00:00] user: sense. Divide it. They just take not
+[2025-04-27T09:55:19.020+00:00] user: They'd rather take a simple loan from bank, right, if they're financially so sound.
+[2025-04-27T09:55:23.319+00:00] assistant: That's a fair question.
+[2025-04-27T09:55:29.319+00:00] assistant: We target opportunities underserved by regulated capital pools such as banks or NBFCs. This includes regulatory arbitrage and situations where companies seek flexibility. Make sense?
+[2025-04-27T09:55:37.900+00:00] user: No. Not really. What sort of
+[2025-04-27T09:55:39.468+00:00] user: flexibilities
+[2025-04-27T09:55:41.799+00:00] user: do the companies want that you offer?
+[2025-04-27T09:55:49.599+00:00] assistant: We offer regulatory flexibility and equity substitution to such companies.   As an example, we invest in mid-corporate sponsor funding. How do you typically approach investment risk?
+[2025-04-27T09:56:00.580+00:00] user: What about what about
+[2025-04-27T09:56:01.860+00:00] user: is, buddy? I don't know what you guys do.
+[2025-04-27T09:56:06.609+00:00] assistant: Okay, let me simplify.
+[2025-04-27T09:56:12.716+00:00] user: You don't get me at all. I mean, I don't know what's wrong with you.
+[2025-04-27T09:56:15.889+00:00] assistant: My apologies.
+[2025-04-27T09:56:18.169+00:00] user: Anyways, I've
+[2025-04-27T09:56:19.769+00:00] user: I'm I'm in a hurry.
+[2025-04-27T09:56:21.259+00:00] user: We can talk later. Bye bye.
+[2025-04-27T09:56:24.109+00:00] assistant: Understood.
+[2025-04-27T09:56:26.209+00:00] assistant: Thanks for your time.
+[2025-04-27T09:56:28.949+00:00] assistant: May I send a brief email summary?
+[2025-04-27T09:56:30.455+00:00] user: By
+[2025-04-27T09:56:33.560+00:00] assistant: Alright, thank you.
+[2025-04-27T09:56:34.939+00:00] assistant: Have a good day.

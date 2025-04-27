@@ -72,6 +72,8 @@ async def login(data: Dict[str, Any] = Body(...)):
         raise HTTPException(status_code=400, details="Phone number is required")
     
     client_id, client_data = db.get_customer_by_phone(phone_number)
+    current_client_id = client_id
+    print(f"##################Client ID set to: {current_client_id}####################")
 
     if not client_id:
         return JSONResponse(
@@ -80,8 +82,7 @@ async def login(data: Dict[str, Any] = Body(...)):
                 "message": "User not found. Please register first."
             }
         )
-
-    current_call_id = client_id
+    
 
 @app.post("/register")
 async def register(data: Dict[str, Any] = Body(...)):
@@ -115,16 +116,18 @@ async def register(data: Dict[str, Any] = Body(...)):
 @app.post("/connect")
 async def bot_connect(request: Request) -> Dict[Any, Any]:
     global current_call_id, current_client_id
+    print("#"*30, "Client ID", current_client_id)
     current_call_id = db.create_call(current_client_id)
 
     print("Creating room for RTVI connection")
     room_url, token = await create_room_and_token()
     print(f"Room URL: {room_url}")
 
+    os.environ["DAILY_SAMPLE_ROOM_URL"] = room_url
     try:
         bot_file = "bot"
         proc = subprocess.Popen(
-            [f"uv run -m {bot_file} -u {room_url} -t {token}"],
+            [f"uv run -m {bot_file} --call_id {current_call_id} --client_id {current_client_id}"],
             shell=True,
             bufsize=1,
             cwd=os.path.dirname(os.path.abspath(__file__)),

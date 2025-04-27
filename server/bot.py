@@ -51,13 +51,13 @@ SYSTEM_INSTRUCTION_FILE = Path(__file__).parent.parent / "prompts" / "bot_system
 with open(SYSTEM_INSTRUCTION_FILE, "r") as f:
     SYSTEM_INSTRUCTION = f.read()
 
-EXPERT_SUGGESTION_DIR = Path(__file__).parent.parent / "expert_opinion"
-TRANSCRIPT_LOGDIR = Path(__file__).parent.parent / "logs"
+EXPERT_SUGGESTION_DIR = "/Users/sparsh/Desktop/vbot/expert_opinion"
+TRANSCRIPT_LOGDIR = "/Users/sparsh/Desktop/vbot/logs"
 
 def load_expert_suggestions(client_id):
-    if EXPERT_SUGGESTION_DIR.exists():
-        expert_suggestion_file = os.path.join(EXPERT_SUGGESTION_DIR, f"{client_id}_expert_suggestion.txt")
-    if expert_suggestion_file.exists():
+    os.makedirs(EXPERT_SUGGESTION_DIR, exist_ok=True)
+    expert_suggestion_file = os.path.join(EXPERT_SUGGESTION_DIR, f"{client_id}_exp_opinion.txt")
+    if os.path.exists(expert_suggestion_file):
         try:
             with open(expert_suggestion_file, "r") as f:
                 expert_suggestions = f.read().strip()
@@ -69,6 +69,8 @@ def load_expert_suggestions(client_id):
 
         logger.info("No expert suggestions found, using default system prompt")
         return SYSTEM_INSTRUCTION
+    
+    return SYSTEM_INSTRUCTION
 
 class TranscriptHandler:
     def __init__(self, output_file: Optional[str]=None):
@@ -123,6 +125,8 @@ class TranscriptHandler:
 
 async def main(call_id, client_id):
     system_prompt = load_expert_suggestions(client_id)
+    print("#"*30, "PROMPT", "#"*30)
+    print(system_prompt)
     
     transcript_logfile = os.path.join(TRANSCRIPT_LOGDIR, f"{call_id}.txt")
     # Get room URL and token from command line - keep this simple
@@ -148,7 +152,7 @@ async def main(call_id, client_id):
         "BFSI Sales Agent",
         DailyParams(
             audio_out_enabled=True,
-            vad_enabled=False,  
+            vad_enabled=True,  
             vad_analyzer=SileroVADAnalyzer(),
             vad_audio_passthrough=True,
         ),
@@ -242,7 +246,7 @@ async def main(call_id, client_id):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Your script description")
-    parser.add_argument("call_id", help="The ID of the call")
-    parser.add_argument("client_id", help="The ID of the client")
+    parser.add_argument("--call_id", help="The ID of the call")
+    parser.add_argument("--client_id", help="The ID of the client")
     args = parser.parse_args()
     asyncio.run(main(args.call_id, args.client_id))

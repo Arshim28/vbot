@@ -27,7 +27,7 @@ db = VoiceAgentDB()
 
 async def read_transcript(call_id: str) -> str:
     try:
-        transcript_file = Path(__file__).parent.parent / "logs" / f"{call_id}_transcript.txt"
+        transcript_file = Path(__file__).parent.parent / "logs" / f"{call_id}.txt"
         if not transcript_file.exists():
             logger.warning(f"Transcript file not found: {transcript_file}")
             return ""

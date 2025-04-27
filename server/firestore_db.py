@@ -6,7 +6,7 @@ import uuid
 import json
 
 class VoiceAgentDB:
-    def __init__(self, service_account_path='serviceAccountKey.json'):
+    def __init__(self, service_account_path='/Users/sparsh/Desktop/vbot/serviceAccountKey.json'):
         try:
             firebase_admin.get_app()
         except ValueError:

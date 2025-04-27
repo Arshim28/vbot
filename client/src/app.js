@@ -45,8 +45,7 @@ class SalesAgentClient {
     // Initialize client state
     this.rtviClient = null;
     this.isSpeaking = false;
-    this.clientId = null;
-    this.callId = null;
+    this.authenticated = false;
     this.setupDOMElements();
     this.setupEventListeners();
     
@@ -141,15 +140,14 @@ class SalesAgentClient {
 
     // Add window beforeunload event to clean up any active calls
     window.addEventListener('beforeunload', () => {
-      if (this.callId) {
-        // Make a synchronous request to end the call
+      // Notify server that call is ending
+      try {
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'http://localhost:7860/analyze', false);
         xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify({
-          callId: this.callId,
-          clientId: this.clientId
-        }));
+        xhr.send(JSON.stringify({}));
+      } catch (e) {
+        console.error('Error in beforeunload:', e);
       }
     });
   }
@@ -160,8 +158,7 @@ class SalesAgentClient {
   showLoginScreen() {
     this.authPanel.classList.remove('hidden');
     this.mainApp.classList.add('hidden');
-    this.clientId = null;
-    this.callId = null;
+    this.authenticated = false;
   }
 
   /**
@@ -187,13 +184,18 @@ class SalesAgentClient {
         }),
       });
       
-      const data = await response.json();
-      
       if (response.ok) {
-        this.clientId = data.clientId;
+        this.authenticated = true;
         this.showMainApp();
+        this.log('Login successful');
       } else {
-        this.showAuthMessage(data.message || 'Login failed. User not found.', 'error');
+        // Try to parse the error message if available
+        try {
+          const data = await response.json();
+          this.showAuthMessage(data.message || 'Login failed. User not found.', 'error');
+        } catch (jsonError) {
+          this.showAuthMessage('Login failed. User not found.', 'error');
+        }
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -234,13 +236,18 @@ class SalesAgentClient {
         }),
       });
       
-      const data = await response.json();
-      
       if (response.ok) {
-        this.clientId = data.clientId;
+        this.authenticated = true;
         this.showMainApp();
+        this.log('Registration successful');
       } else {
-        this.showAuthMessage(data.message || 'Registration failed', 'error');
+        // Try to parse the error message if available
+        try {
+          const data = await response.json();
+          this.showAuthMessage(data.message || 'Registration failed', 'error');
+        } catch (jsonError) {
+          this.showAuthMessage('Registration failed', 'error');
+        }
       }
     } catch (error) {
       console.error('Registration error:', error);
@@ -411,42 +418,46 @@ class SalesAgentClient {
    */
   async connect() {
     try {
-      if (!this.clientId) {
+      if (!this.authenticated) {
         this.log('Error: Not authenticated');
         return;
       }
       
-      // Connect to the server
+      // First, notify the server about the connection (this triggers bot start)
+      this.log('Sending connect request to server...');
       const connectResponse = await fetch('http://localhost:7860/connect', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          clientId: this.clientId
-        }),
+        body: JSON.stringify({}) // Empty object since server doesn't need client ID
       });
       
       if (!connectResponse.ok) {
-        const error = await connectResponse.json();
-        this.log(`Error connecting: ${error.detail || 'Unknown error'}`);
+        let errorMsg = 'Unknown error';
+        try {
+          const error = await connectResponse.json();
+          errorMsg = error.detail || 'Connection failed';
+        } catch (e) {
+          errorMsg = connectResponse.statusText;
+        }
+        this.log(`Error connecting: ${errorMsg}`);
         return;
       }
       
-      const connectionData = await connectResponse.json();
-      this.callId = connectionData.callId;
-      const roomUrl = connectionData.room_url;
-      const token = connectionData.token;
+      // Get connection info from response (though we don't actually use it)
+      await connectResponse.json();
       
-      // Initialize the RTVI client with a Daily WebRTC transport
+      this.log('Connection request successful, initializing RTVI client...');
+      
+      // Initialize the RTVI client with a Daily WebRTC transport - IMPORTANT: use baseUrl/endpoints approach
       this.rtviClient = new RTVIClient({
         transport: new DailyTransport(),
         params: {
-          // No baseUrl or endpoints needed - we'll use direct room URL and token
-          room: roomUrl,
-          token: token,
-          callId: this.callId,
-          clientId: this.clientId
+          baseUrl: 'http://localhost:7860',
+          endpoints: {
+            connect: '/connect',
+          }
         },
         enableMic: true,
         enableCam: false,
@@ -560,10 +571,8 @@ class SalesAgentClient {
           this.botAudio.srcObject = null;
         }
 
-        // Analyze call data directly
-        if (this.callId) {
-          await this.analyzeCall();
-        }
+        // Analyze call data
+        await this.analyzeCall();
       } catch (error) {
         this.log(`Error disconnecting: ${error.message}`);
       }
@@ -575,20 +584,17 @@ class SalesAgentClient {
    */
   async analyzeCall() {
     try {
+      this.log('Requesting call analysis...');
       const response = await fetch('http://localhost:7860/analyze', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          callId: this.callId,
-          clientId: this.clientId
-        }),
+        body: JSON.stringify({}) // Empty object since server tracks everything internally
       });
       
       if (response.ok) {
         this.log('Call analysis completed');
-        this.callId = null;
       } else {
         this.log(`Error analyzing call: ${response.statusText}`);
       }
