@@ -161,15 +161,20 @@ async def main(call_id, client_id):
     # Set up pipeline components
     stt = DeepgramSTTService(api_key=os.getenv("DEEPGRAM_API_KEY"))
 
-    tts = DeepgramTTSService(
-        api_key=os.getenv("DEEPGRAM_API_KEY"),
-        voice="aura-helios-en",
-        sample_rate=24000,
+    # tts = DeepgramTTSService(
+    #     api_key=os.getenv("DEEPGRAM_API_KEY"),
+    #     voice="aura-helios-en",
+    #     sample_rate=24000,
+    # )
+
+    tts = CartesiaTTSService(
+        api_key=os.getenv("CARTESIA_API_KEY"),
+        voice_id="28ca2041-5dda-42df-8123-f58ea9c3da00"
     )
 
     llm = GoogleLLMService(
         api_key=os.getenv("GOOGLE_API_KEY"),
-        model="gemini-2.0-flash",
+        model="gemini-2.5-pro-exp-03-25",
         system_instruction=system_prompt,
         streaming=True,
         tools=[],

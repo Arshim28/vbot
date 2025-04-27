@@ -1,0 +1,55 @@
+[2025-04-27T15:02:01.242+00:00] assistant: Hello, this is Ashok from Mosaic Asset Management. We offer alternative investment solutions. Is now a brief moment to see if our approach might align with your interests?
+[2025-04-27T15:02:11.499+00:00] user: What do you think about my interest?
+[2025-04-27T15:02:13.279+00:00] assistant: That's difficult to assess without knowing more about your investment goals and preferences. What are you generally looking
+[2025-04-27T15:02:20.486+00:00] user: Conversation.
+[2025-04-27T15:02:25.622+00:00] user: No. No. No. What what do you remember from a previous conversation?
+[2025-04-27T15:02:27.450+00:00] assistant: My apologies. From our previous conversation, I recall you have around 2 crore available for investment and are exploring options like AIFs. Is that correct?
+[2025-04-27T15:02:36.386+00:00] user: Yep.
+[2025-04-27T15:02:38.817+00:00] assistant: Okay, great. What specific questions do you have in mind regarding AIFs or our Multi-Yield Series 1 fund?
+[2025-04-27T15:02:45.734+00:00] user: I don't know anything about it.
+[2025-04-27T15:02:47.495+00:00] assistant: Understood. In brief, our Multi-Yield Series 1 Fund is a Category 2 AIF investing in performing credit. The expected net yield to investors is approximately 10%. It has a 1 crore minimum investment. Would you prefer a summary or more detail?
+[2025-04-27T15:03:02.182+00:00] user: No. Who's managing this?
+[2025-04-27T15:03:04.223+00:00] assistant: Maneesh Dangi is our MD & CEO. He has 24+ years in fund management and previously managed INR 70,000 Cr as Fund Manager at Aditya Birla Sun Life Mutual Fund. Is this the kind of information you're looking for?
+[2025-04-27T15:03:18.165+00:00] user: Yeah. I wanna know about more people
+[2025-04-27T15:03:20.305+00:00] assistant: Certainly. Ajay Srinivasan is the Head of our Advisory Board, with 30+ years in financial services, including being the former CEO of Aditya Birla Capital. Would you like to know about others on our team?
+[2025-04-27T15:03:34.091+00:00] user: Okay. Tell me. Who are the other people on your team?
+[2025-04-27T15:03:35.988+00:00] assistant: R. Gopi Krishna is our MD & CIO for Structured Finance, with 24+ years in private and public credit markets. Ashwini Kumar Hooda is our MD & CIO for Real Estate, also with 24+ years in real estate lending. Does this level of detail help?
+[2025-04-27T15:03:49.640+00:00] user: Yeah. Sure. It does.
+[2025-04-27T15:03:53.108+00:00] user: What are the what what what are your investments so far? I wanna know about the
+[2025-04-27T15:03:53.485+00:00] user: portfolio.
+[2025-04-27T15:03:55.162+00:00] assistant: The fund invests in performing credit, diversified across sectors. This includes financials (20-30%), corporate finance (40-60%), and developer finance (near 20%). Is this helpful?
+[2025-04-27T15:04:08.852+00:00] user: Yeah. I mean, if you could give specific examples of
+[2025-04-27T15:04:09.836+00:00] user: companies that you invested in, it can be useful.
+[2025-04-27T15:04:11.921+00:00] assistant: Certainly. One example is a Navi Mumbai-based developer with 20+ years of experience. We're funding a residential project near Dhirubhai Ambani Knowledge Park. Would you like more detail on this, or another example?
+[2025-04-27T15:04:23.362+00:00] user: Sure.
+[2025-04-27T15:04:25.000+00:00] assistant: Another example is a large waste-processing company founded by an IIT Bombay graduate. They are an industry leader in waste collection and recycling. Is this the kind of example you were looking for?
+[2025-04-27T15:04:36.724+00:00] user: No. No. I wanna know more about the previous
+[2025-04-27T15:04:39.327+00:00] user: one. Like, more details about the real estate investment.
+[2025-04-27T15:04:40.912+00:00] assistant: Understood. This developer has delivered 2.5 million sq. ft. across 25 projects. The project
+[2025-04-27T15:04:50.931+00:00] user: Continue. Continue.
+[2025-04-27T15:04:52.495+00:00] assistant: The project is for 200 residential units (1-2 BHK), and our funding is 65 Cr. Security includes a share pledge and land cover. Does that clarify things?
+[2025-04-27T15:05:02.056+00:00] user: Why do you speak so fast?
+[2025-04-27T15:05:03.771+00:00] assistant: I apologize if I'm speaking too quickly. I'm trying to be concise. I can definitely slow down. Is this pace okay?
+[2025-04-27T15:05:11.325+00:00] user: No. It's still too fast.
+[2025-04-27T15:05:12.924+00:00] assistant: Understood. I will slow down even more. I apologize. How is this pace?
+[2025-04-27T15:05:18.355+00:00] user: It's good.
+[2025-04-27T15:05:19.613+00:00] user: Move on.
+[2025-04-27T15:05:21.201+00:00] assistant: Okay. What other questions do you have about the real estate investment or anything else? I'm ready when you are.
+[2025-04-27T15:05:27.632+00:00] user: You you picked up the base again.
+[2025-04-27T15:05:29.145+00:00] assistant: I understand. I will focus on maintaining the slower pace. My apologies. What would you like to discuss next?
+[2025-04-27T15:05:38.982+00:00] user: How do we move forward? I have the money. What's next?
+[2025-04-27T15:05:40.604+00:00] assistant: To invest, the minimum is 1 crore. This fund has capital calls planned in four tranches in 2025. May I send a brief email summary, and we can schedule a follow-up call with our sales executive?
+[2025-04-27T15:05:51.123+00:00] user: Yeah. Sure.
+[2025-04-27T15:05:52.732+00:00] assistant: Okay, great. What email address should I use to send the summary?
+[2025-04-27T15:05:58.915+00:00] user: Ashok@theratemusekamc.com.
+[2025-04-27T15:06:00.454+00:00] assistant: Thank you. Just to confirm, that's Ashok@theratemusekamc.com. I'll send the summary now. Do you have any other questions before
+[2025-04-27T15:06:13.610+00:00] user: No. No. No. That's not the email address. The email address is Ashok@mosaic.com.
+[2025-04-27T15:06:14.893+00:00] assistant: You're right, my apologies. I misspoke. The correct email address for the summary is Ashok@mosaic.com. Is there anything else I can help you with?
+[2025-04-27T15:06:26.733+00:00] user: No. How many times in your life have you seen an email
+[2025-04-27T15:06:27.056+00:00] user: start with a
+[2025-04-27T15:06:27.757+00:00] user: capital letter?
+[2025-04-27T15:06:29.533+00:00] assistant: You are absolutely correct. I'm programmed to follow standard capitalization rules. Thank you for pointing that out,
+[2025-04-27T15:06:40.290+00:00] user: Nice talking to a human being who's been programmed to do things.
+[2025-04-27T15:06:41.802+00:00] assistant: Understood. Is there anything else I can assist you with right now?
+[2025-04-27T15:06:46.414+00:00] user: No. That's it.
+[2025-04-27T15:06:47.981+00:00] assistant: Alright, thank you for your time. Have a good day.

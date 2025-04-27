@@ -81,8 +81,7 @@ class SalesAgentClient {
     this.debugLog = document.getElementById('debug-log');
     this.toggleDebugBtn = document.getElementById('toggle-debug');
     this.transcriptContainer = document.getElementById('transcript-container');
-    this.avatarImg = document.getElementById('avatar-img');
-
+    
     // Audio element for bot's voice
     this.botAudio = document.getElementById('bot-audio');
     
@@ -122,20 +121,17 @@ class SalesAgentClient {
       this.debugLog.parentElement.classList.toggle('collapsed');
     });
     
-    // Bot audio state events to animate avatar
+    // Bot audio state events
     this.botAudio.addEventListener('play', () => {
       this.isSpeaking = true;
-      this.animateAvatar(true);
     });
     
     this.botAudio.addEventListener('pause', () => {
       this.isSpeaking = false;
-      this.animateAvatar(false);
     });
     
     this.botAudio.addEventListener('ended', () => {
       this.isSpeaking = false;
-      this.animateAvatar(false);
     });
 
     // Add window beforeunload event to clean up any active calls
@@ -282,17 +278,6 @@ class SalesAgentClient {
     this.transcriptContainer.innerHTML = '';
     this.latestTranscriptItem = null;
     this.debugLog.innerHTML = '';
-  }
-
-  /**
-   * Toggle avatar animation based on speaking state
-   */
-  animateAvatar(isSpeaking) {
-    if (isSpeaking) {
-      this.avatarImg.classList.add('speaking');
-    } else {
-      this.avatarImg.classList.remove('speaking');
-    }
   }
 
   /**
