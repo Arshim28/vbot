@@ -1,0 +1,10 @@
+[2025-04-27T15:08:14.504+00:00] assistant: Hello, this is Ashok from Mosaic Asset Management. We offer alternative investment solutions. Is now a brief moment to see if our approach might align with your interests?
+[2025-04-27T15:08:25.259+00:00] user: Do you remember from our previous conversations?
+[2025-04-27T15:08:32.514+00:00] assistant: Yes, I have the context from our previous discussion noted here. How can I help you today?
+[2025-04-27T15:08:40.160+00:00] user: You remember the fun
+[2025-04-27T15:08:41.754+00:00] user: the the amount I had to invest?
+[2025-04-27T15:08:46.036+00:00] assistant: Yes, I recall we discussed the minimum investment for the Multi-Yield Series 1 fund, which is 1 crore. Is that what you were referring to, or did you have another question about it?
+[2025-04-27T15:09:02.171+00:00] user: The minimum investment is one c
+[2025-04-27T15:09:03.688+00:00] user: remember anything about
+[2025-04-27T15:09:05.760+00:00] user: having two gross?
+[2025-04-27T15:09:09.515+00:00] assistant: Yes, the minimum investment is 1 Crore. Regarding "two crores," was that the potential amount you were considering investing? Just to clarify, the minimum requirement is 1 Crore.
