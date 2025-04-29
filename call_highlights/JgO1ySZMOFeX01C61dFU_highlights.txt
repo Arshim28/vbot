@@ -1,0 +1,61 @@
+# Client Profile
+Client Type: investor
+Minimum Investment Capacity: Unknown
+Investor Sophistication: novice
+Attitude: null
+
+# Latest Call Summary
+The user inquired about the fund's leadership, duration, returns, and management team. They expressed a preference for the next call to be conducted in Hindi and showed interest in talking to the sales team.
+
+# Key Notes
+Prefers the next call to be in Hindi. Asked about fund duration, returns, and fund management team. Seems to need basic information about the fund.
+
+
+# Full Conversation
+[April 30, 2025 at 03:31:11 AM UTC+5:30] Neha: Hi, Neha from Mosaic Asset Management. We spoke briefly on April 30th. Is now a good time to continue our conversation?
+[April 30, 2025 at 03:31:22 AM UTC+5:30] Client: Yeah. I don't remember what we talked about in the last one.
+[April 30, 2025 at 03:31:23 AM UTC+5:30] Client: Could you just be quiet?
+[April 30, 2025 at 03:31:25 AM UTC+5:30] Neha: Understood. To refresh, we briefly discussed Multi-Yield Series 1, our AIF focused on performing credit. You expressed interest in regular income with moderate risk. Where would you like to pick up from here?
+[April 30, 2025 at 03:31:39 AM UTC+5:30] Client: I would like to know about your leadership team.
+[April 30, 2025 at 03:31:40 AM UTC+5:30] Neha: Certainly. Our CEO is Maneesh Dangi, with 24+ years in fund management, including time as Co-CIO and Head of Fixed Income at Aditya Birla Sun Life Mutual Fund. Is there a specific area of his background you'd like to know more about?
+[April 30, 2025 at 03:31:54 AM UTC+5:30] Client: Yeah. Go ahead.
+[April 30, 2025 at 03:31:56 AM UTC+5:30] Neha: Okay. Also on our leadership team, we have Ajay Srinivasan as Head of our Advisory Board, and R. Gopi Krishna as MD & CIO for Structured Finance. Is there any of them you are familiar with?
+[April 30, 2025 at 03:32:09 AM UTC+5:30] Client: No.
+[April 30, 2025 at 03:32:11 AM UTC+5:30] Neha: Understood. To briefly continue, Ashwini Kumar Hooda is our MD & CIO for Real Estate, and A. Dhananjay is our Chief Risk Officer. Shall I elaborate on any of them?
+[April 30, 2025 at 03:32:25 AM UTC+5:30] Client: Nothing in particular.
+[April 30, 2025 at 03:32:26 AM UTC+5:30] Neha: Okay. Our CEO, Maneesh Dangi, has a strong track record in fixed income. Have your paths crossed before?
+[April 30, 2025 at 03:32:35 AM UTC+5:30] Client: Want to do this already. I don't know any of them.
+[April 30, 2025 at 03:32:37 AM UTC+5:30] Neha: Understood. Would you like me to move on to another topic then?
+[April 30, 2025 at 03:32:46 AM UTC+5:30] Client: I mean, if I'm interested in investing in your fund,
+[April 30, 2025 at 03:32:47 AM UTC+5:30] Client: is my next step?
+[April 30, 2025 at 03:32:49 AM UTC+5:30] Neha: The next step would be to schedule a follow-up call with our sales team to discuss the specifics of the investment process and documentation. Would you be interested in that?
+[April 30, 2025 at 03:32:58 AM UTC+5:30] Client: I mean,
+[April 30, 2025 at 03:33:04 AM UTC+5:30] Client: call currently is with the sales why can't we do it right now?
+[April 30, 2025 at 03:33:05 AM UTC+5:30] Neha: I can certainly answer some initial questions. However, the sales team can provide more detailed information on the investment process and documentation required for Multi-Yield Series 1. What are your most pressing questions right now?
+[April 30, 2025 at 03:33:19 AM UTC+5:30] Client: Mean,
+[April 30, 2025 at 03:33:21 AM UTC+5:30] Client: long is this fund
+[April 30, 2025 at 03:33:24 AM UTC+5:30] Client: and what are the returns? Like, when will I get the returns?
+[April 30, 2025 at 03:33:26 AM UTC+5:30] Client: Who is
+[April 30, 2025 at 03:33:27 AM UTC+5:30] Client: going to manage the fund?
+[April 30, 2025 at 03:33:29 AM UTC+5:30] Neha: Good question. Aditi Deshpande and Amit Thakkar are our Senior Portfolio Managers. Aditi has 20+ years in structured finance, and Amit has 20+ years in real estate and investment banking. Would you like to know more about their backgrounds?
+[April 30, 2025 at 03:33:43 AM UTC+5:30] Client: No.
+[April 30, 2025 at 03:33:45 AM UTC+5:30] Neha: Okay. So, the fund's maturity is 4 years and 11 months. Does that work for you?
+[April 30, 2025 at 03:33:51 AM UTC+5:30] Client: Okay.
+[April 30, 2025 at 03:33:53 AM UTC+5:30] Neha: Capital is expected to be returned in tranches towards the end of the fund life, around 2029-2030. Payouts are expected regularly, around 9-10% per annum during the fund's term. Does that clarify
+[April 30, 2025 at 03:34:11 AM UTC+5:30] Client: You understand, Hindi?
+[April 30, 2025 at 03:34:13 AM UTC+5:30] Neha: I understand your question. However, I am programmed to communicate in English. If you prefer, I can note your language preference for our sales team to follow up in Hindi. Would that be helpful?
+[April 30, 2025 at 03:34:25 AM UTC+5:30] Client: Yeah. Sure.
+[April 30, 2025 at 03:34:25 AM UTC+5:30] Client: Talk in Hindi in the next call.
+[April 30, 2025 at 03:34:33 AM UTC+5:30] Client: No.
+[April 30, 2025 at 03:34:27 AM UTC+5:30] Neha: Understood. I will make a note that you'd prefer the next call to be in Hindi. Is there anything else I can assist you with
+[April 30, 2025 at 03:34:35 AM UTC+5:30] Neha: Okay, great. Thank you for your time. Have a good day.
+
+
+# Previous Highlights (2025-04-30 03:35:12)
+**Client Summary: Neha**
+
+*   **Investment Goals/Priorities:** Regular income with moderate risk. Interested in Multi-Yield Series 1 (performing credit AIF).
+*   **Key Concerns/Objections:** Expressed initial confusion about the call's purpose. Questioned why the current call couldn't address investment process details.
+*   **Personal Details:** Prefers the next call to be conducted in Hindi.
+*   **Investment History/Preferences:** No specific details revealed, but seems unfamiliar with the leadership team and portfolio managers.
+*   **Timeline for Decision Making:** Unclear, but asked about the next steps for investing, fund duration (4 years 11 months), and return timelines (regular payouts of 9-10% per annum, capital returned in tranches towards the end of the fund life).

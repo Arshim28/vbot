@@ -33,8 +33,7 @@ from pipecat.services.deepgram.stt import DeepgramSTTService
 from pipecat.services.google.llm import GoogleLLMService
 from pipecat.services.google.rtvi import GoogleRTVIObserver
 
-# TTS
-from pipecat.services.deepgram.tts import DeepgramTTSService
+# TTS - Replace ElevenLabs with Cartesia
 from pipecat.services.cartesia.tts import CartesiaTTSService
 
 sys.path.append(str(Path(__file__).parent.parent))
@@ -42,37 +41,144 @@ sys.path.append(str(Path(__file__).parent.parent))
 from runner import configure
 from interruption_observer import BotInterruptionObserver
 
-# Load .env from project root
 load_dotenv(dotenv_path=Path(__file__).parent.parent / '.env')
 
 logger.remove(0)
 logger.add(sys.stderr, level="INFO")
 
+PERSONA_FILE = Path(__file__).parent.parent / "prompts" / "bot_persona.txt"
+KNOWLEDGE_BASE_FILE = Path(__file__).parent.parent / "prompts" / "bot_knowledge.txt"
 SYSTEM_INSTRUCTION_FILE = Path(__file__).parent.parent / "prompts" / "bot_system_prompt.txt"
-with open(SYSTEM_INSTRUCTION_FILE, "r") as f:
-    SYSTEM_INSTRUCTION = f.read()
+CONVERSATION_STRATEGY_FILE = Path(__file__).parent.parent / "prompts" / "conversation_strategy.txt"
+NEW_CLIENT_GREETING_FILE = Path(__file__).parent.parent / "prompts" / "new_client_greeting.txt"
+RETURNING_CLIENT_GREETING_FILE = Path(__file__).parent.parent / "prompts" / "returning_client_greeting.txt"
+
+if SYSTEM_INSTRUCTION_FILE.exists() and (not PERSONA_FILE.exists() or not KNOWLEDGE_BASE_FILE.exists()):
+    with open(SYSTEM_INSTRUCTION_FILE, "r") as f:
+        full_prompt = f.read()
+    
+    parts = full_prompt.split("## INFORMATION")
+    
+    if len(parts) > 1:
+        with open(PERSONA_FILE, "w") as f:
+            f.write(parts[0].strip())
+        logger.info(f"Created persona prompt at {PERSONA_FILE}")
+        
+        with open(KNOWLEDGE_BASE_FILE, "w") as f:
+            f.write("## INFORMATION" + parts[1].strip())
+        logger.info(f"Created knowledge base prompt at {KNOWLEDGE_BASE_FILE}")
+    else:
+        with open(PERSONA_FILE, "w") as f:
+            f.write(full_prompt)
+        logger.info(f"Created persona prompt at {PERSONA_FILE}")
+        
+        with open(KNOWLEDGE_BASE_FILE, "w") as f:
+            f.write(full_prompt)
+        logger.info(f"Created knowledge base prompt at {KNOWLEDGE_BASE_FILE}")
+
+if PERSONA_FILE.exists():
+    with open(PERSONA_FILE, "r") as f:
+        PERSONA = f.read()
+else:
+    PERSONA = ""
+    logger.warning(f"Persona file not found at {PERSONA_FILE}")
+
+if KNOWLEDGE_BASE_FILE.exists():
+    with open(KNOWLEDGE_BASE_FILE, "r") as f:
+        KNOWLEDGE_BASE = f.read()
+else:
+    KNOWLEDGE_BASE = ""
+    logger.warning(f"Knowledge base file not found at {KNOWLEDGE_BASE_FILE}")
+
+if SYSTEM_INSTRUCTION_FILE.exists():
+    with open(SYSTEM_INSTRUCTION_FILE, "r") as f:
+        SYSTEM_INSTRUCTION = f.read()
+else:
+    SYSTEM_INSTRUCTION = PERSONA + "\n\n" + KNOWLEDGE_BASE
+    logger.warning(f"System instruction file not found, using combined persona and knowledge base")
+
+if CONVERSATION_STRATEGY_FILE.exists():
+    with open(CONVERSATION_STRATEGY_FILE, "r") as f:
+        CONVERSATION_STRATEGY = f.read()
+else:
+    CONVERSATION_STRATEGY = ""
+    logger.warning(f"Conversation strategy file not found at {CONVERSATION_STRATEGY_FILE}")
+
+if NEW_CLIENT_GREETING_FILE.exists():
+    with open(NEW_CLIENT_GREETING_FILE, "r") as f:
+        NEW_CLIENT_GREETING = f.read().strip()
+else:
+    NEW_CLIENT_GREETING = "Hello! I'm Neha from Mosaic Asset Management, and I'm excited to connect with you today to discuss our exclusive alternate investment solutions. How are you doing today?"
+    logger.warning(f"New client greeting file not found at {NEW_CLIENT_GREETING_FILE}")
+
+if RETURNING_CLIENT_GREETING_FILE.exists():
+    with open(RETURNING_CLIENT_GREETING_FILE, "r") as f:
+        RETURNING_CLIENT_GREETING = f.read().strip()
+else:
+    RETURNING_CLIENT_GREETING = "Welcome back! It's Neha from Mosaic Asset Management. It's great to speak with you again. I hope you've been well since our last conversation."
+    logger.warning(f"Returning client greeting file not found at {RETURNING_CLIENT_GREETING_FILE}")
 
 EXPERT_SUGGESTION_DIR = Path(__file__).parent.parent / "expert_opinion"
+CALL_HIGHLIGHT_DIR = Path(__file__).parent.parent / "call_highlights"
 TRANSCRIPT_LOGDIR = Path(__file__).parent.parent / "logs"
 
+def load_call_highlight(client_id):
+    os.makedirs(CALL_HIGHLIGHT_DIR, exist_ok=True)
+    highlight_file = os.path.join(CALL_HIGHLIGHT_DIR, f"{client_id}_highlights.txt")
+    
+    if os.path.exists(highlight_file):
+        try:
+            with open(highlight_file, "r") as f:
+                highlight = f.read().strip()
+                if highlight:
+                    logger.info("Loaded previous call highlight")
+                    return highlight
+        except Exception as e:
+            logger.error(f"Error loading call highlight: {e}")
+    
+    logger.info("No previous call highlight found")
+    return ""
 
 def load_expert_suggestions(client_id):
     os.makedirs(EXPERT_SUGGESTION_DIR, exist_ok=True)
     expert_suggestion_file = os.path.join(EXPERT_SUGGESTION_DIR, f"{client_id}_exp_opinion.txt")
+    
     if os.path.exists(expert_suggestion_file):
         try:
             with open(expert_suggestion_file, "r") as f:
                 expert_suggestions = f.read().strip()
                 if expert_suggestions:
                     logger.info("Loaded expert suggestions")
-                    return f"{SYSTEM_INSTRUCTION}\n\nADDITIONAL CONTEXT ABOUT THIS CLIENT:\n{expert_suggestions}" 
+                    return expert_suggestions
         except Exception as e:
             logger.error(f"Error loading expert suggestions: {e}")
-
-        logger.info("No expert suggestions found, using default system prompt")
-        return SYSTEM_INSTRUCTION
     
-    return SYSTEM_INSTRUCTION
+    logger.info("No expert suggestions found")
+    return ""
+
+def build_system_prompt(client_id):
+    """Build a structured system prompt with the requested sections"""
+    call_highlight = load_call_highlight(client_id)
+    expert_suggestion = load_expert_suggestions(client_id)
+    is_returning_client = bool(call_highlight or expert_suggestion)
+    
+    if PERSONA_FILE.exists():
+        with open(PERSONA_FILE, "r") as f:
+            persona_content = f.read()
+        prompt_parts = [persona_content]
+    else:
+        prompt_parts = [PERSONA]
+    
+    if call_highlight:
+        prompt_parts.append("\n\n# PREVIOUS CALL HIGHLIGHT\n" + call_highlight)
+    
+    if expert_suggestion:
+        prompt_parts.append("\n\n# EXPERT SUGGESTIONS\n" + expert_suggestion)
+    
+    prompt_parts.append("\n\n# CONVERSATION STRATEGY\n" + CONVERSATION_STRATEGY)
+    prompt_parts.append("\n\n" + KNOWLEDGE_BASE)
+    
+    return "\n".join(prompt_parts)
 
 class TranscriptHandler:
     def __init__(self, output_file: Optional[str]=None):
@@ -126,19 +232,17 @@ class TranscriptHandler:
         self.current_partial.pop('assistant', None)
 
 async def main(call_id, client_id):
-    system_prompt = load_expert_suggestions(client_id)
+    system_prompt = build_system_prompt(client_id)
     print("#"*30, "PROMPT", "#"*30)
     print(system_prompt)
     
     transcript_logfile = os.path.join(TRANSCRIPT_LOGDIR, f"{call_id}.txt")
-    # Get room URL and token from command line - keep this simple
     async with aiohttp.ClientSession() as session:
         room_url, token = await configure(session)
     
     logger.info(f"Room URL from configure: {room_url}")
     logger.info(f"Token obtained: {bool(token)}")
     
-    # Clear previous transcript
     try:
         if os.path.exists(transcript_logfile):
             with open(transcript_logfile, "w") as f:
@@ -147,7 +251,6 @@ async def main(call_id, client_id):
     except Exception as e:
         logger.error(f"Failed to clear transcript file: {e}")
 
-    # Set up the transport with minimal VAD configuration
     transport = DailyTransport(
         room_url,
         token,
@@ -160,34 +263,45 @@ async def main(call_id, client_id):
         ),
     )
     
-    # Set up pipeline components
     stt = DeepgramSTTService(api_key=os.getenv("DEEPGRAM_API_KEY"))
 
-    # tts = DeepgramTTSService(
-    #     api_key=os.getenv("DEEPGRAM_API_KEY"),
-    #     voice="aura-helios-en",
-    #     sample_rate=24000,
-    # )
-
+    # Using Cartesia TTS with appropriate voice
     tts = CartesiaTTSService(
         api_key=os.getenv("CARTESIA_API_KEY"),
-        voice_id="28ca2041-5dda-42df-8123-f58ea9c3da00"
+        voice_id="3b554273-4299-48b9-9aaf-eefd438e3941",  # Indian Lady voice ID from Cartesia
+        model="sonic-2",
+        params=CartesiaTTSService.InputParams(
+            language=Language.EN,          # fixed language
+            speed="normal",                # fixed rate
+            emotion=[]                     # no dynamic emotion
+        ),
+        output_format={
+            "container": "mp3",
+            "sample_rate": 24000
+        }
     )
 
+    # Determine if client is returning or new
+    call_highlight = load_call_highlight(client_id)
+    expert_suggestion = load_expert_suggestions(client_id)
+    is_returning_client = bool(call_highlight or expert_suggestion)
+    
+    # Create initial greeting based on client status
+    initial_greeting = RETURNING_CLIENT_GREETING if is_returning_client else NEW_CLIENT_GREETING
+    
     llm = GoogleLLMService(
         api_key=os.getenv("GOOGLE_API_KEY"),
-        model="gemini-2.5-pro-exp-03-25",
+        model="gemini-2.0-flash",
         system_instruction=system_prompt,
         streaming=True,
         tools=[],
     )
 
-    # Set up initial context and processors
     context = OpenAILLMContext(
         [
             {
                 "role": "user",
-                "content": "Begin by greeting the user. Proceed with your instructions.",
+                "content": "Begin the conversation.",
             }
         ]
     )
@@ -198,7 +312,6 @@ async def main(call_id, client_id):
     transcript_handler = TranscriptHandler(output_file=transcript_logfile)
     interrupt_observer = BotInterruptionObserver(transcript_handler)
 
-    # Set up the pipeline
     pipeline = Pipeline(
         [
             transport.input(),
@@ -214,7 +327,6 @@ async def main(call_id, client_id):
         ]
     )
 
-    # Create the pipeline task with basic parameters
     task = PipelineTask(
         pipeline, 
         params=PipelineParams(
@@ -228,7 +340,15 @@ async def main(call_id, client_id):
     async def on_client_ready(rtvi):
         logger.info("RTVI client ready, setting bot ready")
         await rtvi.set_bot_ready()
-        await task.queue_frames([context_aggregator.user().get_context_frame()])
+        
+        # Set up initial greeting based on client type
+        logger.info(f"Using {'returning' if is_returning_client else 'new'} client greeting")
+        
+        # Add a more specific greeting message to set the tone
+        initial_context = context_aggregator.user().get_context_frame()
+        initial_context.content = f"Use this exact greeting: {initial_greeting}"
+        
+        await task.queue_frames([initial_context])
 
     @transport.event_handler("on_first_participant_joined")
     async def on_first_participant_joined(transport, participant):
@@ -246,7 +366,6 @@ async def main(call_id, client_id):
         await task.cancel()
     
     
-    # Run the pipeline with proper error handling
     runner = PipelineRunner()
     await runner.run(task)
     

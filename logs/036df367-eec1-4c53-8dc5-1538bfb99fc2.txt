@@ -1,0 +1,29 @@
+[2025-04-29T14:33:10.952+00:00] assistant: Hello, this is Ashok from Mosaic Asset Management. We offer alternative investment solutions. Is now a brief moment to see if our approach might align with your interests?
+[2025-04-29T14:33:22.507+00:00] user: Yeah. Sure. Let's have a let's have a conversation.
+[2025-04-29T14:33:25.192+00:00] assistant: Great. To start, what are you generally looking for in investments right now?
+[2025-04-29T14:33:35.283+00:00] user: Am looking for steady returns.
+[2025-04-29T14:33:40.332+00:00] assistant: Steady returns are definitely a common goal. To clarify, what would you consider a comfortable level of risk to achieve those returns?
+[2025-04-29T14:33:51.348+00:00] user: I don't understand this.
+[2025-04-29T14:33:52.609+00:00] user: Be a bit more specific?
+[2025-04-29T14:33:55.412+00:00] assistant: Okay. How do you typically approach investment risk - are you generally cautious, moderate, or aggressive in your investment choices?
+[2025-04-29T14:34:06.140+00:00] user: Mean, how do you decide if you're if you're one of the three
+[2025-04-29T14:34:09.771+00:00] assistant: Good question. Cautious investors prioritize preserving capital, moderate investors balance growth and safety, while aggressive investors seek higher returns and accept more risk. Which best reflects your approach?
+[2025-04-29T14:34:23.784+00:00] user: I guess, then the moderate one.
+[2025-04-29T14:34:27.911+00:00] assistant: Okay, moderate. Are you familiar with alternative investments like AIFs?
+[2025-04-29T14:34:33.756+00:00] user: Yeah. Yeah.
+[2025-04-29T14:34:37.141+00:00] assistant: Great. Just to mention, this fund has a 1 crore minimum investment. Is that generally aligned with your range for specialized funds?
+[2025-04-29T14:34:50.361+00:00] user: Am fine with
+[2025-04-29T14:34:51.539+00:00] user: one to two c f.
+[2025-04-29T14:34:54.832+00:00] assistant: Understood. Given your interest in steady returns and a moderate risk approach with 1-2 Cr, our Multi-Yield Series 1 AIF might be a fit.The expected net yield to investors, after anticipated expenses and estimated taxes, is approximately 10%. Does that align with your expectations?
+[2025-04-29T14:35:16.687+00:00] user: That sounds good enough.
+[2025-04-29T14:35:19.661+00:00] assistant: Okay. The expected gross yield for the portfolio is projected at 13-14%.
+[2025-04-29T14:35:29.902+00:00] user: Yeah. You've already told this to make a
+[2025-04-29T14:35:33.332+00:00] assistant: You're right, my apologies. I misspoke.
+[2025-04-29T14:35:47.473+00:00] user: Yeah. Yeah. I I understand that.
+[2025-04-29T14:35:48.679+00:00] user: Let's move forward.
+[2025-04-29T14:35:51.851+00:00] assistant: Understood. To confirm, are you interested in me walking you through the fund or should we talk about something else?
+[2025-04-29T14:35:59.422+00:00] user: What else can we talk about?
+[2025-04-29T14:36:09.911+00:00] assistant: We could discuss the fund's strategy, diversification, the team, or the overall market conditions influencing the fund. What's of most interest to you?
+[2025-04-29T14:36:15.600+00:00] user: Okay. I am busy right now. I will connect with you again.
+[2025-04-29T14:36:18.162+00:00] assistant: Alright, thank you.
+[2025-04-29T14:36:24.451+00:00] assistant: Have a good day.

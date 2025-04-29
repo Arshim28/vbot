@@ -80,6 +80,70 @@ class PostCallProcessor:
             logger.error(f"Error formatting transcript: {e}")
             return []
 
+    async def update_call_highlight(self, client_id: str, profile_data: Dict[str, Any]):
+        """Update the call highlight based on profile data generated from the transcript"""
+        try:
+            call_highlight_dir = Path(__file__).parent.parent / "call_highlights"
+            os.makedirs(call_highlight_dir, exist_ok=True)
+            highlight_file = call_highlight_dir / f"{client_id}_highlights.txt"
+            
+            # Check if a highlight already exists
+            existing_highlight = ""
+            if highlight_file.exists():
+                with open(highlight_file, "r") as f:
+                    existing_highlight = f.read().strip()
+            
+            # Extract relevant data from profile data
+            notes = profile_data.get("notes", "")
+            summary = profile_data.get("callSummary", "")
+            
+            # Build a more comprehensive highlight
+            client_type = f"Client Type: {profile_data.get('clientType', 'Unknown')}"
+            investment_capacity = f"Minimum Investment Capacity: {'Yes' if profile_data.get('hasMinimumInvestment') is True else 'No' if profile_data.get('hasMinimumInvestment') is False else 'Unknown'}"
+            sophistication = f"Investor Sophistication: {profile_data.get('investorSophistication', 'Unknown')}"
+            attitude = f"Attitude: {profile_data.get('attitudeTowardsOffering', 'Unknown')}"
+            
+            # Include the transcript if available
+            transcript_text = ""
+            transcript = profile_data.get("transcript", [])
+            if transcript:
+                transcript_text = "\n\n# Full Conversation\n"
+                for entry in transcript:
+                    speaker = "Neha" if entry.get("speaker") == "assistant" else "Client"
+                    timestamp = entry.get("timestamp", "")
+                    content = entry.get("content", "")
+                    transcript_text += f"[{timestamp}] {speaker}: {content}\n"
+            
+            # Create a new highlight that combines existing information with new insights
+            new_highlight = f"""# Client Profile
+{client_type}
+{investment_capacity}
+{sophistication}
+{attitude}
+
+# Latest Call Summary
+{summary}
+
+# Key Notes
+{notes}
+{transcript_text}
+"""
+            
+            # If there's existing content, append it with a timestamp
+            if existing_highlight and existing_highlight != "No transcript data available for highlights.":
+                timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                new_highlight += f"\n# Previous Highlights ({timestamp})\n{existing_highlight}"
+            
+            # Write the updated highlight
+            with open(highlight_file, "w") as f:
+                f.write(new_highlight)
+                
+            logger.info(f"Updated call highlight for client {client_id}")
+            return True
+        except Exception as e:
+            logger.error(f"Error updating call highlight: {e}")
+            return False
+
     async def process(self, call_id: str, client_id: str):
         logger.info(f"Processing call {call_id} for client {client_id}")
         
@@ -101,6 +165,9 @@ class PostCallProcessor:
         if not profile_data:
             logger.error("Failed to generate profile data from transcript")
             return
+        
+        # Add the transcript to the profile data
+        profile_data["transcript"] = transcript
             
         # End the call in the database with summary and tags
         success = self.db_conn.end_call(
@@ -112,6 +179,9 @@ class PostCallProcessor:
             logger.error(f"Failed to update call {call_id} as ended in database")
         else:
             logger.info(f"Call {call_id} marked as ended in database")
+        
+        # Update call highlight with profile data
+        await self.update_call_highlight(client_id, profile_data)
         
         # Update the client profile with new information
         success = self.db_conn.update_client_profile(client_id, profile_data)

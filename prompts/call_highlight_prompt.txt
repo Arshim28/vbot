@@ -1,0 +1,12 @@
+You are analyzing a sales call transcript. Your task is to extract key information that would be valuable for future conversations with this client.
+
+Focus on extracting:
+1. Client's specific investment goals and priorities
+2. Key concerns or objections raised
+3. Personal details mentioned (family, career, etc.)
+4. Investment history or preferences
+5. Timeline for decision making
+
+Format this as a clear, concise summary that can be quickly referenced by an agent before speaking with this client again.
+
+Keep your response under 200 words, focusing on the most relevant and actionable insights. 

@@ -1,0 +1,37 @@
+[2025-04-29T21:55:06.328+00:00] assistant: Hello, this is Neha from Mosaic Asset Management. We offer alternative investment solutions. Is now a brief moment to see if our approach might align with your interests?
+[2025-04-29T21:55:16.853+00:00] user: Yes, please.
+[2025-04-29T21:55:18.319+00:00] assistant: Great. What are you generally looking for in investments right now?
+[2025-04-29T21:55:25.284+00:00] user: Could you be a little more specific?
+[2025-04-29T21:55:27.267+00:00] assistant: Certainly. Are you primarily focused on capital appreciation, regular income, or a mix of both?
+[2025-04-29T21:55:36.290+00:00] user: Examples of what?
+[2025-04-29T21:55:37.939+00:00] assistant: Are you asking for examples of capital appreciation or regular income investments?
+[2025-04-29T21:55:43.427+00:00] user: Yes.
+[2025-04-29T21:55:45.769+00:00] assistant: Capital appreciation focuses on growth, like stocks. Regular income aims for steady payouts, like bonds. Does that clarify things?
+[2025-04-29T21:55:55.453+00:00] user: I am looking
+[2025-04-29T21:55:56.549+00:00] user: regular income.
+[2025-04-29T21:55:58.346+00:00] assistant: Understood. In terms of generating regular income, are you familiar with alternative investments like AIFs?
+[2025-04-29T21:56:05.954+00:00] user: Yes, ma'am.
+[2025-04-29T21:56:07.850+00:00] assistant: Okay, great. Given that you're looking for regular income and have some familiarity with AIFs, what is your risk tolerance like? Are you comfortable with moderate, or higher risk investments to achieve potentially higher returns?
+[2025-04-29T21:56:23.091+00:00] user: Moderate would be good.
+[2025-04-29T21:56:24.763+00:00] assistant: Okay. Just so I can tailor our conversation - our fund has a 1 crore minimum investment. Is that generally aligned with your investment range?
+[2025-04-29T21:56:36.797+00:00] user: Yeah. Sounds about right.
+[2025-04-29T21:56:38.840+00:00] assistant: Perfect. Our current offering, Multi-Yield Series 1, is a Category 2 AIF focused on performing credit. The expected net yield to investors, after expenses and estimated taxes, is approximately 10%. Does that initial figure sound interesting to you?
+[2025-04-29T21:56:54.033+00:00] user: Sure.
+[2025-04-29T21:56:55.736+00:00] assistant: Great. The expected gross yield for the portfolio is projected at 13-14%, before expenses and taxes, of course. To give you some context, Multi-Yield Series 1 invests exclusively in performing credit, meaning loans to financially sound, operating companies. It's a diversified portfolio across both individual securities and sectors. Is this pace okay for you, or would you prefer a summary?
+[2025-04-29T21:57:19.724+00:00] user: Would like for you to speak a little bit slower.
+[2025-04-29T21:57:21.562+00:00] assistant: Understood. Apologies for rushing. So, to recap at a slightly slower pace: Multi-Yield Series 1, our current offering, is an AIF with an expected net yield of approximately 10% after expenses and taxes. It focuses on performing credit, offering a diversified portfolio. Is that better?
+[2025-04-29T21:57:41.413+00:00] user: What comes under your diversified portfolio?
+[2025-04-29T21:57:43.332+00:00] assistant: The portfolio is planned to contain 25-30 securities, with no single security expected to comprise more than 5% of the portfolio. Indicatively, the portfolio allocation includes Financials (20-30%), Corporate Finance (40-60%), and Developer Finance (near 20%). Did you want more details on any of those sectors?
+[2025-04-29T21:58:01.479+00:00] user: You're speaking very fast.
+[2025-04-29T21:58:03.809+00:00] assistant: My apologies. Let me slow down considerably. The portfolio includes investments across different sectors. These include financials, corporate finance, and developer finance. Would you like me to elaborate on any of these sectors individually?
+[2025-04-29T21:58:18.243+00:00] user: Can you give me some examples of
+[2025-04-29T21:58:19.922+00:00] user: investments that you're
+[2025-04-29T21:58:21.538+00:00] user: fund has made?
+[2025-04-29T21:58:23.489+00:00] assistant: Certainly. For example, in the financials sector, we might invest in a Pune-based rural financier with a strong focus on secured lending. In corporate finance, an example could be sponsor-funding for a waste-processing company. Finally, in real estate, we could invest in a residential project in Navi Mumbai with good land cover. Does that give you a clearer picture?
+[2025-04-29T21:58:44.078+00:00] user: It does. Okay. Now
+[2025-04-29T21:58:46.934+00:00] user: am expecting another call from somebody else.
+[2025-04-29T21:58:48.367+00:00] user: So let's talk later.
+[2025-04-29T21:58:50.005+00:00] assistant: Understood. Thanks for your time. May I send a brief email summary for your reference?
+[2025-04-29T21:58:58.838+00:00] user: We can decide on that in the next call for now.
+[2025-04-29T21:58:59.842+00:00] user: Enough.
+[2025-04-29T21:59:01.446+00:00] assistant: Alright, thank you. Have a good day.

@@ -1,17 +1,45 @@
 You are analyzing a sales call transcript. Your task is to extract structured information for updating the client profile in our database.
 
-Please analyze the transcript and extract the following information:
+Please analyze the transcript carefully and pay special attention to the client's responses to both direct and indirect questions about their profile. Clients may not always directly answer questions, so you'll need to infer some information from context clues and implicit statements.
+
+Please extract the following information:
+
 1. Client type (distributor or investor)
+   * Look for mentions of advising others, managing others' money, or references to their own portfolio
+
 2. Understanding of credit funds (true/false/null if unclear)
+   * Assess based on their questions, terminology usage, and how much explanation they needed
+   * Note their familiarity with concepts like AIFs, structured credit, or performing credit
+
 3. Has minimum investment of 1 crore (true/false/null if unclear)
+   * Look for direct or indirect responses about investment capacity
+   * Pay attention to reactions when minimum investment was mentioned
+
 4. Knows Maneesh Dangi (true/false/null if unclear)
+   * Note any personal references or recognition of the name
+
 5. Investor sophistication level (sophisticated/novice/null if unclear)
+   * Sophisticated investors ask about portfolio construction, risk metrics, etc.
+   * Novice investors ask basic questions about how the investment works
+
 6. Attitude towards offering (optimistic/skeptic/null if unclear)
+   * Optimistic clients show enthusiasm, ask about next steps
+   * Skeptical clients focus on risks, downside scenarios, or express hesitation
+
 7. Wants Zoom call (true/false/null if unclear)
+   * Look for interest in further discussions, especially visual presentations
+
 8. Should call again (true/false based on conversation outcome)
+   * Evaluate overall engagement and explicit or implicit interest in continuing the conversation
+
 9. Interested in talking to sales executive (true/false/null if unclear)
+   * Note any requests for more detailed information or specialist contact
+
 10. Language preference (English/other/null if unclear)
+    * Default is English unless they express difficulty or preference for another language
+
 11. Additional notes about the conversation
+    * Include any specific details mentioned (family, career, goals, etc.) that would be valuable for future calls
 
 Return the information in this exact JSON format:
 {
@@ -25,9 +53,9 @@ Return the information in this exact JSON format:
     "shouldCallAgain": true|false|null,
     "interestedInSalesContact": true|false|null,
     "languagePreference": "English|other|null",
-    "notes": "string with important observations",
-    "callSummary": "string with call summary",
+    "notes": "string with important observations including personal details, specific needs, or contextual information",
+    "callSummary": "string with concise call summary",
     "tags": ["list", "of", "relevant", "tags"]
 }
 
-Be precise and base your analysis solely on the conversation content.
+Be precise and base your analysis on both explicit statements and contextual cues in the conversation.

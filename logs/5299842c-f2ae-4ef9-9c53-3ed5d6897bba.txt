@@ -1,0 +1,37 @@
+[2025-04-29T22:01:11.059+00:00] assistant: Hi, Neha from Mosaic Asset Management. We spoke briefly on April 30th. Is now a good time to continue our conversation?
+[2025-04-29T22:01:22.168+00:00] user: Yeah. I don't remember what we talked about in the last one.
+[2025-04-29T22:01:23.625+00:00] user: Could you just be quiet?
+[2025-04-29T22:01:25.048+00:00] assistant: Understood. To refresh, we briefly discussed Multi-Yield Series 1, our AIF focused on performing credit. You expressed interest in regular income with moderate risk. Where would you like to pick up from here?
+[2025-04-29T22:01:39.124+00:00] user: I would like to know about your leadership team.
+[2025-04-29T22:01:40.583+00:00] assistant: Certainly. Our CEO is Maneesh Dangi, with 24+ years in fund management, including time as Co-CIO and Head of Fixed Income at Aditya Birla Sun Life Mutual Fund. Is there a specific area of his background you'd like to know more about?
+[2025-04-29T22:01:54.625+00:00] user: Yeah. Go ahead.
+[2025-04-29T22:01:56.409+00:00] assistant: Okay. Also on our leadership team, we have Ajay Srinivasan as Head of our Advisory Board, and R. Gopi Krishna as MD & CIO for Structured Finance. Is there any of them you are familiar with?
+[2025-04-29T22:02:09.547+00:00] user: No.
+[2025-04-29T22:02:11.208+00:00] assistant: Understood. To briefly continue, Ashwini Kumar Hooda is our MD & CIO for Real Estate, and A. Dhananjay is our Chief Risk Officer. Shall I elaborate on any of them?
+[2025-04-29T22:02:25.063+00:00] user: Nothing in particular.
+[2025-04-29T22:02:26.941+00:00] assistant: Okay. Our CEO, Maneesh Dangi, has a strong track record in fixed income. Have your paths crossed before?
+[2025-04-29T22:02:35.812+00:00] user: Want to do this already. I don't know any of them.
+[2025-04-29T22:02:37.701+00:00] assistant: Understood. Would you like me to move on to another topic then?
+[2025-04-29T22:02:46.544+00:00] user: I mean, if I'm interested in investing in your fund,
+[2025-04-29T22:02:47.695+00:00] user: is my next step?
+[2025-04-29T22:02:49.660+00:00] assistant: The next step would be to schedule a follow-up call with our sales team to discuss the specifics of the investment process and documentation. Would you be interested in that?
+[2025-04-29T22:02:58.904+00:00] user: I mean,
+[2025-04-29T22:03:04.216+00:00] user: call currently is with the sales why can't we do it right now?
+[2025-04-29T22:03:05.873+00:00] assistant: I can certainly answer some initial questions. However, the sales team can provide more detailed information on the investment process and documentation required for Multi-Yield Series 1. What are your most pressing questions right now?
+[2025-04-29T22:03:19.902+00:00] user: Mean,
+[2025-04-29T22:03:21.434+00:00] user: long is this fund
+[2025-04-29T22:03:24.571+00:00] user: and what are the returns? Like, when will I get the returns?
+[2025-04-29T22:03:26.434+00:00] user: Who is
+[2025-04-29T22:03:27.508+00:00] user: going to manage the fund?
+[2025-04-29T22:03:29.170+00:00] assistant: Good question. Aditi Deshpande and Amit Thakkar are our Senior Portfolio Managers. Aditi has 20+ years in structured finance, and Amit has 20+ years in real estate and investment banking. Would you like to know more about their backgrounds?
+[2025-04-29T22:03:43.725+00:00] user: No.
+[2025-04-29T22:03:45.480+00:00] assistant: Okay. So, the fund's maturity is 4 years and 11 months. Does that work for you?
+[2025-04-29T22:03:51.307+00:00] user: Okay.
+[2025-04-29T22:03:53.518+00:00] assistant: Capital is expected to be returned in tranches towards the end of the fund life, around 2029-2030. Payouts are expected regularly, around 9-10% per annum during the fund's term. Does that clarify
+[2025-04-29T22:04:11.184+00:00] user: You understand, Hindi?
+[2025-04-29T22:04:13.067+00:00] assistant: I understand your question. However, I am programmed to communicate in English. If you prefer, I can note your language preference for our sales team to follow up in Hindi. Would that be helpful?
+[2025-04-29T22:04:25.660+00:00] user: Yeah. Sure.
+[2025-04-29T22:04:25.830+00:00] user: Talk in Hindi in the next call.
+[2025-04-29T22:04:33.298+00:00] user: No.
+[2025-04-29T22:04:27.371+00:00] assistant: Understood. I will make a note that you'd prefer the next call to be in Hindi. Is there anything else I can assist you with
+[2025-04-29T22:04:35.496+00:00] assistant: Okay, great. Thank you for your time. Have a good day.

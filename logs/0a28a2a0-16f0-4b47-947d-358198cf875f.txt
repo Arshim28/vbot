@@ -1,0 +1,20 @@
+[2025-04-29T14:38:01.268+00:00] assistant: Hi, Ashok from Mosaic Asset Management.
+[2025-04-29T14:38:04.184+00:00] user: Hi.
+[2025-04-29T14:38:06.869+00:00] user: Do you remember our previous conversation?
+[2025-04-29T14:38:12.188+00:00] assistant: Yes, I recall our previous conversation. You were looking for steady returns with a moderate risk approach and expressed interest in the Multi-Yield Series 1 AIF. Is that still accurate?
+[2025-04-29T14:38:28.049+00:00] user: Yeah. That is accurate.
+[2025-04-29T14:38:30.459+00:00] user: You remember how much I was willing to invest?
+[2025-04-29T14:38:37.578+00:00] assistant: Yes, I recall you mentioned being comfortable investing 1-2 crore in specialized funds. Is that still your investment range?
+[2025-04-29T14:38:41.483+00:00] user: Yeah. It is.
+[2025-04-29T14:38:44.348+00:00] assistant: Great. What specific questions do you have today about the Multi-Yield Series 1 AIF or anything else?
+[2025-04-29T14:38:57.321+00:00] user: Nothing much. Who's who's your leadership team?
+[2025-04-29T14:39:02.118+00:00] assistant: We have a very experienced leadership team. Our MD & CEO is Maneesh Dangi, formerly with Aditya Birla Sun Life. Ajay Srinivasan, ex-CEO of Aditya Birla Capital, heads our Advisory Board. Would you like to know about others?
+[2025-04-29T14:39:18.641+00:00] user: Am already impressed by the team.
+[2025-04-29T14:39:21.836+00:00] user: Give me the specifics of what
+[2025-04-29T14:39:22.500+00:00] user: fund?
+[2025-04-29T14:39:36.368+00:00] assistant: You're referring to the Multi-Yield Series 1 AIF. It's a Category-2 AIF with a term of 4 years 11 months and a fundraising target of 1000 crore. The minimum investment is 1 crore.
+[2025-04-29T14:39:45.732+00:00] user: So what kind of
+[2025-04-29T14:39:47.850+00:00] user: kind of companies do you invest in?
+[2025-04-29T14:39:56.698+00:00] assistant: We invest in performing credit, meaning loans to financially sound, operating companies.  This excludes distressed or turnaround situations. Our portfolio is diversified across sectors. Does that make sense?
+[2025-04-29T14:40:08.284+00:00] user: It does. Can you give me some examples?
+[2025-04-29T14:40:11.528+00:00] assistant: Certainly. We allocate to three main areas. Financials which is 20-30% in mid-sized NBFCs, Corporate Finance which is 40-60% in capital market related companies and near 20% in developer finance for residential projects.

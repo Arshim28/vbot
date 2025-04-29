@@ -20,8 +20,31 @@ logger.remove(0)
 logger.add(sys.stderr, level="INFO")
 
 INSTRUCTION_FILE = Path(__file__).parent.parent / "prompts" / "analyst_system_prompt.txt"
+HIGHLIGHT_INSTRUCTION_FILE = Path(__file__).parent.parent / "prompts" / "call_highlight_prompt.txt"
+
 with open(INSTRUCTION_FILE, "r") as f:
     INSTRUCTION = f.read()
+
+# Create call_highlight_prompt.txt if it doesn't exist
+if not HIGHLIGHT_INSTRUCTION_FILE.exists():
+    with open(HIGHLIGHT_INSTRUCTION_FILE, "w") as f:
+        f.write("""You are analyzing a sales call transcript. Your task is to extract key information that would be valuable for future conversations with this client.
+
+Focus on extracting:
+1. Client's specific investment goals and priorities
+2. Key concerns or objections raised
+3. Personal details mentioned (family, career, etc.)
+4. Investment history or preferences
+5. Timeline for decision making
+
+Format this as a clear, concise summary that can be quickly referenced by an agent before speaking with this client again.
+
+Keep your response under 200 words, focusing on the most relevant and actionable insights.
+""")
+    logger.info(f"Created call highlight prompt at {HIGHLIGHT_INSTRUCTION_FILE}")
+else:
+    with open(HIGHLIGHT_INSTRUCTION_FILE, "r") as f:
+        HIGHLIGHT_INSTRUCTION = f.read()
 
 client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
 db = VoiceAgentDB()
@@ -100,6 +123,68 @@ async def read_previous_expert_suggestion(client_id: str) -> str:
         logger.error(f"Error reading previous expert suggestion: {e}")
         return ""
 
+async def generate_call_highlight(transcript: str, client_id: str) -> str:
+    """Generate a concise highlight of key client information from the transcript"""
+    if not transcript:
+        return "No transcript data available for highlights."
+    
+    logger.info("Generating call highlights")
+    
+    config = types.GenerateContentConfig(
+        temperature=0.2,
+        top_p=0.95,
+        top_k=40,
+        max_output_tokens=1024,
+    )
+    
+    try:
+        response = await client.aio.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=f"{HIGHLIGHT_INSTRUCTION}\n\nTRANSCRIPT:\n{transcript}",
+            config=config,
+        )
+        highlights = response.text
+        logger.info("Call highlights generated successfully")
+        return highlights
+    except Exception as e:
+        logger.error(f"Error generating call highlights: {e}")
+        return f"Error generating call highlights: {str(e)}"
+
+async def write_call_highlight(highlight: str, client_id: str) -> None:
+    """Write call highlights to a client-specific file"""
+    try:
+        # Ensure call_highlights directory exists
+        highlight_dir = Path(__file__).parent.parent / "call_highlights"
+        os.makedirs(highlight_dir, exist_ok=True)
+        
+        # Write to the client-specific highlight file
+        highlight_file = highlight_dir / f"{client_id}_highlights.txt"
+        with open(highlight_file, "w") as f:
+            f.write(highlight)
+        logger.info(f"Call highlights written to {highlight_file}")
+    except Exception as e:
+        logger.error(f"Error writing call highlights: {e}")
+
+async def read_previous_call_highlight(client_id: str) -> str:
+    """Read previous call highlight for this client if it exists"""
+    try:
+        highlight_file = Path(__file__).parent.parent / "call_highlights" / f"{client_id}_highlights.txt"
+        
+        if not highlight_file.exists():
+            logger.info(f"No previous call highlight found for client {client_id}")
+            return ""
+        
+        with open(highlight_file, "r") as f:
+            highlight = f.read()
+            
+        if highlight and highlight != "No transcript data available for highlights.":
+            logger.info(f"Found previous call highlight for client {client_id}")
+            return f"\n\n=== PREVIOUS CALL HIGHLIGHT ===\n\n{highlight}"
+        return ""
+    except Exception as e:
+        logger.error(f"Error reading previous call highlight: {e}")
+        return ""
+
 async def analyze_conversation(transcript: str, client_id: str, previous_data: str = "", previous_suggestion: str = "") -> str:
     if not transcript:
         return "No transcript data available for analysis."
@@ -176,6 +261,10 @@ async def main() -> None:
     
     # Get previous expert suggestion if available
     previous_suggestion = await read_previous_expert_suggestion(client_id)
+    
+    # Generate and save call highlights
+    highlight = await generate_call_highlight(transcript, client_id)
+    await write_call_highlight(highlight, client_id)
     
     # Analyze the conversation
     analysis = await analyze_conversation(transcript, client_id, previous_data, previous_suggestion)

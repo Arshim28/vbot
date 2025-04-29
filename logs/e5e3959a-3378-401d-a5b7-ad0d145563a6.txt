@@ -1,0 +1,10 @@
+[2025-04-29T21:35:31.277+00:00] user: Hi.
+[2025-04-29T21:35:36.268+00:00] assistant: Hello, this is Neha from Mosaic Asset Management. We offer alternative investment solutions. Is now a brief moment to see if our approach might align with your interests?
+[2025-04-29T21:35:46.724+00:00] user: Hi, Neha. Yeah. Sure. Please go ahead.
+[2025-04-29T21:35:49.857+00:00] assistant: Great. What are you generally looking for in investments right now?
+[2025-04-29T21:35:55.172+00:00] user: I I don't know. You called me.
+[2025-04-29T21:35:58.008+00:00] assistant: Understood.  Mosaic focuses on Alternate Investment Funds or AIFs. Are you familiar with AIFs? If not, no worries, I can briefly explain.
+[2025-04-29T21:36:08.904+00:00] user: Find the dates.
+[2025-04-29T21:36:16.607+00:00] assistant: I don't have that specific detail right now, but I can note it down and have our team follow up.
+[2025-04-29T21:36:20.855+00:00] user: No. No. I I said that I'm fine with AIFs.
+[2025-04-29T21:36:23.887+00:00] assistant: Apologies.  I misunderstood.
