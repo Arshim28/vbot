@@ -14,7 +14,8 @@ from firestore_db import VoiceAgentDB
 from dotenv import load_dotenv
 from loguru import logger
 
-load_dotenv(dotenv_path='.env')
+# Load .env from project root
+load_dotenv(dotenv_path=Path(__file__).parent.parent / '.env')
 
 API_KEY = os.getenv("GOOGLE_API_KEY")
 DEFAULT_MODEL_NAME = "gemini-2.0-flash"

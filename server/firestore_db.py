@@ -1,12 +1,15 @@
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
-import datetime
 import uuid
 import json
+import datetime
+from pathlib import Path
+import firebase_admin
+from firebase_admin import firestore
+from firebase_admin import credentials
+
+SERVICE_ACCOUNT_KEY_PATH = Path(__file__).parent.parent / 'serviceAccountKey.json'
 
 class VoiceAgentDB:
-    def __init__(self, service_account_path='/Users/sparsh/Desktop/vbot/serviceAccountKey.json'):
+    def __init__(self, service_account_path=SERVICE_ACCOUNT_KEY_PATH):
         try:
             firebase_admin.get_app()
         except ValueError:
@@ -15,7 +18,7 @@ class VoiceAgentDB:
         
         self.db = firestore.client()
     
-    def add_customer(self, first_name, last_name, phone_number, room_id=None, room_url=None,        job_business=None, city=None, email=None):
+    def add_customer(self, first_name, last_name, phone_number, room_id=None, room_url=None, job_business=None, city=None, email=None):
         customer_data = {
             'firstName': first_name,
             'lastName': last_name,

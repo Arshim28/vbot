@@ -42,7 +42,8 @@ sys.path.append(str(Path(__file__).parent.parent))
 from runner import configure
 from interruption_observer import BotInterruptionObserver
 
-load_dotenv(dotenv_path='.env')
+# Load .env from project root
+load_dotenv(dotenv_path=Path(__file__).parent.parent / '.env')
 
 logger.remove(0)
 logger.add(sys.stderr, level="INFO")
@@ -51,8 +52,9 @@ SYSTEM_INSTRUCTION_FILE = Path(__file__).parent.parent / "prompts" / "bot_system
 with open(SYSTEM_INSTRUCTION_FILE, "r") as f:
     SYSTEM_INSTRUCTION = f.read()
 
-EXPERT_SUGGESTION_DIR = "/Users/sparsh/Desktop/vbot/expert_opinion"
-TRANSCRIPT_LOGDIR = "/Users/sparsh/Desktop/vbot/logs"
+EXPERT_SUGGESTION_DIR = Path(__file__).parent.parent / "expert_opinion"
+TRANSCRIPT_LOGDIR = Path(__file__).parent.parent / "logs"
+
 
 def load_expert_suggestions(client_id):
     os.makedirs(EXPERT_SUGGESTION_DIR, exist_ok=True)

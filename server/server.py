@@ -4,6 +4,7 @@ import argparse
 import subprocess
 from typing import Any, Dict, Tuple
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 import aiohttp
 from dotenv import load_dotenv
@@ -14,7 +15,8 @@ from fastapi.responses import JSONResponse
 from pipecat.transports.services.helpers.daily_rest import DailyRESTHelper, DailyRoomParams
 from firestore_db import VoiceAgentDB
 
-load_dotenv(dotenv_path='.env')
+# Load .env from project root
+load_dotenv(dotenv_path=Path(__file__).parent.parent / '.env')
 
 db = VoiceAgentDB()
 

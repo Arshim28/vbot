@@ -13,7 +13,8 @@ from google.genai import types
 
 from firestore_db import VoiceAgentDB
 
-load_dotenv(dotenv_path='.env')
+# Load .env from project root
+load_dotenv(dotenv_path=Path(__file__).parent.parent / '.env')
 
 logger.remove(0)
 logger.add(sys.stderr, level="INFO")
