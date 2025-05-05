@@ -325,7 +325,7 @@ async def main(call_id, client_id, llm_type="gemini", model_name="gemini-2.0-fla
     # Using Cartesia TTS with appropriate voice
     tts = CartesiaTTSService(
         api_key=os.getenv("CARTESIA_API_KEY"),
-        voice_id="3b554273-4299-48b9-9aaf-eefd438e3941", 
+        voice_id="f8f5f1b2-f02d-4d8e-a40d-fd850a487b3d", 
         model="sonic-2-2025-04-16",
         params=CartesiaTTSService.InputParams(
             language=Language.EN,          
@@ -350,6 +350,12 @@ async def main(call_id, client_id, llm_type="gemini", model_name="gemini-2.0-fla
             {"role": "user", "content": "Begin the conversation."}
         ])
         logger.info("Using Groq-specific context with system message in OpenAILLMContext")
+    
+    else:
+        context = OpenAILLMContext([
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": "Begin the conversation."}
+        ])
 
     context_aggregator = llm.create_context_aggregator(context)
     rtvi = RTVIProcessor(config=RTVIConfig(config=[]))
