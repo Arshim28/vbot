@@ -1,19 +1,18 @@
 import os
 import sys
-import argparse
 import asyncio
-from typing import Dict, List, Optional
+import argparse
 from pathlib import Path
+from typing import Dict, List, Optional
 
-from dotenv import load_dotenv
 from loguru import logger
+from dotenv import load_dotenv
 
 from google import genai
 from google.genai import types
 
 from firestore_db import VoiceAgentDB
 
-# Load .env from project root
 load_dotenv(dotenv_path=Path(__file__).parent.parent / '.env')
 
 logger.remove(0)
@@ -25,7 +24,6 @@ HIGHLIGHT_INSTRUCTION_FILE = Path(__file__).parent.parent / "prompts" / "call_hi
 with open(INSTRUCTION_FILE, "r") as f:
     INSTRUCTION = f.read()
 
-# Create call_highlight_prompt.txt if it doesn't exist
 if not HIGHLIGHT_INSTRUCTION_FILE.exists():
     with open(HIGHLIGHT_INSTRUCTION_FILE, "w") as f:
         f.write("""You are analyzing a sales call transcript. Your task is to extract key information that would be valuable for future conversations with this client.
@@ -66,9 +64,7 @@ async def read_transcript(call_id: str) -> str:
         return ""
 
 async def get_previous_calls_data(client_id: str, max_calls: int = 3) -> str:
-    """Fetch previous calls data from the database"""
     try:
-        # Get previous calls for this client
         previous_calls = db.get_call_history(client_id, limit=max_calls)
         
         if not previous_calls:
@@ -81,12 +77,9 @@ async def get_previous_calls_data(client_id: str, max_calls: int = 3) -> str:
             if not call_id:
                 continue
                 
-            # Get transcript for this call
             transcript = db.get_call_transcript(call_id)
             if not transcript:
                 continue
-                
-            # Format transcript for analysis
             formatted_transcript = "\n".join([
                 f"[{entry.get('timestamp', '')}] {entry.get('speaker', '')}: {entry.get('content', '')}"
                 for entry in transcript

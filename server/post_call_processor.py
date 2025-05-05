@@ -11,6 +11,7 @@ from google.generativeai.types import GenerationConfig
 from typing import Optional, Dict, Any
 
 from firestore_db import VoiceAgentDB
+from sqlite_db import SQLiteVoiceAgentDB
 from dotenv import load_dotenv
 from loguru import logger
 
@@ -34,7 +35,10 @@ class PostCallProcessor:
         self.api_key = api_key
         self.model_name = model_name
         self._configure_genai()
-        self.db_conn = VoiceAgentDB()
+        
+        # Initialize both databases
+        self.firestore_db = VoiceAgentDB()
+        self.sqlite_db = SQLiteVoiceAgentDB()
 
     def _configure_genai(self):
         genai.configure(api_key=self.api_key)
@@ -50,6 +54,10 @@ class PostCallProcessor:
                 
             with open(transcript_path, 'r') as file:
                 transcript_text = file.read()
+            
+            # Save raw transcript to SQLite
+            self.sqlite_db.update_call_transcript(call_id, transcript_text)
+            logger.info(f"Saved raw transcript to SQLite database for call {call_id}")
             
             pattern = r'\[([^\]]+)\]\s+(user|assistant):\s+(.*?)(?=\n\[|$)'
             matches = re.findall(pattern, transcript_text, re.DOTALL)
@@ -153,12 +161,12 @@ class PostCallProcessor:
             logger.error(f"No transcript found for call {call_id}")
             return
             
-        # Store the formatted transcript in the database
-        success = self.db_conn.add_call_transcript(call_id, transcript)
-        if not success:
-            logger.error(f"Failed to add transcript to database for call {call_id}")
+        # Store the formatted transcript in both databases
+        success_firestore = self.firestore_db.add_call_transcript(call_id, transcript)
+        if not success_firestore:
+            logger.error(f"Failed to add transcript to Firestore for call {call_id}")
         else:
-            logger.info(f"Added transcript to database for call {call_id}")
+            logger.info(f"Added transcript to Firestore for call {call_id}")
         
         # Generate structured data from the transcript
         profile_data = await self.generate_structured_json_async(transcript)
@@ -168,27 +176,57 @@ class PostCallProcessor:
         
         # Add the transcript to the profile data
         profile_data["transcript"] = transcript
+        
+        # Get the summary for updating SQLite
+        summary = profile_data.get("callSummary", "Call completed")
+        
+        # Update the SQLite database with the summary
+        try:
+            # Store summary in SQLite - Update this to include a method to store the summary
+            # First convert transcript to string format for SQLite storage
+            transcript_text = ""
+            for entry in transcript:
+                speaker = entry.get("speaker", "")
+                content = entry.get("content", "")
+                timestamp = entry.get("timestamp", "")
+                transcript_text += f"[{timestamp}] {speaker}: {content}\n"
             
-        # End the call in the database with summary and tags
-        success = self.db_conn.end_call(
+            # Save both transcript and summary to SQLite
+            self.sqlite_db.update_call_transcript(call_id, transcript_text)
+            
+            # Add a method to update summary in SQLite
+            # Example: self.sqlite_db.update_call_summary(call_id, summary)
+            # If this method doesn't exist yet, you'll need to implement it
+            if hasattr(self.sqlite_db, 'update_call_summary'):
+                self.sqlite_db.update_call_summary(call_id, summary)
+                logger.info(f"Updated call summary in SQLite for call {call_id}")
+            else:
+                logger.warning("SQLite database doesn't have update_call_summary method. Summary not stored.")
+                
+            logger.info(f"Updated transcript in SQLite database for call {call_id}")
+        except Exception as e:
+            logger.error(f"Failed to update SQLite database: {e}")
+            
+        # End the call in the Firestore database with summary and tags
+        success = self.firestore_db.end_call(
             call_id,
-            profile_data.get("callSummary", "Call completed"),
+            summary,
             profile_data.get("tags", [])
         )
         if not success:
-            logger.error(f"Failed to update call {call_id} as ended in database")
+            logger.error(f"Failed to update call {call_id} as ended in Firestore")
         else:
-            logger.info(f"Call {call_id} marked as ended in database")
+            logger.info(f"Call {call_id} marked as ended in Firestore")
         
         # Update call highlight with profile data
         await self.update_call_highlight(client_id, profile_data)
         
-        # Update the client profile with new information
-        success = self.db_conn.update_client_profile(client_id, profile_data)
+        # Update the client profile in Firestore
+        success = self.firestore_db.update_client_profile(client_id, profile_data)
         if not success:
-            logger.error(f"Failed to update client profile for client {client_id}")
+            logger.error(f"Failed to update client profile in Firestore for client {client_id}")
         else:
-            logger.info(f"Updated client profile for client {client_id}")
+            logger.info(f"Updated client profile in Firestore for client {client_id}")
         
         logger.info(f"Post-call processing completed for call {call_id}")
         
@@ -248,10 +286,8 @@ async def main():
     call_id = args.call_id
     client_id = args.client_id
     
-    logger.info(f"Starting post-call processing for call {call_id}, client {client_id}")
-    
     processor = PostCallProcessor()
     await processor.process(call_id, client_id)
-    
+
 if __name__ == "__main__":
     asyncio.run(main())

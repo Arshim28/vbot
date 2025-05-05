@@ -1,10 +1,3 @@
-/**
- * BFSI Sales Agent Client Implementation
- * 
- * This client connects to a bot server using WebRTC (via Daily).
- * It handles audio streaming and manages the connection lifecycle.
- */
-
 import {
   LogLevel,
   RTVIClient,
@@ -13,9 +6,18 @@ import {
 } from '@pipecat-ai/client-js';
 import { DailyTransport } from '@pipecat-ai/daily-transport';
 
-/**
- * BFSIClientHelper handles custom message types from the bot
- */
+const GEMINI_MODELS = [
+  { id: "gemini-2.5-flash-preview-04-17", name: "Gemini 2.5 Flash Preview" },
+  { id: "gemini-2.0-flash", name: "Gemini 2.0 Flash" },
+  { id: "gemini-2.0-flash-lite", name: "Gemini 2.0 Flash Lite" }
+];
+
+const GROQ_MODELS = [
+  { id: "meta-llama/llama-4-maverick-17b-128e-instruct", name: "Llama 4 Maverick 17B" },
+  { id: "meta-llama/llama-4-scout-17b-16e-instruct", name: "Llama 4 Scout 17B" },
+  { id: "llama-3.3-70b-versatile", name: "Llama 3.3 70B Versatile" }
+];
+
 class BFSIClientHelper extends RTVIClientHelper {
   constructor(contentPanel) {
     super();
@@ -25,9 +27,7 @@ class BFSIClientHelper extends RTVIClientHelper {
   handleMessage(rtviMessage) {
     console.log('BFSI Helper received message:', rtviMessage);
     
-    // Handle any custom message types here if needed
     if (rtviMessage.data) {
-      // Process custom data if present
     }
   }
 
@@ -36,28 +36,21 @@ class BFSIClientHelper extends RTVIClientHelper {
   }
 }
 
-/**
- * SalesAgentClient handles the connection and media management for a real-time
- * voice interaction with the sales agent bot.
- */
 class SalesAgentClient {
   constructor() {
-    // Initialize client state
     this.rtviClient = null;
     this.isSpeaking = false;
     this.authenticated = false;
+    this.selectedLlmType = "gemini";
+    this.selectedModel = "gemini-2.0-flash";
+    
     this.setupDOMElements();
     this.setupEventListeners();
     
-    // Always show login screen on page load/refresh
     this.showLoginScreen();
   }
 
-  /**
-   * Set up references to DOM elements
-   */
   setupDOMElements() {
-    // Auth elements
     this.authPanel = document.getElementById('auth-panel');
     this.mainApp = document.getElementById('main-app');
     this.loginFields = document.getElementById('login-fields');
@@ -74,7 +67,6 @@ class SalesAgentClient {
     this.jobInput = document.getElementById('job');
     this.authMessage = document.getElementById('auth-message');
 
-    // UI control elements
     this.connectBtn = document.getElementById('connect-btn');
     this.disconnectBtn = document.getElementById('disconnect-btn');
     this.statusSpan = document.getElementById('connection-status');
@@ -82,43 +74,104 @@ class SalesAgentClient {
     this.toggleDebugBtn = document.getElementById('toggle-debug');
     this.transcriptContainer = document.getElementById('transcript-container');
     
-    // Audio element for bot's voice
+    this.createModelSelectors();
+    
     this.botAudio = document.getElementById('bot-audio');
     
-    // Default state for debug panel (hidden)
     this.debugLog.parentElement.classList.add('collapsed');
     
-    // Create an empty transcript display
     this.latestTranscriptItem = null;
   }
 
-  /**
-   * Set up event listeners for UI controls
-   */
+  createModelSelectors() {
+    const modelSelectionDiv = document.createElement('div');
+    modelSelectionDiv.className = 'model-selection';
+    modelSelectionDiv.innerHTML = `
+      <h3>LLM Model Selection</h3>
+      <div class="form-group">
+        <label for="llm-type">LLM Provider:</label>
+        <select id="llm-type">
+          <option value="gemini">Google Gemini</option>
+          <option value="groq">Groq</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="model-name">Model:</label>
+        <select id="model-name"></select>
+      </div>
+    `;
+    
+    const mainContent = document.querySelector('.main-content');
+    const botContainer = mainContent.querySelector('.bot-container'); // Get the bot container
+    
+    if (mainContent && botContainer) {
+        mainContent.insertBefore(modelSelectionDiv, botContainer);
+    } else {
+        console.error("Could not find main-content or bot-container to insert model selectors.");
+        if (mainContent) {
+            mainContent.appendChild(modelSelectionDiv);
+        }
+    }
+    
+    this.llmTypeSelect = document.getElementById('llm-type');
+    this.modelNameSelect = document.getElementById('model-name');
+    
+    this.updateModelOptions("gemini");
+  }
+
+  updateModelOptions(llmType) {
+    this.modelNameSelect.innerHTML = '';
+    const models = llmType === "gemini" ? GEMINI_MODELS : GROQ_MODELS;
+    
+    models.forEach(model => {
+      const option = document.createElement('option');
+      option.value = model.id;
+      option.textContent = model.name;
+      this.modelNameSelect.appendChild(option);
+    });
+    
+    this.selectedModel = models[0].id;
+  }
+
   setupEventListeners() {
-    // Auth event listeners
     this.showRegisterLink.addEventListener('click', (e) => {
+      console.log('Show register link clicked');
       e.preventDefault();
       this.loginFields.classList.add('hidden');
       this.registerFields.classList.remove('hidden');
+      console.log('Toggled visibility for register form');
     });
 
     this.showLoginLink.addEventListener('click', (e) => {
+      console.log('Show login link clicked');
       e.preventDefault();
       this.registerFields.classList.add('hidden');
       this.loginFields.classList.remove('hidden');
+      console.log('Toggled visibility for login form');
     });
 
-    this.loginBtn.addEventListener('click', () => this.login());
-    this.registerBtn.addEventListener('click', () => this.register());
+    this.loginBtn.addEventListener('click', () => {
+      console.log('Login button clicked');
+      this.login();
+    });
+    this.registerBtn.addEventListener('click', () => {
+      console.log('Register button clicked');
+      this.register();
+    });
 
-    // Call control event listeners
     this.connectBtn.addEventListener('click', () => this.connect());
     this.disconnectBtn.addEventListener('click', () => this.disconnect());
-    
-    // Toggle debug panel visibility
     this.toggleDebugBtn.addEventListener('click', () => {
       this.debugLog.parentElement.classList.toggle('collapsed');
+    });
+    
+    this.llmTypeSelect.addEventListener('change', (e) => {
+      this.selectedLlmType = e.target.value;
+      this.updateModelOptions(this.selectedLlmType);
+    });
+    
+    this.modelNameSelect.addEventListener('change', (e) => {
+      this.selectedModel = e.target.value;
     });
     
     // Bot audio state events
@@ -139,7 +192,7 @@ class SalesAgentClient {
       // Notify server that call is ending
       try {
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://localhost:7860/analyze', false);
+        xhr.open('POST', '/analyze', false);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify({}));
       } catch (e) {
@@ -169,8 +222,10 @@ class SalesAgentClient {
       return;
     }
     
+    console.log('Attempting login with phone number:', phone);
+    
     try {
-      const response = await fetch('http://localhost:7860/login', {
+      const response = await fetch('/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -180,6 +235,8 @@ class SalesAgentClient {
         }),
       });
       
+      console.log('Login response status:', response.status);
+      
       if (response.ok) {
         this.authenticated = true;
         this.showMainApp();
@@ -188,13 +245,15 @@ class SalesAgentClient {
         // Try to parse the error message if available
         try {
           const data = await response.json();
+          console.error('Login error response:', data);
           this.showAuthMessage(data.message || 'Login failed. User not found.', 'error');
         } catch (jsonError) {
+          console.error('Failed to parse login error:', jsonError);
           this.showAuthMessage('Login failed. User not found.', 'error');
         }
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Login fetch error:', error);
       this.showAuthMessage('Error connecting to server. Please try again.', 'error');
     }
   }
@@ -216,8 +275,10 @@ class SalesAgentClient {
       return;
     }
     
+    console.log('Attempting registration with data:', { phone, firstName, lastName, email, city, job });
+    
     try {
-      const response = await fetch('http://localhost:7860/register', {
+      const response = await fetch('/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -232,6 +293,8 @@ class SalesAgentClient {
         }),
       });
       
+      console.log('Registration response status:', response.status);
+      
       if (response.ok) {
         this.authenticated = true;
         this.showMainApp();
@@ -240,13 +303,15 @@ class SalesAgentClient {
         // Try to parse the error message if available
         try {
           const data = await response.json();
+          console.error('Registration error response:', data);
           this.showAuthMessage(data.message || 'Registration failed', 'error');
         } catch (jsonError) {
+          console.error('Failed to parse registration error:', jsonError);
           this.showAuthMessage('Registration failed', 'error');
         }
       }
     } catch (error) {
-      console.error('Registration error:', error);
+      console.error('Registration fetch error:', error);
       this.showAuthMessage('Error connecting to server. Please try again.', 'error');
     }
   }
@@ -320,7 +385,7 @@ class SalesAgentClient {
       
       const roleElem = document.createElement('div');
       roleElem.className = 'role';
-      roleElem.textContent = role === 'user' ? 'You' : 'Ashok';
+      roleElem.textContent = role === 'user' ? 'You' : 'Neha';
       
       const contentElem = document.createElement('div');
       contentElem.className = 'content';
@@ -408,40 +473,17 @@ class SalesAgentClient {
         return;
       }
       
-      // First, notify the server about the connection (this triggers bot start)
-      this.log('Sending connect request to server...');
-      const connectResponse = await fetch('http://localhost:7860/connect', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({}) // Empty object since server doesn't need client ID
-      });
+      // Remove the explicit GET /join call - RTVIClient will handle connection via POST /connect
+      this.log('Initializing RTVI client...');
       
-      if (!connectResponse.ok) {
-        let errorMsg = 'Unknown error';
-        try {
-          const error = await connectResponse.json();
-          errorMsg = error.detail || 'Connection failed';
-        } catch (e) {
-          errorMsg = connectResponse.statusText;
-        }
-        this.log(`Error connecting: ${errorMsg}`);
-        return;
-      }
-      
-      // Get connection info from response (though we don't actually use it)
-      await connectResponse.json();
-      
-      this.log('Connection request successful, initializing RTVI client...');
-      
-      // Initialize the RTVI client with a Daily WebRTC transport - IMPORTANT: use baseUrl/endpoints approach
+      // Initialize the RTVI client with a Daily WebRTC transport
       this.rtviClient = new RTVIClient({
         transport: new DailyTransport(),
         params: {
-          baseUrl: 'http://localhost:7860',
+          // Pass LLM params to the /connect endpoint RTVIClient will call
+          baseUrl: window.location.origin, 
           endpoints: {
-            connect: '/connect',
+            connect: `/connect?llm_type=${this.selectedLlmType}&model_name=${encodeURIComponent(this.selectedModel)}`,
           }
         },
         enableMic: true,
@@ -459,6 +501,8 @@ class SalesAgentClient {
             this.connectBtn.disabled = false;
             this.disconnectBtn.disabled = true;
             this.log('Client disconnected');
+            // Optional: Automatically trigger analysis on disconnect?
+            // this.analyzeCall(); 
           },
           // Transport state changes
           onTransportStateChanged: (state) => {
@@ -518,7 +562,7 @@ class SalesAgentClient {
       this.log('Initializing devices...');
       await this.rtviClient.initDevices();
 
-      // Connect to the bot
+      // Connect to the bot - This will now trigger the POST /connect call
       this.log('Connecting to bot...');
       await this.rtviClient.connect();
 
@@ -570,7 +614,7 @@ class SalesAgentClient {
   async analyzeCall() {
     try {
       this.log('Requesting call analysis...');
-      const response = await fetch('http://localhost:7860/analyze', {
+      const response = await fetch('/analyze', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

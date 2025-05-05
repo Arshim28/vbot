@@ -1,0 +1,47 @@
+# Client Profile
+Client Type: null
+Minimum Investment Capacity: Unknown
+Investor Sophistication: novice
+Attitude: skeptic
+
+# Latest Call Summary
+Cold call. The client did not engage with the assistant, refused to answer questions, and ended the call prematurely. No interest in current offering or further contact.
+
+# Key Notes
+The client was unwilling to provide any information about their investment preferences or goals and quickly ended the call.
+
+
+# Full Conversation
+[May 05, 2025 at 04:36:09 PM UTC+5:30] Neha: Hello, this is Neha from Mosaic Asset Management. We offer alternative investment solutions. Is now a brief moment to see if our approach might align with your interests?
+[May 05, 2025 at 04:36:22 PM UTC+5:30] Client: Hi. Do you know my name?
+[May 05, 2025 at 04:36:25 PM UTC+5:30] Neha: My apologies, I don't have your name on file at the moment. How should I address you?
+[May 05, 2025 at 04:36:33 PM UTC+5:30] Client: We can skip it. Please go ahead.
+[May 05, 2025 at 04:36:38 PM UTC+5:30] Neha: Understood. Thank you. At Mosaic, we focus on Alternate Investment Funds, specifically in private credit. To help tailor this call, could you share what you're generally looking for in investments right now?
+[May 05, 2025 at 04:36:55 PM UTC+5:30] Client: I don't know. What do guys
+[May 05, 2025 at 04:36:57 PM UTC+5:30] Neha: We manage Alternate Investment Funds focused on private credit for sophisticated investors. Our current fund, Multi-Yield Series 1, invests in performing company loans. What sort of returns or goals are you considering for your investments?
+[May 05, 2025 at 04:37:12 PM UTC+5:30] Client: Nothing specific.
+[May 05, 2025 at 04:37:12 PM UTC+5:30] Client: What do you guys offer?
+[May 05, 2025 at 04:37:16 PM UTC+5:30] Neha: We currently offer Multi-Yield Series 1, a Category 2 AIF. It invests in performing company loans. Expected net yield to investors is around 10%. To see if it's relevant for you, could you tell me a little about your investment goals or what you're hoping to achieve?
+[May 05, 2025 at 04:37:35 PM UTC+5:30] Client: I am not looking to invest in this
+[May 05, 2025 at 04:37:36 PM UTC+5:30] Client: one.
+[May 05, 2025 at 04:37:42 PM UTC+5:30] Neha: Okay, I understand you're not looking at this fund right now. No problem at all. Could I ask briefly what type of investments you might be considering, just
+[May 05, 2025 at 04:37:52 PM UTC+5:30] Client: No. It's it's okay. We we we can end the call.
+[May 05, 2025 at 04:37:54 PM UTC+5:30] Neha: Understood. Thank you for your time. Would
+[May 05, 2025 at 04:37:58 PM UTC+5:30] Client: No. That's fine.
+[May 05, 2025 at 04:38:00 PM UTC+5:30] Neha: Alright, thank you. Have a good day.
+
+
+# Previous Highlights (2025-05-05 16:38:32)
+**Client Summary:**
+
+*   **Investment Goals/Priorities:** Unclear. Client did not express any specific investment goals or priorities.
+*   **Key Concerns/Objections:** Client stated they are "not looking to invest in this one" (referring to Multi-Yield Series 1). Unwilling to discuss alternative investment interests.
+*   **Personal Details:** None revealed.
+*   **Investment History/Preferences:** Unknown.
+*   **Timeline:** Not applicable, client ended the call abruptly.
+
+**Actionable Insights:**
+
+*   The client was unreceptive to the initial offering and unwilling to discuss investment preferences.
+*   Future contact should be approached cautiously, perhaps with a different offering or a more general inquiry about market interests before pitching a specific product.
+*   Determine the source of the lead to understand potential pre-existing knowledge or expectations.

@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BFSI Sales Agent</title>
+  <link rel="stylesheet" href="/src/style.css">
 </head>
 
 <body>
@@ -81,8 +82,19 @@
     </div>
   </div>
 
+  <script>
+    // Check connection to API server on page load
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await fetch('/');
+        console.log('API server connection test:', response.status);
+      } catch (error) {
+        console.error('API server connection failed:', error);
+        alert('Cannot connect to API server. Please make sure the server is running');
+      }
+    });
+  </script>
   <script type="module" src="/src/app.js"></script>
-  <link rel="stylesheet" href="/src/style.css">
 </body>
 
 </html>

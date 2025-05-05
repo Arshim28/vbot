@@ -1,6 +1,7 @@
-def main():
-    print("Hello from vbot!")
-
+import os
+import sys
+from server.server import app
+import uvicorn
 
 if __name__ == "__main__":
-    main()
+    uvicorn.run(app, host="0.0.0.0", port=7860)

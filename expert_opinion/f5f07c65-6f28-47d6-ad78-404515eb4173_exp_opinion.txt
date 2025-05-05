@@ -1,0 +1,13 @@
+Okay, I understand the task. Please provide the full conversation transcript.
+
+The snippet you've shared:
+
+```
+[2025-05-05T13:11:07.830+00:00] assistant: Hello, this is Neha from Mosaic Asset Management. We offer alternative investment solutions. Is
+```
+
+...is only the very beginning of the sales agent's opening line. It contains **no information** about the client or the subsequent conversation.
+
+**To perform the requested analysis, I need the complete transcript of the interaction between the sales agent (Neha) and the potential client.**
+
+Once you provide the full transcript, I will analyze it according to the 12 parameters you've listed and provide concise, evidence-based points for each.

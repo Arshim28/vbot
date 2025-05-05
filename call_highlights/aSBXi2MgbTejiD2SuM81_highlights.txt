@@ -1,0 +1,33 @@
+# Client Profile
+Client Type: null
+Minimum Investment Capacity: Unknown
+Investor Sophistication: null
+Attitude: null
+
+# Latest Call Summary
+The call was very brief. The client responded with a dismissive question implying they believe it's a time when people are leaving or leads are given.
+
+# Key Notes
+Client's response suggests a dismissive or sarcastic attitude, possibly indicating prior negative experiences with similar calls.
+
+
+# Full Conversation
+[May 05, 2025 at 05:47:13 PM UTC+5:30] Neha: Hello, this is Neha from Mosaic Asset Management. We offer alternative investment solutions. Is now a brief moment to see if our approach might align with your interests?
+[May 05, 2025 at 05:47:42 PM UTC+5:30] Client: Is it the time when I'm given leads?
+[May 05, 2025 at 05:47:44 PM UTC+5:30] Client: Is this the time where
+[May 05, 2025 at 05:47:45 PM UTC+5:30] Client: everyone leaves?
+
+
+# Previous Highlights (2025-05-05 17:48:14)
+**Client Summary:**
+
+*   **Investment Goals/Priorities:** Undetermined. The call did not progress far enough to ascertain any investment goals or priorities.
+*   **Key Concerns/Objections:** Appears skeptical of unsolicited calls and lead generation tactics. Expressed concern about people leaving.
+*   **Personal Details:** None mentioned.
+*   **Investment History/Preferences:** Unknown.
+*   **Timeline:** Undetermined.
+
+**Actionable Insights:**
+
+*   The client seems immediately wary of sales calls. A different approach than a cold call may be necessary.
+*   Address the client's concern about people leaving early in any future conversation.

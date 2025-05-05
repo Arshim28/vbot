@@ -1,0 +1,5 @@
+[2025-05-05T11:16:17.660+00:00] assistant: Hello, this is Neha from Mosaic Asset Management. We offer alternative investment solutions. Is now a brief moment to see if our approach might align with your interests?
+[2025-05-05T11:16:30.842+00:00] user: We have chatted before.
+[2025-05-05T11:16:32.481+00:00] assistant: Hi, Neha from Mosaic Asset Management. What's on your mind today?
+[2025-05-05T11:16:39.477+00:00] user: What was our last conversation?
+[2025-05-05T11:16:41.179+00:00] assistant: We last spoke very briefly on May 5th. It seemed there was some confusion about who I was, as you thought I was someone named William. We didn't get a chance to discuss any investments.

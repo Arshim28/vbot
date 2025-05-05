@@ -1,0 +1,4 @@
+[2025-05-05T12:17:13.788+00:00] assistant: Hello, this is Neha from Mosaic Asset Management. We offer alternative investment solutions. Is now a brief moment to see if our approach might align with your interests?
+[2025-05-05T12:17:42.737+00:00] user: Is it the time when I'm given leads?
+[2025-05-05T12:17:44.274+00:00] user: Is this the time where
+[2025-05-05T12:17:45.213+00:00] user: everyone leaves?

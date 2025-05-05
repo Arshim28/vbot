@@ -1,0 +1,17 @@
+[2025-05-05T11:06:09.970+00:00] assistant: Hello, this is Neha from Mosaic Asset Management. We offer alternative investment solutions. Is now a brief moment to see if our approach might align with your interests?
+[2025-05-05T11:06:22.135+00:00] user: Hi. Do you know my name?
+[2025-05-05T11:06:25.927+00:00] assistant: My apologies, I don't have your name on file at the moment. How should I address you?
+[2025-05-05T11:06:33.272+00:00] user: We can skip it. Please go ahead.
+[2025-05-05T11:06:38.107+00:00] assistant: Understood. Thank you. At Mosaic, we focus on Alternate Investment Funds, specifically in private credit. To help tailor this call, could you share what you're generally looking for in investments right now?
+[2025-05-05T11:06:55.033+00:00] user: I don't know. What do guys
+[2025-05-05T11:06:57.521+00:00] assistant: We manage Alternate Investment Funds focused on private credit for sophisticated investors. Our current fund, Multi-Yield Series 1, invests in performing company loans. What sort of returns or goals are you considering for your investments?
+[2025-05-05T11:07:12.103+00:00] user: Nothing specific.
+[2025-05-05T11:07:12.952+00:00] user: What do you guys offer?
+[2025-05-05T11:07:16.901+00:00] assistant: We currently offer Multi-Yield Series 1, a Category 2 AIF. It invests in performing company loans. Expected net yield to investors is around 10%. To see if it's relevant for you, could you tell me a little about your investment goals or what you're hoping to achieve?
+[2025-05-05T11:07:35.932+00:00] user: I am not looking to invest in this
+[2025-05-05T11:07:36.833+00:00] user: one.
+[2025-05-05T11:07:42.059+00:00] assistant: Okay, I understand you're not looking at this fund right now. No problem at all. Could I ask briefly what type of investments you might be considering, just
+[2025-05-05T11:07:52.080+00:00] user: No. It's it's okay. We we we can end the call.
+[2025-05-05T11:07:54.196+00:00] assistant: Understood. Thank you for your time. Would
+[2025-05-05T11:07:58.070+00:00] user: No. That's fine.
+[2025-05-05T11:08:00.811+00:00] assistant: Alright, thank you. Have a good day.

@@ -11,6 +11,18 @@ export default defineConfig({
             '/analyze': {
                 target: 'http://0.0.0.0:7860',
                 changeOrigin: true,
+            },
+            '/login': {
+                target: 'http://0.0.0.0:7860',
+                changeOrigin: true,
+            },
+            '/register': {
+                target: 'http://0.0.0.0:7860',
+                changeOrigin: true,
+            },
+            '/join': {
+                target: 'http://0.0.0.0:7860',
+                changeOrigin: true,
             }
         },
     },
