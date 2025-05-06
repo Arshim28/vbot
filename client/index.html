@@ -29,23 +29,30 @@
         <div id="register-fields" class="hidden">
           <div class="form-group">
             <label for="firstname">First Name</label>
-            <input type="text" id="firstname" placeholder="Enter your first name">
+            <input type="text" id="firstname" placeholder="Enter your first name" required>
           </div>
           <div class="form-group">
             <label for="lastname">Last Name</label>
-            <input type="text" id="lastname" placeholder="Enter your last name">
+            <input type="text" id="lastname" placeholder="Enter your last name" required>
           </div>
           <div class="form-group">
-            <label for="email">Email (Optional)</label>
-            <input type="email" id="email" placeholder="Enter your email">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Enter your email" required>
           </div>
           <div class="form-group">
-            <label for="city">City (Optional)</label>
-            <input type="text" id="city" placeholder="Enter your city">
+            <label for="city">City</label>
+            <input type="text" id="city" placeholder="Enter your city" required>
           </div>
           <div class="form-group">
-            <label for="job">Job/Business (Optional)</label>
-            <input type="text" id="job" placeholder="Enter your job or business">
+            <label for="job">Job/Business</label>
+            <input type="text" id="job" placeholder="Enter your job or business" required>
+          </div>
+          <div class="form-group">
+            <label for="investor-type">Investor Type</label>
+            <select id="investor-type" required>
+              <option value="individual">Individual Investor</option>
+              <option value="managed">Managed Fund</option>
+            </select>
           </div>
           <button id="register-btn" class="primary-btn">Register</button>
           <p>Already registered? <a href="#" id="show-login">Login here</a></p>

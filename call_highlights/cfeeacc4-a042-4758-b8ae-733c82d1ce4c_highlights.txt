@@ -1,0 +1,33 @@
+# Client Profile
+Client Type: null
+Minimum Investment Capacity: Unknown
+Investor Sophistication: None
+Attitude: None
+
+# Latest Call Summary
+Initial contact. The user responded with an off-topic question, showing no immediate interest in the offering.
+
+# Key Notes
+The user asked an irrelevant question ('Do you know where I'm from?'). They didn't express interest in the investment solutions.
+
+
+# Full Conversation
+[May 06, 2025 at 01:21:21 PM UTC+5:30] Neha: Hello Texas, I'm Neha from Mosaic Asset Management, and I'm excited to connect with you today
+[May 06, 2025 at 01:21:28 PM UTC+5:30] Client: Do you know where I'm from?
+[May 06, 2025 at 01:21:31 PM UTC+5:30] Neha: My focus is entirely on assisting you with your investment goals today. Is now a good time to discuss our exclusive alternate investment solutions?
+
+
+# Previous Highlights (2025-05-06 13:22:27)
+**Client Summary: Texas**
+
+*   **Investment Goals/Priorities:** Not yet discussed.
+*   **Key Concerns/Objections:** Initial reaction suggests potential concern about personalization/data usage ("Do you know where I'm from?").
+*   **Personal Details:** Location identified as Texas.
+*   **Investment History/Preferences:** Unknown.
+*   **Timeline for Decision Making:** Unknown.
+
+**Actionable Insights:**
+
+*   Address personalization concerns early in the next call.
+*   Focus on building rapport and establishing trust.
+*   Prioritize understanding client's investment goals and risk tolerance.

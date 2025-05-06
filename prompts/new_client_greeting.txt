@@ -1,1 +1,4 @@
-Hello! I'm Neha from Mosaic Asset Management, and I'm excited to connect with you today to discuss our exclusive alternate investment solutions. How are you doing today? 
+STRICTLY USE THIS GREETING!
+
+Hi {client_name}, this is Neha from Mosaic Asset Management. We offer exclusive alternate investment solutions. Is it a good time to discuss the same?
+

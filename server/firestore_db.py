@@ -41,59 +41,52 @@ class VoiceAgentDB:
         
         return customer_ref.id
     
-    def add_customer_with_id(self, client_id, first_name, last_name, phone_number, room_id=None, room_url=None, job_business=None, city=None, email=None):
+    def add_customer_with_id(self, client_id: str, first_name: str, 
+                               last_name: str, phone_number: str,
+                               email: str = None, city: str = None, 
+                               job_business: str = None, investor_type: str = "individual"):
         """
-        Add a customer with a specific ID.
+        Add a customer with a specific ID to Firestore.
         
         Args:
-            client_id: The explicit ID to use for the customer
+            client_id: The specified ID for the customer
             first_name: Customer's first name
             last_name: Customer's last name
             phone_number: Customer's phone number
-            room_id: Optional room ID
-            room_url: Optional room URL
-            job_business: Optional job or business info
-            city: Optional city
-            email: Optional email
-            
+            email: Customer's email address
+            city: Customer's city
+            job_business: Customer's job or business
+            investor_type: Type of investor (individual or managed)
+        
         Returns:
-            The client ID (same as input client_id)
+            The added customer's ID
         """
         # First check if a customer with this phone number already exists
-        existing_id, _ = self.get_customer_by_phone(phone_number)
-        if existing_id:
-            return existing_id
+        existing_customer = self.get_customer_by_phone(phone_number)
+        if existing_customer[0]:
+            return existing_customer[0]  # Return existing customer ID
             
         # Check if a customer with this ID already exists
-        doc_ref = self.db.collection('customers').document(client_id)
-        doc = doc_ref.get()
-        if doc.exists:
-            return client_id
-        
-        # Create the customer data
-        customer_data = {
+        customer_ref = self.db.collection('customers').document(client_id)
+        if customer_ref.get().exists:
+            return client_id  # Return ID if it already exists
+            
+        # Add the customer with the provided ID
+        customer_ref.set({
             'firstName': first_name,
             'lastName': last_name,
             'phoneNumber': phone_number,
-            'jobBusiness': job_business,
-            'city': city,
-            'email': email,
-            'dateCreated': firestore.SERVER_TIMESTAMP,
-            'lastUpdated': firestore.SERVER_TIMESTAMP,
-            'lastContacted': None,
-            'status': 'active',
-            'RoomId': room_id,
-            'RoomURL': room_url
-        }
+            'email': email or '',
+            'city': city or '',
+            'jobBusiness': job_business or '',
+            'investorType': investor_type,
+            'createdAt': firestore.SERVER_TIMESTAMP
+        })
         
-        # Set document with explicit ID
-        try:
-            doc_ref.set(customer_data)
-            self._initialize_customer_profile(client_id)
-            return client_id
-        except Exception as e:
-            print(f"Error in add_customer_with_id (Firestore): {e}")
-            return None
+        # Create an initial profile document
+        self._initialize_customer_profile(client_id)
+        
+        return client_id
     
     def get_customer_by_phone(self, phone_number):
         query = self.db.collection('customers').where('phoneNumber', '==', phone_number).limit(1)

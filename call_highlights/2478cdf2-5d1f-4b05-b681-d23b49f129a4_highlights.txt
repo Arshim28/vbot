@@ -1,0 +1,37 @@
+# Client Profile
+Client Type: null
+Minimum Investment Capacity: Unknown
+Investor Sophistication: novice
+Attitude: null
+
+# Latest Call Summary
+The call involved introducing the concept of AIFs to a client who was unfamiliar with them. The client expressed initial interest in learning about the offerings.
+
+# Key Notes
+The client is unfamiliar with AIFs and alternative investments, indicating a need for basic education. The client asked about offerings, showing some initial interest.
+
+
+# Full Conversation
+[May 06, 2025 at 12:34:23 PM UTC+5:30] Neha: Hi Weird, it's Neha from Mosaic Asset Management calling you back. I hope things have been going well since we last spoke. How have you been?
+[May 06, 2025 at 12:34:33 PM UTC+5:30] Client: I'm fine.
+[May 06, 2025 at 12:34:34 PM UTC+5:30] Neha: What are you generally looking for in investments right now?
+[May 06, 2025 at 12:34:40 PM UTC+5:30] Client: I don't know what are your offerings.
+[May 06, 2025 at 12:34:46 PM UTC+5:30] Neha: We offer alternative investment solutions. Are you familiar with AIFs?
+[May 06, 2025 at 12:34:53 PM UTC+5:30] Client: No. I'm not.
+[May 06, 2025 at 12:35:14 PM UTC+5:30] Neha: An AIF, or Alternate Investment Fund, pools money like a mutual fund but often invests in less common areas. I can brief you on our current product, Multi-Yield Series 1, if you're interested?
+
+
+# Previous Highlights (2025-05-06 12:35:56)
+**Client Summary: Weird**
+
+*   **Investment Goals/Priorities:** Unclear. Client needs education on investment options.
+*   **Key Concerns/Objections:** Lack of familiarity with AIFs (Alternative Investment Funds).
+*   **Personal Details:** None mentioned.
+*   **Investment History/Preferences:** Unknown.
+*   **Timeline:** Not discussed.
+
+**Actionable Insights:**
+
+*   Client requires a basic explanation of AIFs and alternative investment strategies.
+*   Focus on educating the client about the Multi-Yield Series 1 product and its potential benefits.
+*   Establish client's risk tolerance and investment goals in the next conversation.

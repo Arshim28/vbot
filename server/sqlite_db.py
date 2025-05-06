@@ -6,21 +6,18 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, Tuple, List, Optional
 
-# Create database directory if it doesn't exist
 DB_DIR = Path(__file__).parent.parent / "data"
 DB_DIR.mkdir(exist_ok=True)
 
 DB_PATH = DB_DIR / "voice_agent.db"
 
 class SQLiteVoiceAgentDB:
-    """SQLite implementation of the voice agent database."""
     
     def __init__(self, db_path=DB_PATH):
         self.db_path = db_path
         self._init_db()
     
     def _get_connection(self):
-        """Get a database connection with row factory set to return dictionaries."""
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row
         return conn
@@ -36,9 +33,10 @@ class SQLiteVoiceAgentDB:
             first_name TEXT NOT NULL,
             last_name TEXT NOT NULL,
             phone_number TEXT UNIQUE NOT NULL,
-            email TEXT,
-            city TEXT,
-            job_business TEXT,
+            email TEXT NOT NULL,
+            city TEXT NOT NULL,
+            job_business TEXT NOT NULL,
+            investor_type TEXT NOT NULL,
             created_at TEXT NOT NULL
         )
         ''')
@@ -55,19 +53,27 @@ class SQLiteVoiceAgentDB:
         )
         ''')
         
-        # Check if summary column exists, add it if not
+        # Check if summary column exists in calls table, add it if not
         cursor.execute("PRAGMA table_info(calls)")
         columns = [column[1] for column in cursor.fetchall()]
         if "summary" not in columns:
             cursor.execute("ALTER TABLE calls ADD COLUMN summary TEXT")
             conn.commit()
+            
+        # Check if investor_type column exists in clients table, add it if not
+        cursor.execute("PRAGMA table_info(clients)")
+        columns = [column[1] for column in cursor.fetchall()]
+        if "investor_type" not in columns:
+            cursor.execute("ALTER TABLE clients ADD COLUMN investor_type TEXT DEFAULT 'individual'")
+            conn.commit()
+            print("Added investor_type column to clients table")
         
         conn.commit()
         conn.close()
     
     def add_customer(self, first_name: str, last_name: str, phone_number: str, 
-                     email: Optional[str] = None, city: Optional[str] = None, 
-                     job_business: Optional[str] = None) -> str:
+                     email: str, city: str, job_business: str,
+                     investor_type: str = "individual") -> str:
         """
         Add a new customer to the database.
         
@@ -75,9 +81,10 @@ class SQLiteVoiceAgentDB:
             first_name: First name of the customer
             last_name: Last name of the customer
             phone_number: Phone number of the customer
-            email: Email of the customer (optional)
-            city: City of the customer (optional)
-            job_business: Job or business of the customer (optional)
+            email: Email of the customer
+            city: City of the customer
+            job_business: Job or business of the customer
+            investor_type: Type of investor ('individual' or 'managed')
             
         Returns:
             The ID of the created customer
@@ -89,12 +96,12 @@ class SQLiteVoiceAgentDB:
         try:
             cursor.execute(
                 '''
-                INSERT INTO clients (id, first_name, last_name, phone_number, email, city, job_business, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO clients (id, first_name, last_name, phone_number, email, city, job_business, investor_type, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''',
                 (
                     client_id, first_name, last_name, phone_number, 
-                    email, city, job_business, datetime.now().isoformat()
+                    email, city, job_business, investor_type, datetime.now().isoformat()
                 )
             )
             conn.commit()
@@ -108,8 +115,8 @@ class SQLiteVoiceAgentDB:
             conn.close()
     
     def add_customer_with_id(self, client_id: str, first_name: str, last_name: str, phone_number: str, 
-                           email: Optional[str] = None, city: Optional[str] = None, 
-                           job_business: Optional[str] = None) -> str:
+                           email: str, city: str, job_business: str,
+                           investor_type: str = "individual") -> str:
         """
         Add a new customer with a specific ID to the database.
         
@@ -118,9 +125,10 @@ class SQLiteVoiceAgentDB:
             first_name: First name of the customer
             last_name: Last name of the customer
             phone_number: Phone number of the customer
-            email: Email of the customer (optional)
-            city: City of the customer (optional)
-            job_business: Job or business of the customer (optional)
+            email: Email of the customer
+            city: City of the customer
+            job_business: Job or business of the customer
+            investor_type: Type of investor ('individual' or 'managed')
             
         Returns:
             The ID of the created customer (same as the input client_id)
@@ -144,12 +152,12 @@ class SQLiteVoiceAgentDB:
             # Insert the new client with the specified ID
             cursor.execute(
                 '''
-                INSERT INTO clients (id, first_name, last_name, phone_number, email, city, job_business, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO clients (id, first_name, last_name, phone_number, email, city, job_business, investor_type, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''',
                 (
                     client_id, first_name, last_name, phone_number, 
-                    email, city, job_business, datetime.now().isoformat()
+                    email, city, job_business, investor_type, datetime.now().isoformat()
                 )
             )
             conn.commit()

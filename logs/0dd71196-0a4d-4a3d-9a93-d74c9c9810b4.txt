@@ -1,0 +1,3 @@
+[2025-05-06T07:51:21.679+00:00] assistant: Hello Texas, I'm Neha from Mosaic Asset Management, and I'm excited to connect with you today
+[2025-05-06T07:51:28.875+00:00] user: Do you know where I'm from?
+[2025-05-06T07:51:31.476+00:00] assistant: My focus is entirely on assisting you with your investment goals today. Is now a good time to discuss our exclusive alternate investment solutions?

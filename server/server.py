@@ -29,7 +29,7 @@ current_client_id = None
 current_client_name = None  
 
 # Valid LLM models
-VALID_GEMINI_MODELS = ["gemini-2.5-flash-preview-04-17", "gemini-2.0-flash", "gemini-2.0-flash-lite"]
+VALID_GEMINI_MODELS = ["gemini-2.0-flash", "gemini-2.0-flash-lite"]
 VALID_GROQ_MODELS = ["llama-4-maverick-17b-128e-instruct", 
                      "llama-4-scout-17b-16e-instruct", 
                      "llama-3.3-70b-versatile"]
@@ -235,13 +235,28 @@ async def register(data: Dict[str, Any] = Body(...)):
         email = data.get("email")
         city = data.get("city")
         job_business = data.get("jobBusiness")
+        investor_type = data.get("investorType", "individual")  # Default to individual if not provided
 
-        if not phone_number or not first_name or not last_name:
-            print("Registration failed: Required fields missing")
+        # All fields are now required
+        if not phone_number or not first_name or not last_name or not email or not city or not job_business:
+            missing_fields = []
+            if not phone_number: missing_fields.append("phone number")
+            if not first_name: missing_fields.append("first name")
+            if not last_name: missing_fields.append("last name")
+            if not email: missing_fields.append("email")
+            if not city: missing_fields.append("city")
+            if not job_business: missing_fields.append("job/business")
+            
+            print(f"Registration failed: Required fields missing: {', '.join(missing_fields)}")
             return JSONResponse(
                 status_code=400,
-                content={"message": "Required fields missing"}
+                content={"message": f"Required fields missing: {', '.join(missing_fields)}"}
             )
+        
+        # Validate investor type
+        if investor_type not in ["individual", "managed"]:
+            print(f"Invalid investor type: {investor_type}")
+            investor_type = "individual"  # Default to individual if invalid
         
         # Check if client exists in Firestore
         try:
@@ -261,7 +276,8 @@ async def register(data: Dict[str, Any] = Body(...)):
                         phone_number=phone_number,
                         email=email,
                         city=city,
-                        job_business=job_business
+                        job_business=job_business,
+                        investor_type=investor_type
                     )
                 
                 current_client_name = f"{first_name} {last_name}"
@@ -291,7 +307,8 @@ async def register(data: Dict[str, Any] = Body(...)):
                         phone_number=phone_number,
                         email=email,
                         city=city,
-                        job_business=job_business
+                        job_business=job_business,
+                        investor_type=investor_type
                     )
                 
                 current_client_name = f"{first_name} {last_name}"
@@ -318,7 +335,8 @@ async def register(data: Dict[str, Any] = Body(...)):
                 phone_number=phone_number,
                 email=email,
                 city=city,
-                job_business=job_business
+                job_business=job_business,
+                investor_type=investor_type
             )
             print(f"User added to Firestore with ID: {shared_client_id}")
         except Exception as e:
@@ -333,7 +351,8 @@ async def register(data: Dict[str, Any] = Body(...)):
                 phone_number=phone_number,
                 email=email,
                 city=city,
-                job_business=job_business
+                job_business=job_business,
+                investor_type=investor_type
             )
             print(f"User added to SQLite with ID: {shared_client_id}")
         except Exception as e:
@@ -377,27 +396,36 @@ async def bot_connect(
     if not current_client_id:
          raise HTTPException(status_code=400, detail="Client ID not set. Please login or register first.")
 
-    # Generate a shared call ID for both databases
+    # --- Determine if client is returning BEFORE creating the new call --- 
+    # Get latest call info to check if this is a returning client
+    latest_call = get_client_latest_call(current_client_id)
+    previous_summary = latest_call.get("summary", "") # Get summary
+    # Check if there's actual substantive data (timestamp or summary) in the latest_call
+    is_returning = bool(latest_call.get("timestamp")) or bool(previous_summary)
+    print(f"Determined returning status: {is_returning} (based on timestamp: {latest_call.get('timestamp')}, summary: {bool(previous_summary)})")
+    # --- End of returning client check ---
+    
+    # Generate a shared call ID for the new call
     import uuid
     shared_call_id = str(uuid.uuid4())
-    print(f"Generated shared call ID: {shared_call_id}")
+    print(f"Generated shared call ID for new call: {shared_call_id}")
     
-    # Create call in both databases with the same ID
+    # Create the new call record in both databases with the same ID
     try:
         sqlite_call_id = sqlite_db.create_call_with_id(current_client_id, shared_call_id)
-        print(f"Call created in SQLite with ID: {sqlite_call_id}")
+        print(f"New call created in SQLite with ID: {sqlite_call_id}")
     except Exception as e:
-        print(f"Error creating call in SQLite: {e}")
+        print(f"Error creating new call in SQLite: {e}")
         sqlite_call_id = None
     
     try:
         firestore_call_id = firestore_db.create_call(current_client_id, call_id=shared_call_id)
-        print(f"Call created in Firestore with ID: {firestore_call_id}")
+        print(f"New call created in Firestore with ID: {firestore_call_id}")
     except Exception as e:
-        print(f"Error creating call in Firestore: {e}")
+        print(f"Error creating new call in Firestore: {e}")
         firestore_call_id = None
     
-    # Use the shared call ID
+    # Use the shared call ID for the current session
     current_call_id = shared_call_id
     
     # Use the global client name that was set during login/registration
@@ -414,21 +442,24 @@ async def bot_connect(
         else:
             print(f"ERROR: Could not find client name for ID {current_client_id} in either database")
     
-    # Get latest call info from SQLite
-    latest_call = get_client_latest_call(current_client_id)
-    previous_summary = latest_call.get("summary", "") # Get summary
-    is_returning = bool(latest_call)
-    
     # Validate LLM parameters
     if llm_type not in ["gemini", "groq"]:
         raise HTTPException(status_code=400, detail="Invalid LLM type. Must be 'gemini' or 'groq'")
     
     # Validate model name based on LLM type
     valid_models = VALID_GEMINI_MODELS if llm_type == "gemini" else VALID_GROQ_MODELS
+    # Use gemini-2.0-flash as the default if the provided model is invalid for Gemini
+    default_gemini_model = "gemini-2.0-flash"
+    # Use llama-3.3-70b-versatile as the default for Groq
+    default_groq_model = "llama-3.3-70b-versatile" 
+    
     if model_name not in valid_models:
-        default_model = valid_models[0]
-        print(f"Warning: Invalid {llm_type} model: {model_name}. Using default: {default_model}")
-        model_name = default_model
+        if llm_type == "gemini":
+            print(f"Warning: Invalid gemini model: {model_name}. Using default: {default_gemini_model}")
+            model_name = default_gemini_model
+        else: # llm_type == "groq"
+            print(f"Warning: Invalid groq model: {model_name}. Using default: {default_groq_model}")
+            model_name = default_groq_model
 
     print(f"Using LLM type: {llm_type}, model: {model_name}")
     print(f"Client Name: {client_name}")

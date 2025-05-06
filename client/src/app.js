@@ -6,16 +6,15 @@ import {
 } from '@pipecat-ai/client-js';
 import { DailyTransport } from '@pipecat-ai/daily-transport';
 
-const GEMINI_MODELS = [
-  { id: "gemini-2.5-flash-preview-04-17", name: "Gemini 2.5 Flash Preview" },
-  { id: "gemini-2.0-flash", name: "Gemini 2.0 Flash" },
-  { id: "gemini-2.0-flash-lite", name: "Gemini 2.0 Flash Lite" }
+const geminiModels = [
+    { id: "gemini-2.0-flash", name: "Gemini 2.0 Flash" },
+    { id: "gemini-2.0-flash-lite", name: "Gemini 2.0 Flash Lite" }
 ];
 
-const GROQ_MODELS = [
-  { id: "meta-llama/llama-4-maverick-17b-128e-instruct", name: "Llama 4 Maverick 17B" },
-  { id: "meta-llama/llama-4-scout-17b-16e-instruct", name: "Llama 4 Scout 17B" },
-  { id: "llama-3.3-70b-versatile", name: "Llama 3.3 70B Versatile" }
+const groqModels = [
+    { id: "llama-4-maverick-17b-128e-instruct", name: "Llama 4 Maverick" },
+    { id: "llama-4-scout-17b-16e-instruct", name: "Llama 4 Scout" },
+    { id: "llama-3.3-70b-versatile", name: "Llama 3.3 Versatile" }
 ];
 
 class BFSIClientHelper extends RTVIClientHelper {
@@ -65,6 +64,7 @@ class SalesAgentClient {
     this.emailInput = document.getElementById('email');
     this.cityInput = document.getElementById('city');
     this.jobInput = document.getElementById('job');
+    this.investorTypeSelect = document.getElementById('investor-type');
     this.authMessage = document.getElementById('auth-message');
 
     this.connectBtn = document.getElementById('connect-btn');
@@ -121,7 +121,7 @@ class SalesAgentClient {
 
   updateModelOptions(llmType) {
     this.modelNameSelect.innerHTML = '';
-    const models = llmType === "gemini" ? GEMINI_MODELS : GROQ_MODELS;
+    const models = llmType === "gemini" ? geminiModels : groqModels;
     
     models.forEach(model => {
       const option = document.createElement('option');
@@ -269,13 +269,23 @@ class SalesAgentClient {
     const email = this.emailInput.value.trim();
     const city = this.cityInput.value.trim();
     const job = this.jobInput.value.trim();
+    const investorType = this.investorTypeSelect ? this.investorTypeSelect.value : "individual";
     
-    if (!phone || !firstName || !lastName) {
-      this.showAuthMessage('Please fill all required fields', 'error');
+    // Check all required fields
+    const missingFields = [];
+    if (!phone) missingFields.push("Phone Number");
+    if (!firstName) missingFields.push("First Name");
+    if (!lastName) missingFields.push("Last Name");
+    if (!email) missingFields.push("Email");
+    if (!city) missingFields.push("City");
+    if (!job) missingFields.push("Job/Business");
+    
+    if (missingFields.length > 0) {
+      this.showAuthMessage(`Please fill all required fields: ${missingFields.join(", ")}`, 'error');
       return;
     }
     
-    console.log('Attempting registration with data:', { phone, firstName, lastName, email, city, job });
+    console.log('Attempting registration with data:', { phone, firstName, lastName, email, city, job, investorType });
     
     try {
       const response = await fetch('/register', {
@@ -287,9 +297,10 @@ class SalesAgentClient {
           phoneNumber: phone,
           firstName: firstName,
           lastName: lastName,
-          email: email || null,
-          city: city || null,
-          jobBusiness: job || null
+          email: email,
+          city: city,
+          jobBusiness: job,
+          investorType: investorType
         }),
       });
       

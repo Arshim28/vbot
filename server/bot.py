@@ -121,20 +121,26 @@ def load_expert_suggestions(client_id):
     logger.info("No expert suggestions found")
     return ""
 
-def build_system_prompt(client_id, llm_type: str, client_name=None, is_returning_client=False, initial_greeting=None):
-    """Build a structured system prompt with the requested sections"""
+def build_system_prompt(client_id, llm_type: str, client_name=None, is_returning_client=False, initial_greeting=None, client_info=None):
     call_highlight = load_call_highlight(client_id)
     expert_suggestion = load_expert_suggestions(client_id)
     is_returning_client = is_returning_client or bool(call_highlight or expert_suggestion)
-    
-    # Always use the same persona content regardless of llm_type
     persona_content = PERSONA
-    
-    # Start building prompt parts
     prompt_parts = [persona_content]
     
-    # Add client name if available
-    if client_name:
+    # Enhanced client information section
+    if client_info:
+        client_info_text = f"\n\n# CLIENT INFORMATION\n"
+        client_info_text += f"Client name: {client_info.get('first_name', '')} {client_info.get('last_name', '')}\n"
+        client_info_text += f"Phone: {client_info.get('phone_number', '')}\n"
+        client_info_text += f"Email: {client_info.get('email', '')}\n"
+        client_info_text += f"City: {client_info.get('city', '')}\n"
+        client_info_text += f"Occupation: {client_info.get('job_business', '')}\n"
+        client_info_text += f"Investor type: {client_info.get('investor_type', 'individual')}\n"
+        
+        prompt_parts.append(client_info_text)
+    elif client_name:
+        # Fallback to just the name if we don't have detailed info
         prompt_parts.append(f"\n\n# CLIENT INFORMATION\nClient name: {client_name}")
     
     if call_highlight:
@@ -143,7 +149,6 @@ def build_system_prompt(client_id, llm_type: str, client_name=None, is_returning
     if expert_suggestion:
         prompt_parts.append("\n\n# EXPERT SUGGESTIONS\n" + expert_suggestion)
     
-    # Append Conversation Strategy and Knowledge Base
     if CONVERSATION_STRATEGY:
         prompt_parts.append("\n\n# CONVERSATION STRATEGY\n" + CONVERSATION_STRATEGY)
     else:
@@ -153,8 +158,6 @@ def build_system_prompt(client_id, llm_type: str, client_name=None, is_returning
         prompt_parts.append("\n\n# KNOWLEDGE BASE\n" + KNOWLEDGE_BASE)
     else:
         logger.warning(f"Knowledge base file not found at {KNOWLEDGE_BASE_FILE}, skipping.")
-    
-    # Add the initial greeting to use
     if initial_greeting:
         prompt_parts.append(f"\n\n# INITIAL GREETING - MANDATORY\nYou MUST use this EXACT greeting to start the conversation: \"{initial_greeting}\"\nDo not modify or rephrase this greeting in any way. Use it exactly as provided.\nYOUR FIRST RESPONSE MUST START WITH THIS EXACT GREETING.\n\nIMPORTANT FOR RETURNING CLIENTS: Always acknowledge you are calling them again and reference the previous conversation summary if provided.")
     
@@ -162,17 +165,6 @@ def build_system_prompt(client_id, llm_type: str, client_name=None, is_returning
     return final_prompt
 
 def get_llm_service(llm_type: Literal["gemini", "groq"], model_name: str, system_prompt: str):
-    """
-    Returns the appropriate LLM service based on the type and model name.
-    
-    Args:
-        llm_type: The type of LLM service to use ('gemini' or 'groq')
-        model_name: The model name to use
-        system_prompt: The system prompt to use
-        
-    Returns:
-        The initialized LLM service
-    """
     if llm_type == "gemini":
         return GoogleLLMService(
             api_key=os.getenv("GOOGLE_API_KEY"),
@@ -182,11 +174,9 @@ def get_llm_service(llm_type: Literal["gemini", "groq"], model_name: str, system
             tools=[],
         )
     elif llm_type == "groq":
-        # Groq doesn't handle system_instruction the same way as Gemini
         return GroqLLMService(
             api_key=os.getenv("GROQ_API_KEY"),
             model=model_name,
-            # No system_instruction parameter for Groq
             streaming=True,
             tools=[],
         )
@@ -246,47 +236,54 @@ class TranscriptHandler:
 
 async def main(call_id, client_id, llm_type="gemini", model_name="gemini-2.0-flash", 
                client_name=None, returning_client=False, previous_summary=""):
-    # Create initial greeting based on client status
+    """Main entry point for the bot."""
+    # Import needed at function level to avoid circular imports
+    import sys
+    sys.path.append(str(Path(__file__).parent))
+    from sqlite_db import SQLiteVoiceAgentDB
+    
+    # Initialize database connection
+    sqlite_db = SQLiteVoiceAgentDB()
+    
+    # Get complete client information from database
+    client_info = sqlite_db.get_customer_by_id(client_id)
+    
     initial_greeting = ""
     first_name = None
-    if client_name and client_name.strip():
+    
+    # If we have client info, get first name from there
+    if client_info:
+        first_name = client_info.get('first_name')
+        logger.info(f"Retrieved client info from database: {client_info.get('first_name')} {client_info.get('last_name')}")
+    # Otherwise use the passed client_name parameter
+    elif client_name and client_name.strip():
         name_parts = client_name.strip().split()
         if name_parts:
             first_name = name_parts[0]
 
-    # Check for call highlights if summary not provided
     if returning_client and not previous_summary:
         call_highlight = load_call_highlight(client_id)
         if call_highlight:
-            # Extract a brief summary from call highlights
             highlight_lines = call_highlight.split('\n')
             for line in highlight_lines:
                 if line.strip() and not line.startswith('#'):
-                    # Use first substantive line as a fallback summary
                     previous_summary = line.strip()[:100]
                     logger.info(f"Using extracted call highlight as summary: {previous_summary}")
                     break
     
     if returning_client:
-        # Construct returning client greeting with summary
         greeting_start = f"Hi {first_name}," if first_name else "Hi there,"
-        
-        # Always include some form of previous conversation reference
         if previous_summary:
-            # Ensure summary is concise - truncate if needed
             summary_snippet = previous_summary[:80] + ("..." if len(previous_summary) > 80 else "")
             initial_greeting = f"{greeting_start} it's Neha from Mosaic Asset Management. Last time we spoke about: {summary_snippet}. How have you been?"
         else:
-            # Alternative greeting that still acknowledges prior conversation even without details
             initial_greeting = f"{greeting_start} it's Neha from Mosaic Asset Management calling you back. I hope things have been going well since we last spoke. How have you been?"
             logger.warning("No previous summary found for returning client, using generic returning client greeting")
     else:
-        # New client greeting
         greeting_start = f"Hello {first_name}," if first_name else "Hello,"
-        initial_greeting = f"{greeting_start} I'm Neha from Mosaic Asset Management, and I'm excited to connect with you today to discuss our exclusive alternate investment solutions. How are you doing today?"
+        initial_greeting = f"{greeting_start} I'm Neha from Mosaic Asset Management, and I'm excited to connect with you today to discuss our exclusive alternate investment solutions. Is this a good time?"
     
-    # Pass the initial greeting to build_system_prompt so it's part of the system prompt
-    system_prompt = build_system_prompt(client_id, llm_type, client_name, returning_client, initial_greeting)
+    system_prompt = build_system_prompt(client_id, llm_type, client_name, returning_client, initial_greeting, client_info)
     
     transcript_logfile = os.path.join(TRANSCRIPT_LOGDIR, f"{call_id}.txt")
     async with aiohttp.ClientSession() as session:
@@ -322,15 +319,14 @@ async def main(call_id, client_id, llm_type="gemini", model_name="gemini-2.0-fla
     
     stt = DeepgramSTTService(api_key=os.getenv("DEEPGRAM_API_KEY"))
 
-    # Using Cartesia TTS with appropriate voice
     tts = CartesiaTTSService(
         api_key=os.getenv("CARTESIA_API_KEY"),
         voice_id="f8f5f1b2-f02d-4d8e-a40d-fd850a487b3d", 
         model="sonic-2-2025-04-16",
         params=CartesiaTTSService.InputParams(
             language=Language.EN,          
-            speed=-0.3,                # fixed rate
-            emotion=["positivity", "curiosity"]                     # no dynamic emotion
+            speed=-0.3,                
+            emotion=["positivity", "curiosity"]                     
         ),
         output_format={
             "container": "mp3",
@@ -338,10 +334,7 @@ async def main(call_id, client_id, llm_type="gemini", model_name="gemini-2.0-fla
         }
     )
 
-    # Determine if client is returning or new
-    is_returning_client = returning_client # Use the flag passed from server
-    
-    # Get the appropriate LLM service based on the type and model
+    is_returning_client = returning_client
     llm = get_llm_service(llm_type, model_name, system_prompt)
 
     if llm_type == "groq":
@@ -386,18 +379,13 @@ async def main(call_id, client_id, llm_type="gemini", model_name="gemini-2.0-fla
         observers=[GoogleRTVIObserver(rtvi), interrupt_observer]
     )
 
-    # Configure event handlers
     @rtvi.event_handler("on_client_ready")
     async def on_client_ready(rtvi):
         logger.info("RTVI client ready, setting bot ready")
         await rtvi.set_bot_ready()
         
         logger.info(f"Using initial greeting: {initial_greeting}")
-        
-        # Add the specific greeting message to context with stronger instruction
         initial_context = context_aggregator.user().get_context_frame()
-        
-        # Create a strong instruction emphasizing the mandatory greeting
         is_returning = "returning" if returning_client else "new"
         instruction = f"""MANDATORY INSTRUCTION: BEGIN YOUR FIRST RESPONSE WITH THIS EXACT GREETING WITHOUT ANY MODIFICATION:
 
