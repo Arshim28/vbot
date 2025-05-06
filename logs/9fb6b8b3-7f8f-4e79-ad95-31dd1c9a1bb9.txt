@@ -1,0 +1,27 @@
+[2025-04-28T17:12:20.338+00:00] assistant: Hello, this is Ashok from Mosaic Asset Management. We offer alternative investment solutions,
+[2025-04-28T17:12:27.060+00:00] user: Hi. What did we talk about on previous call?
+[2025-04-28T17:12:29.587+00:00] assistant: Hello. On our previous call, we briefly discussed investment amounts and the potential interest in our offerings, specifically mentioning the 1 crore minimum for our AIF. To ensure I provide relevant information now, could I ask what you're generally looking for in investments?
+[2025-04-28T17:12:47.224+00:00] user: I think I've already answered that in my previous call.
+[2025-04-28T17:12:50.047+00:00] assistant: My apologies, you're right. The record indicates we covered some ground. My aim is just to ensure any information I share now is precisely relevant to your *current* needs and goals. Could you remind me briefly what your main investment focus is right now?
+[2025-04-28T17:13:09.310+00:00] user: Yeah.
+[2025-04-28T17:13:14.279+00:00] user: Sorry. I I think we discussed that I have a minimum investment of two CRPs.
+[2025-04-28T17:13:31.254+00:00] user: Hi. Are you there?
+[2025-04-28T17:13:33.676+00:00] assistant: Yes, I'm here. Thank you for confirming the 2 crore figure. That's helpful context. To quickly see if our fund aligns, are you generally looking for fixed income or equity-like investments, and
+[2025-04-28T17:13:43.800+00:00] assistant: do
+[2025-04-28T17:13:48.860+00:00] user: Yeah. I I wanted two x return in two days.
+[2025-04-28T17:13:53.757+00:00] assistant: I understand that's a desired outcome, but achieving 2x in two days is not feasible with the structured credit strategy of our AIF. We focus on generating steady returns over a longer term. What investment timeframe
+[2025-04-28T17:14:04.762+00:00] user: Okay. Four days.
+[2025-04-28T17:14:08.221+00:00] assistant: Achieving 2x returns in four days is not possible with our fund's strategy, which focuses on structured credit over
+[2025-04-28T17:14:15.959+00:00] user: What what do you mean by longer term? How long is your longer term?
+[2025-04-28T17:14:18.592+00:00] assistant: Our Multi-Yield Series 1 fund has a maturity of 4 years 11 months. It's a close-ended fund designed for that duration.
+[2025-04-28T17:14:29.851+00:00] user: Four years, eleven months. I don't think I left for that long.
+[2025-04-28T17:14:33.207+00:00] assistant: Understood. Our fund requires a commitment for that full term. It's designed for investors comfortable with a longer-term horizon of around five years. If a much shorter timeframe is essential for you, perhaps our fund isn't the right fit at this moment.
+[2025-04-28T17:14:48.581+00:00] user: Can you craft a different fund for my choice?
+[2025-04-28T17:14:51.278+00:00] assistant: Our offerings are specific, structured funds like the Multi-Yield Series 1
+[2025-04-28T17:14:55.209+00:00] user: That sounds good.
+[2025-04-28T17:15:00.671+00:00] user: Sounds rude. Not that **** you. I said that sounds rude. That sounds good.
+[2025-04-28T17:15:05.951+00:00] assistant: Ah, thank you for clarifying. I appreciate that. Our funds are indeed designed with specific, structured strategies for consistency and a defined approach. As we discussed, Multi-Yield Series 1 has a term of almost 5 years. Does
+[2025-04-28T17:15:20.524+00:00] user: Whatever multi l series two
+[2025-04-28T17:15:23.737+00:00] assistant: Thank you for asking about Series 2. I don't have specific details on a Multi-Yield Series 2 fund right now, as our current focus is on Multi-Yield Series 1. Is there anything more you'd like to know about Series 1?
+[2025-04-28T17:15:37.755+00:00] user: I think, series one is too slow for me.
+[2025-04-28T17:15:43.567+00:00] assistant: Understood, you're looking for

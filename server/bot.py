@@ -325,11 +325,11 @@ async def main(call_id, client_id, llm_type="gemini", model_name="gemini-2.0-fla
     # Using Cartesia TTS with appropriate voice
     tts = CartesiaTTSService(
         api_key=os.getenv("CARTESIA_API_KEY"),
-        voice_id="f8f5f1b2-f02d-4d8e-a40d-fd850a487b3d", 
+        voice_id="ec543beb-a7d6-4fa8-99af-3bd47d902cb2", 
         model="sonic-2-2025-04-16",
         params=CartesiaTTSService.InputParams(
-            language=Language.EN,          
-            speed=-0.3,                # fixed rate
+            language=Language.EN_IN,          
+            speed=-0.2,                # fixed rate
             emotion=["positivity", "curiosity"]                     # no dynamic emotion
         ),
         output_format={

@@ -1,0 +1,62 @@
+# Client Profile
+Client Type: investor
+Minimum Investment Capacity: Yes
+Investor Sophistication: null
+Attitude: skeptic
+
+# Latest Call Summary
+The client was extremely frustrated due to repeated questions and previous missed calls. He confirmed understanding of AIFs and has 2 CR to invest. He ended the call abruptly, requesting no further contact.
+
+# Key Notes
+Client is very annoyed with the repeated questioning and prior missed calls. He stated he has 2 CR to invest. Explicitly asked not to be contacted again.
+
+
+# Full Conversation
+[May 05, 2025 at 11:04:24 PM UTC+5:30] Neha: Hi Sparsh, it's Neha from Mosaic Asset Management. Last time we spoke about: Client Type: investor. How have you been?
+[May 05, 2025 at 11:04:38 PM UTC+5:30] Client: Fine. I've been expecting a call from two days now, and I haven't
+[May 05, 2025 at 11:04:40 PM UTC+5:30] Client: heard of a call since.
+[May 05, 2025 at 11:04:42 PM UTC+5:30] Neha: I sincerely apologize that you didn't receive a call as scheduled. I understand this is the second time, and I'll personally ensure it doesn't happen again. To make things right, would you be open to a quick discussion now, or would you prefer to reschedule with a portfolio specialist?
+[May 05, 2025 at 11:05:00 PM UTC+5:30] Client: Okay. I mean, don't mind a quick discussion right now.
+[May 05, 2025 at 11:05:25 PM UTC+5:30] Client: Hello, Neha. Are you there?
+[May 05, 2025 at 11:05:28 PM UTC+5:30] Neha: Yes, Sparsh, I am here. Apologies for the brief pause. To make the best use of our time, could you share what you're generally hoping to achieve with your investments right now?
+[May 05, 2025 at 11:05:44 PM UTC+5:30] Client: Yeah. You just asked me the same question again and again. I've told you that I'm looking for a day so I
+[May 05, 2025 at 11:05:45 PM UTC+5:30] Client: I expect
+[May 05, 2025 at 11:05:50 PM UTC+5:30] Client: 12, 13% of return. And, yeah, I mean, what do you want? You you just
+[May 05, 2025 at 11:05:52 PM UTC+5:30] Client: stupidly asked me the same thing over and over again.
+[May 05, 2025 at 11:06:12 PM UTC+5:30] Client: Okay.
+[May 05, 2025 at 11:05:54 PM UTC+5:30] Neha: Understood, Sparsh. My apologies for the repetition. To be direct, our Multi-Yield Series 1 AIF is projected to have a gross yield of 13-14%, before expenses and taxes. The expected net yield to investors, after expenses and estimated taxes, is approximately 10%.
+[May 05, 2025 at 11:06:17 PM UTC+5:30] Client: I know this. I know this. Why are you telling me the same thing
+[May 05, 2025 at 11:06:21 PM UTC+5:30] Client: over and over again if you did not have anything else to talk about
+[May 05, 2025 at 11:06:24 PM UTC+5:30] Client: you could have just told me to schedule a call with a specialist. What what are you
+[May 05, 2025 at 11:06:26 PM UTC+5:30] Client: trying to do? I just don't get you.
+[May 05, 2025 at 11:06:28 PM UTC+5:30] Neha: You're right, Sparsh. I apologize. Let me be more direct. To determine if this fund is a good fit, could you tell me
+[May 05, 2025 at 11:06:38 PM UTC+5:30] Client: I know what AIF said. You have asked that
+[May 05, 2025 at 11:06:40 PM UTC+5:30] Client: me a million times before.
+[May 05, 2025 at 11:06:45 PM UTC+5:30] Client: I want to invest. Why do you care if it's a good fit for me?
+[May 05, 2025 at 11:06:47 PM UTC+5:30] Neha: Understood. While I appreciate your directness, it's important from our perspective to ensure suitability and alignment. Just so I can confirm,
+[May 05, 2025 at 11:07:00 PM UTC+5:30] Client: I know. I have told you I have two CR invest
+[May 05, 2025 at 11:07:02 PM UTC+5:30] Client: Why do you keep on asking me if I have 1 crore?
+[May 05, 2025 at 11:07:04 PM UTC+5:30] Neha: You're right, Sparsh. My apologies. I misspoke. Knowing
+[May 05, 2025 at 11:07:11 PM UTC+5:30] Client: You know what? Just just get lost. You you are too annoying and
+[May 05, 2025 at 11:07:14 PM UTC+5:30] Client: ask your representatives not to call me ever again.
+[May 05, 2025 at 11:07:16 PM UTC+5:30] Neha: Understood, Sparsh. I apologize for not meeting your expectations and for any inconvenience
+
+
+# Previous Highlights (2025-05-05 23:08:01)
+**Client:** Sparsh
+
+**Investment Goals/Priorities:** Seeking 12-13% returns.
+
+**Key Concerns/Objections:** Frustrated with repetitive questioning. Questions the need for suitability checks, implying a desire for quick investment.
+
+**Personal Details:** None mentioned.
+
+**Investment History/Preferences:** States he has "two CR invest" (likely 2 Crore invested), implying significant capital. Familiar with AIFs (Alternative Investment Funds).
+
+**Timeline for Decision Making:** Appears to want to invest quickly and is impatient with the sales process.
+
+**Actionable Insights:**
+*   Avoid repetitive questioning. Review previous call notes thoroughly.
+*   Address suitability concerns directly, perhaps highlighting benefits to him (e.g., risk mitigation).
+*   Consider a more direct, less conversational approach.
+*   Client is currently unwilling to be contacted again.

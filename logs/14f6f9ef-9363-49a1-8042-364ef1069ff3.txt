@@ -1,0 +1,57 @@
+[2025-05-05T17:03:20.724+00:00] assistant: Hi Sparsh, it's Neha from Mosaic Asset Management calling you back. I hope things have been going well since we last spoke. How have you been?
+[2025-05-05T17:03:33.309+00:00] user: I've been great, Neha. I really forgot about the last call. Can you remind me what did
+[2025-05-05T17:03:34.332+00:00] user: did we talk about?
+[2025-05-05T17:03:36.514+00:00] assistant: We briefly discussed Mosaic Asset Management and our alternative investment solutions. I'm calling to see if our Multi-Yield Series 1 AIF might align with your investment goals. Does that ring a bell, and is now still a good time for a brief chat?
+[2025-05-05T17:03:52.167+00:00] user: Oh, yeah. Yeah. I remember. I remember about your
+[2025-05-05T17:03:58.908+00:00] user: AIF. So what I mean, I guess I told you that I am ready to invest to see our
+[2025-05-05T17:04:01.786+00:00] assistant: Great! To ensure this fund is the right fit, could you share what you're hoping to achieve with this investment? Are you looking at this for your own portfolio, or do you advise others on investments?
+[2025-05-05T17:04:15.727+00:00] user: No. No. I am listening
+[2025-05-05T17:04:17.618+00:00] user: for I mean, from my own
+[2025-05-05T17:04:19.138+00:00] user: portfolio point of view.
+[2025-05-05T17:04:21.525+00:00] assistant: Understood. What are you generally looking for in investments right now in terms of returns and risk? How familiar are you with alternative investment funds like this one?
+[2025-05-05T17:04:35.398+00:00] user: I mean, I have a brief idea of what
+[2025-05-05T17:04:35.646+00:00] user: AIFs are, but I'm not really sure
+[2025-05-05T17:04:37.503+00:00] user: what Mosaic does.
+[2025-05-05T17:04:39.721+00:00] assistant: Mosaic's approach is to combine different experiences within fixed income. We're an independent fund management company, focused purely on managing funds without conflicts. Does that make sense? To give you a better sense, our Multi-Yield Series 1 AIF invests in performing credit. Would you prefer a summary or more detail?
+[2025-05-05T17:05:00.102+00:00] user: I mean, no. I I get the gist.
+[2025-05-05T17:05:01.083+00:00] user: But, like, what sort of
+[2025-05-05T17:05:05.871+00:00] user: investments do you guys need? Like, what do you mean by performing credit?
+[2025-05-05T17:05:08.720+00:00] assistant: Performing credit refers to loans to financially sound, operating companies – not distressed or turnaround situations. The firms are expected to return capital assuming similar conditions persist. Our Multi-Yield fund invests exclusively in this type of credit. The expected gross yield for the portfolio is projected at 13-14%. This is before expenses and taxes. Does that clarify things?
+[2025-05-05T17:05:37.125+00:00] user: Okay. Fair. Fair.
+[2025-05-05T17:05:40.387+00:00] user: You tell me what I mean, give me an example of a company you guys
+[2025-05-05T17:05:40.657+00:00] user: will be investing in.
+[2025-05-05T17:05:42.528+00:00] assistant: The portfolio allocation is indicative. For example, one deal could be a Pune-based rural financier with 70% rural housing business, 30% unsecured, managed by ICICI Bank veterans. They are rated BBB, with leverage less than 1x and an expected yield of 14-15%.
+[2025-05-05T17:06:03.481+00:00] user: It has rated BBB, and then
+[2025-05-05T17:06:06.496+00:00] user: risky investment? Like, BBB isn't great.
+[2025-05-05T17:06:08.756+00:00] assistant: That's an interesting point about credit ratings. Our investment criteria includes manageable leverage, strong coverage ratios and tangible security. The financials allocation comprises 20-30% of the portfolio. Would you be interested to know how the funds are split across other sectors?
+[2025-05-05T17:06:30.052+00:00] user: Okay. So you're saying that out of the 1,000 CR
+[2025-05-05T17:06:31.363+00:00] user: portfolio you guys are building,
+[2025-05-05T17:06:36.386+00:00] user: you'll give 20, 30% of this NBS. That's 203 hundred crores for that NBS.
+[2025-05-05T17:06:38.226+00:00] user: Is that what you mean?
+[2025-05-05T17:06:40.349+00:00] assistant: Yes, that's correct. 20 to 30% of the portfolio will be allocated to financials, including mid-sized
+[2025-05-05T17:06:52.177+00:00] user: No. No. No. I'm not talking about financials. I'm
+[2025-05-05T17:06:53.823+00:00] user: about that particular based in BFC with a
+[2025-05-05T17:06:55.630+00:00] user: BBB thing you talked about.
+[2025-05-05T17:06:57.846+00:00] assistant: Apologies, I understand the question. No single security is expected to comprise more than 5% of the portfolio. So, for a 1,000 crore fund, the maximum allocation to a single NBFC would be around 50 crore rupees. Does that make sense?
+[2025-05-05T17:07:16.450+00:00] user: Fine. Fine. Fine. Fine. Okay. I got it. So, basically, you would
+[2025-05-05T17:07:19.664+00:00] user: roughly invest in twenty twenty five companies, I'm assuming?
+[2025-05-05T17:07:21.461+00:00] assistant: The portfolio is planned to contain 25-30 securities. The key differentiators are broad diversification, direct origination and robust risk management. Is this pace okay?
+[2025-05-05T17:07:36.490+00:00] user: Alright. Alright. I'll
+[2025-05-05T17:07:37.794+00:00] user: interesting. And who's managing this fund? Like,
+[2025-05-05T17:07:40.490+00:00] user: who are the key guys behind this?
+[2025-05-05T17:07:43.541+00:00] assistant: Maneesh Dangi is our MD and CEO. He has over 24 years in fund management and previously managed INR 70,000 Cr as Fund Manager at Aditya Birla Sun Life Mutual Fund. Would you like to know about the other key members in the leadership team?
+[2025-05-05T17:08:00.719+00:00] user: No. I know. I know Manish. I mean, I know he's a good guy.
+[2025-05-05T17:08:02.220+00:00] user: Alright.
+[2025-05-05T17:08:04.459+00:00] user: Guess that's pretty much it.
+[2025-05-05T17:08:06.938+00:00] user: Nothing more I'd like to know.
+[2025-05-05T17:08:08.928+00:00] assistant: Understood. Just so I can tailor our conversation, this fund has a 1 crore minimum investment. Is that generally aligned with your investment range?
+[2025-05-05T17:08:20.704+00:00] user: I did tell you, you that I'm
+[2025-05-05T17:08:21.387+00:00] user: I was looking to invest to share.
+[2025-05-05T17:08:23.277+00:00] assistant: You're right, my apologies. I misspoke. Since you are looking to invest, would you like to speak with one of our portfolio specialists who can answer more detailed questions?
+[2025-05-05T17:08:35.146+00:00] user: Alright. That'd be great.
+[2025-05-05T17:08:37.036+00:00] assistant: Excellent. What's the best way to reach you, and what times work best for a call?
+[2025-05-05T17:08:45.368+00:00] user: Oh, I I'd like to call
+[2025-05-05T17:08:49.321+00:00] user: somewhere around post 5PM, I'd say, any working day.
+[2025-05-05T17:08:51.245+00:00] assistant: Understood. I'll have a portfolio specialist reach out after 5 PM on a working day. Is there anything else I can help you with right now?
+[2025-05-05T17:09:01.677+00:00] user: No. Nothing really.
+[2025-05-05T17:09:03.424+00:00] assistant: Alright, Sparsh, thank you for your time. Have a good day.

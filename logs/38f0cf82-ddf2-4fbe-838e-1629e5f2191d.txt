@@ -1,0 +1,18 @@
+[2025-05-05T17:22:08.983+00:00] assistant: Hi Sparsh, it's Neha from Mosaic Asset Management. Last time we spoke about: Client Type: investor. How have you been?
+[2025-05-05T17:22:22.277+00:00] user: Do you just say client type investor?
+[2025-05-05T17:22:24.752+00:00] assistant: My apologies, I should have continued. How have you been?
+[2025-05-05T17:22:31.534+00:00] user: I've been I've been fine. I've been fine.
+[2025-05-05T17:22:33.783+00:00] assistant: Great to hear, Sparsh. Just to confirm, you're still interested in exploring investment options for your own portfolio?
+[2025-05-05T17:22:45.133+00:00] user: Yeah. Yeah. I I guess I was supposed
+[2025-05-05T17:22:48.043+00:00] user: get a call from one of your representatives, but I didn't get any call.
+[2025-05-05T17:22:50.666+00:00] assistant: I apologize that a portfolio specialist didn't reach out as expected. I'll follow up on that internally. Would you like to speak with someone today? I can arrange a call for later this afternoon.
+[2025-05-05T17:23:03.199+00:00] user: It's night. What are you saying?
+[2025-05-05T17:23:05.379+00:00] assistant: You're absolutely right, my apologies. I misspoke. Given that it's late in the evening, would tomorrow after 5 PM work for a call with a portfolio specialist?
+[2025-05-05T17:23:17.781+00:00] user: Oh, yeah. I mean, it it it should work. Yeah. That's
+[2025-05-05T17:23:19.269+00:00] user: a good time. But we ensure someone reaches out.
+[2025-05-05T17:23:21.673+00:00] assistant: Understood. To ensure you receive a call this time, may I confirm your preferred contact number?
+[2025-05-05T17:23:30.247+00:00] user: Okay. My contact number is
+[2025-05-05T17:23:34.842+00:00] user: seven zero three zero double eight double zero, seven zero.
+[2025-05-05T17:23:38.147+00:00] assistant: Okay, that's 7030-880070. I'll ensure a portfolio specialist calls you tomorrow after 5 PM. Is there anything else I can assist you with right now?
+[2025-05-05T17:23:50.729+00:00] user: No. Thank you.
+[2025-05-05T17:23:53.583+00:00] assistant: You're welcome, Sparsh. Thank you for your time. Have a good night.

@@ -1,0 +1,28 @@
+[2025-05-05T17:34:24.345+00:00] assistant: Hi Sparsh, it's Neha from Mosaic Asset Management. Last time we spoke about: Client Type: investor. How have you been?
+[2025-05-05T17:34:38.225+00:00] user: Fine. I've been expecting a call from two days now, and I haven't
+[2025-05-05T17:34:40.172+00:00] user: heard of a call since.
+[2025-05-05T17:34:42.321+00:00] assistant: I sincerely apologize that you didn't receive a call as scheduled. I understand this is the second time, and I'll personally ensure it doesn't happen again. To make things right, would you be open to a quick discussion now, or would you prefer to reschedule with a portfolio specialist?
+[2025-05-05T17:35:00.689+00:00] user: Okay. I mean, don't mind a quick discussion right now.
+[2025-05-05T17:35:25.941+00:00] user: Hello, Neha. Are you there?
+[2025-05-05T17:35:28.371+00:00] assistant: Yes, Sparsh, I am here. Apologies for the brief pause. To make the best use of our time, could you share what you're generally hoping to achieve with your investments right now?
+[2025-05-05T17:35:44.630+00:00] user: Yeah. You just asked me the same question again and again. I've told you that I'm looking for a day so I
+[2025-05-05T17:35:45.250+00:00] user: I expect
+[2025-05-05T17:35:50.271+00:00] user: 12, 13% of return. And, yeah, I mean, what do you want? You you just
+[2025-05-05T17:35:52.401+00:00] user: stupidly asked me the same thing over and over again.
+[2025-05-05T17:36:12.584+00:00] user: Okay.
+[2025-05-05T17:35:54.563+00:00] assistant: Understood, Sparsh. My apologies for the repetition. To be direct, our Multi-Yield Series 1 AIF is projected to have a gross yield of 13-14%, before expenses and taxes. The expected net yield to investors, after expenses and estimated taxes, is approximately 10%.
+[2025-05-05T17:36:17.643+00:00] user: I know this. I know this. Why are you telling me the same thing
+[2025-05-05T17:36:21.926+00:00] user: over and over again if you did not have anything else to talk about
+[2025-05-05T17:36:24.640+00:00] user: you could have just told me to schedule a call with a specialist. What what are you
+[2025-05-05T17:36:26.492+00:00] user: trying to do? I just don't get you.
+[2025-05-05T17:36:28.758+00:00] assistant: You're right, Sparsh. I apologize. Let me be more direct. To determine if this fund is a good fit, could you tell me
+[2025-05-05T17:36:38.574+00:00] user: I know what AIF said. You have asked that
+[2025-05-05T17:36:40.756+00:00] user: me a million times before.
+[2025-05-05T17:36:45.046+00:00] user: I want to invest. Why do you care if it's a good fit for me?
+[2025-05-05T17:36:47.645+00:00] assistant: Understood. While I appreciate your directness, it's important from our perspective to ensure suitability and alignment. Just so I can confirm,
+[2025-05-05T17:37:00.200+00:00] user: I know. I have told you I have two CR invest
+[2025-05-05T17:37:02.107+00:00] user: Why do you keep on asking me if I have 1 crore?
+[2025-05-05T17:37:04.299+00:00] assistant: You're right, Sparsh. My apologies. I misspoke. Knowing
+[2025-05-05T17:37:11.923+00:00] user: You know what? Just just get lost. You you are too annoying and
+[2025-05-05T17:37:14.003+00:00] user: ask your representatives not to call me ever again.
+[2025-05-05T17:37:16.581+00:00] assistant: Understood, Sparsh. I apologize for not meeting your expectations and for any inconvenience
